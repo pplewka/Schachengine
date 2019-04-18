@@ -1,23 +1,29 @@
  From [Fide](https://www.fide.com/fide/handbook.html?id=207&view=article)
  
-#BASIC RULES OF PLAY
+# BASIC RULES OF PLAY
 
-##Article 1: The nature and objectives of the game of chess
+## Article 1: The nature and objectives of the game of chess
 
 1.1
 	
-
 The game of chess is played between two opponents who move their pieces on a square board called a ‘chessboard’.
-1.2 	The player with the light-coloured pieces (White) makes the first move, then the players move alternately, with the player with the dark-coloured pieces (B
+
+1.2 	
+
+The player with the light-coloured pieces (White) makes the first move, then the players move alternately, with the player with the dark-coloured pieces (B
 lack) making the next move.
 
-1.3 	A player is said to ‘have the move’ when his opponent’s move has been ‘made’.
+1.3 	
+
+A player is said to ‘have the move’ when his opponent’s move has been ‘made’.
 
 1.4
 	
-
 The objective of each player is to place the opponent’s king ‘under attack’ in such a way that the opponent has no legal move.
-1.4.1 	The player who achieves this goal is said to have ‘checkmated’ the opponent’s king and to have won the game. Leaving one’s own king under attack, exposing one’s own king to attack and also ’capturing’ the opponent’s king is not allowed .
+
+1.4.1 	
+
+The player who achieves this goal is said to have ‘checkmated’ the opponent’s king and to have won the game. Leaving one’s own king under attack, exposing one’s own king to attack and also ’capturing’ the opponent’s king is not allowed .
 
 1.4.2 	
 
@@ -25,40 +31,35 @@ The opponent whose king has been checkmated has lost the game.
 
 1.5
 	
-
 If the position is such that neither player can possibly checkmate the opponent’s king, the game is drawn (see Article 5.2.2).
 
-##Article 2: The initial position of the pieces on the chessboard
+## Article 2: The initial position of the pieces on the chessboard
 
 2.1
 	
-
 The chessboard is composed of an 8 x 8 grid of 64 equal squares alternately light (the ‘white’ squares) and dark (the ‘black’ squares).
 
 The chessboard is placed between the players in such a way that the near corner square to the right of the player is white.
 
 2.2
 	
-
 At the beginning of the game White has 16 light-coloured pieces (the ‘white’ pieces); Black has 16 dark-coloured pieces (the ‘black’ pieces).
 These pieces are as follows: 	  	  	 
-A white king 	usually indicated by the symbol 		K
-A white queen 	usually indicated by the symbol 		Q
-Two white rooks 	usually indicated by the symbol 		R
-Two white bishops 	usually indicated by the symbol 		B
-Two white knights 	usually indicated by the symbol 		N
-Eight white pawns 	usually indicated by the symbol 		 P
-A black king 	usually indicated by the symbol 		K
-A black queen 	usually indicated by the symbol 		Q
-Two black rooks 	usually indicated by the symbol 		R
-Two black bishops 	usually indicated by the symbol 		B
-Two black knights 	usually indicated by the symbol 		N
-Eight black pawns 	usually indicated by the symbol 		 P
-
+- A white king 	usually indicated by the symbol 		K
+- A white queen 	usually indicated by the symbol 		Q
+- Two white rooks 	usually indicated by the symbol 		R
+- Two white bishops 	usually indicated by the symbol 		B
+- Two white knights 	usually indicated by the symbol 		N
+- Eight white pawns 	usually indicated by the symbol 		 P
+- A black king 	usually indicated by the symbol 		K
+- A black queen 	usually indicated by the symbol 		Q
+- Two black rooks 	usually indicated by the symbol 		R
+- Two black bishops 	usually indicated by the symbol 		B
+- Two black knights 	usually indicated by the symbol 		N
+- Eight black pawns 	usually indicated by the symbol 		 P
 
 2.3
 	
-
 The initial position of the pieces on the chessboard is as follows:
 
 E=Empty
@@ -79,128 +80,164 @@ PPPPPPPP
 
 RNBKQBNR
  
-
 2.4
-	
 
 The eight vertical columns of squares are called ‘files’. The eight horizontal rows of squares are called ‘ranks’. A straight line of squares of the same colour, running from one edge of the board to an adjacent edge, is called a ‘diagonal’.
 
-##Article 3: The moves of the pieces
+## Article 3: The moves of the pieces
 
 3.1
 	
-
 It is not permitted to move a piece to a square occupied by a piece of the same colour.
-3.1.1 	If a piece moves to a square occupied by an opponent’s piece the latter is captured and removed from the chessboard as part of the same move.
+
+3.1.1 	
+
+If a piece moves to a square occupied by an opponent’s piece the latter is captured and removed from the chessboard as part of the same move.
 
 3.1.2 	
 
 A piece is said to attack an opponent’s piece if the piece could make a capture on that square according to Articles 3.2 to 3.8.
-3.1.3 	A piece is considered to attack a square even if this piece is constrained from moving to that square because it would then leave or place the king of its own colour under attack.
 
-3.2
-	
+3.1.3 	
+
+A piece is considered to attack a square even if this piece is constrained from moving to that square because it would then leave or place the king of its own colour under attack.
+
+3.2	
 
 The bishop may move to any square along a diagonal on which it stands.
 
-
-
-
 3.3
 	
-
 The rook may move to any square along the file or the rank on which it stands.
 
-
-
-
 3.4
-	
 
 The queen may move to any square along the file, the rank or a diagonal on which it stands.
 
-
-
-
 3.5
-	
 
 When making these moves, the bishop, rook or queen may not move over any intervening pieces.
 
 3.6
-	
 
 The knight may move to one of the squares nearest to that on which it stands but not on the same rank, file or diagonal.
 
+3.7.1 	
 
+The pawn may move forward to the square immediately in front of it on the same file, provided that this square is unoccupied, or
 
-3.7.1 	The pawn may move forward to the square immediately in front of it on the same file, provided that this square is unoccupied, or
+3.7.2 	
 
-3.7.2 	on its first move the pawn may move as in 3.7.1 or alternatively it may advance two squares along the same file, provided that both squares are unoccupied, or
+on its first move the pawn may move as in 3.7.1 or alternatively it may advance two squares along the same file, provided that both squares are unoccupied, or
 
-3.7.3 	the pawn may move to a square occupied by an opponent’s piece diagonally in front of it on an adjacent file, capturing that piece.
+3.7.3 	
 
-3.7.4.1 	A pawn occupying a square on the same rank as and on an adjacent file to an opponent’s pawn which has just advanced two squares in one move from its original square may capture this opponent’s pawn as though the latter had been moved only one square.
+the pawn may move to a square occupied by an opponent’s piece diagonally in front of it on an adjacent file, capturing that piece.
 
-3.7.4.2 	This capture is only legal on the move following this advance and is called an ‘en passant’ capture.
+3.7.4.1 	
 
-3.7.5.1 	When a player, having the move, plays a pawn to the rank furthest from its starting position, he must exchange that pawn as part of the same move for a new queen, rook, bishop or knight of the same colour on the intended square of arrival. This is called the square of ‘promotion’.
+A pawn occupying a square on the same rank as and on an adjacent file to an opponent’s pawn which has just advanced two squares in one move from its original square may capture this opponent’s pawn as though the latter had been moved only one square.
 
-3.7.5.2 	The player's choice is not restricted to pieces that have been captured previously.
+3.7.4.2 	
 
-3.7.5.3 	This exchange of a pawn for another piece is called promotion, and the effect of the new piece is immediate.
+This capture is only legal on the move following this advance and is called an ‘en passant’ capture.
 
-3.8 	There are two different ways of moving the king:
+3.7.5.1 	
 
-3.8.1 	by moving to an adjoining square
+When a player, having the move, plays a pawn to the rank furthest from its starting position, he must exchange that pawn as part of the same move for a new queen, rook, bishop or knight of the same colour on the intended square of arrival. This is called the square of ‘promotion’.
+
+3.7.5.2 	
+
+The player's choice is not restricted to pieces that have been captured previously.
+
+3.7.5.3 	
+
+This exchange of a pawn for another piece is called promotion, and the effect of the new piece is immediate.
+
+3.8 	
+
+There are two different ways of moving the king:
+
+3.8.1 	
+
+by moving to an adjoining square
 
 3.8.2 	
 
 by ‘castling’. This is a move of the king and either rook of the same colour along the player’s first rank, counting as a single move of the king and executed as follows: the king is transferred from its original square two squares towards the rook on its original square, then that rook is transferred to the square the king has just crossed.
 
-3.8.2.1 	The right to castle has been lost:
+3.8.2.1 	
 
-3.8.2.1.1 	if the king has already moved, or
+The right to castle has been lost:
 
-3.8.2.1.2 	with a rook that has already moved.
+3.8.2.1.1 	
 
-3.8.2.2 	Castling is prevented temporarily:
+if the king has already moved, or
 
-3.8.2.2.1 	if the square on which the king stands, or the square which it must cross, or the square which it is to occupy, is attacked by one or more of the 
+3.8.2.1.2 	
+
+with a rook that has already moved.
+
+3.8.2.2 	
+
+Castling is prevented temporarily:
+
+3.8.2.2.1 	
+
+if the square on which the king stands, or the square which it must cross, or the square which it is to occupy, is attacked by one or more of the 
 opponent's pieces, or
 
-3.8.2.2.2 	if there is any piece between the king and the rook with which castling is to be effected.
+3.8.2.2.2 	
+
+if there is any piece between the king and the rook with which castling is to be effected.
 
 3.9.1
 	
-
 The king is said to be 'in check' if it is attacked by one or more of the opponent's pieces, even if such pieces are constrained from moving to the square occupied by the king because they would then leave or place their own king in check.
+
 3.9.2 	
 
 No piece can be moved that will either expose the king of the same colour to check or leave that king in check.
-3.10.1 	A move is legal when all the relevant requirements of Articles 3.1 – 3.9 have been fulfilled.
 
-3.10.2 	A move is illegal when it fails to meet the relevant requirements of Articles 3.1 – 3.9
+3.10.1 	
 
-3.10.3 	A position is illegal when it cannot have been reached by any series of legal moves.
+A move is legal when all the relevant requirements of Articles 3.1 – 3.9 have been fulfilled.
 
-##Article 5: The completion of the game
+3.10.2 	
+
+A move is illegal when it fails to meet the relevant requirements of Articles 3.1 – 3.9
+
+3.10.3 	
+
+A position is illegal when it cannot have been reached by any series of legal moves.
+
+## Article 5: The completion of the game
+
 5.1.1       	
 
 The game is won by the player who has checkmated his opponent’s king. This immediately ends the game, provided that the move producing the checkmate position was in accordance with Article 3 and Articles 4.2 – 4.7.
-5.1.2 	The game is won by the player whose opponent declares he resigns. This immediately ends the game.
 
-5.2.1 	The game is drawn when the player to move has no legal move and his king is not in check. The game is said to end in ‘stalemate’. This immediately ends the game, provided that the move producing the stalemate position was in accordance with Article 3 and Articles 4.2 – 4.7.
+5.1.2 	
 
-5.2.2 	The game is drawn when a position has arisen in which neither player can checkmate the opponent’s king with any series of legal moves. The game is said to end in a ‘dead position’. This immediately ends the game, provided that the move producing the position was in accordance with Article 3 and Articles 4.2 – 4.7.
+The game is won by the player whose opponent declares he resigns. This immediately ends the game.
 
-5.2.3 	The game is drawn upon agreement between the two players during the game , provided both players have made at least one move. This immediately ends the game.
+5.2.1 	
+
+The game is drawn when the player to move has no legal move and his king is not in check. The game is said to end in ‘stalemate’. This immediately ends the game, provided that the move producing the stalemate position was in accordance with Article 3 and Articles 4.2 – 4.7.
+
+5.2.2 	
+
+The game is drawn when a position has arisen in which neither player can checkmate the opponent’s king with any series of legal moves. The game is said to end in a ‘dead position’. This immediately ends the game, provided that the move producing the position was in accordance with Article 3 and Articles 4.2 – 4.7.
+
+5.2.3 	
+
+The game is drawn upon agreement between the two players during the game , provided both players have made at least one move. This immediately ends the game.
  
  
-#COMPETITION RULES
+# COMPETITION RULES
  
 
-##Article 6: The chessclock
+## Article 6: The chessclock
 
 6.1       	
 
@@ -216,89 +253,101 @@ Each time display has a ‘flag’.
 
 When using a chessclock, each player must complete a minimum number of moves or all moves in an allotted period of time including any additional amount of time with each move. All these must be specified in advance.
 
-6.3.2 	The time saved by a player during one period is added to his time available for the next period, where applicable.
+6.3.2 	
+
+The time saved by a player during one period is added to his time available for the next period, where applicable.
 In the time-delay mode both players receive an allotted ‘main thinking time’. Each player also receives a ‘fixed extra time’ with every move. The countdown of the main thinking time only commences after the fixed extra time has expired. Provided the player presses his clock before the expiration of the fixed extra time, the main thinking time does not change, irrespective of the proportion of the fixed extra time used.
 
 6.9       	
 
 Except where one of Articles 5.1.1, 5.1.2, 5.2.1, 5.2.2, 5.2.3 applies, if a player does not complete the prescribed number of moves in the allotted time, the game is lost by thatplayer. However, the game is drawn if the position is such that the opponent cannot checkmate the player’s king by any possible series of legal moves.
 
-##Article 9: The drawn game
+## Article 9: The drawn game
 9.1.1     	
 
 The regulations of an event may specify that players cannot offer or agree to a draw, whether in less than a specified number of moves or at all, without the consent of the arbiter.
 
-9.1.2 	However, if the regulations of an event allow a draw agreement the following shall apply:
+9.1.2 	
 
-9.1.2.1 	A player wishing to offer a draw shall do so after having made a move on the chessboard and before pressing his clock. An offer at any other time during play is still valid but Article 11.5 must be considered. No conditions can be attached to the offer. In both cases the offer cannot be withdrawn and remains valid until the opponent accepts it, rejects it orally, rejects it by touching a piece with the intention of moving or capturing it, or the game is concluded in some other way.
+However, if the regulations of an event allow a draw agreement the following shall apply:
 
-9.1.2.2 	The offer of a draw shall be noted by each player on his scoresheet with the symbol (=).
+9.1.2.1 	
 
-9.1.2.3 	A claim of a draw under Article 9.2 or 9.3 shall be considered to be an offer of a draw.
+A player wishing to offer a draw shall do so after having made a move on the chessboard and before pressing his clock. An offer at any other time during play is still valid but Article 11.5 must be considered. No conditions can be attached to the offer. In both cases the offer cannot be withdrawn and remains valid until the opponent accepts it, rejects it orally, rejects it by touching a piece with the intention of moving or capturing it, or the game is concluded in some other way.
 
-9.2.1 	The game is drawn, upon a correct claim by a player having the move, when the same position for at least the third time (not necessarily by a repetition of moves):
+9.1.2.2 	
 
-9.2.1.1 	is about to appear, if he first writes his move, which cannot be changed, on his scoresheet and declares to the arbiter his intention to make this move, or
+The offer of a draw shall be noted by each player on his scoresheet with the symbol (=).
 
-9.2.1.2 	has just appeared, and the player claiming the draw has the move.
+9.1.2.3 	
 
-9.2.2 	Positions are considered the same if and only if the same player has the move, pieces of the same kind and colour occupy the same squares and the possible moves of all the pieces of both players are the same. Thus positions are not the same if:
+A claim of a draw under Article 9.2 or 9.3 shall be considered to be an offer of a draw.
 
-9.2.2.1 	at the start of the sequence a pawn could have been captured en passant
+9.2.1 	
 
-9.2.2.2 	a king had castling rights with a rook that has not been moved, but forfeited these after moving. The castling rights are lost only after the king or rook is moved.
+The game is drawn, upon a correct claim by a player having the move, when the same position for at least the third time (not necessarily by a repetition of moves):
+
+9.2.1.1 	
+
+is about to appear, if he first writes his move, which cannot be changed, on his scoresheet and declares to the arbiter his intention to make this move, or
+
+9.2.1.2 	
+
+has just appeared, and the player claiming the draw has the move.
+
+9.2.2 	
+
+Positions are considered the same if and only if the same player has the move, pieces of the same kind and colour occupy the same squares and the possible moves of all the pieces of both players are the same. Thus positions are not the same if:
+
+9.2.2.1 	
+
+at the start of the sequence a pawn could have been captured en passant
+
+9.2.2.2 	
+
+a king had castling rights with a rook that has not been moved, but forfeited these after moving. The castling rights are lost only after the king or rook is moved.
 
 9.3
-	
 
 The game is drawn, upon a correct claim by a player having the move, if:
 
 9.3.1
-	
 
 he writes his move, which cannot be changed, on his scoresheet and declares to the arbiter his intention to make this move which will result in the last 50 moves by each player having been made without the movement of any pawn and without any capture, or
 
 9.3.2
-	
 
 the last 50 moves by each player have been completed without the movement of any pawn and without any capture.
 
 9.4
-	
 
 If the player touches a piece as in Article 4.3, he loses the right to claim a draw under Article 9.2 or 9.3 on that move.
 
 9.5.1
 	
-
 If a player claims a draw under Article 9.2 or 9.3, he or the arbiter shall stop the chessclock (see Article 6.12.1 or 6.12.2). He is not allowed to withdraw his claim.
 
 9.5.2
 	
-
 If the claim is found to be correct, the game is immediately drawn.
 
 9.5.3
-	
 
 If the claim is found to be incorrect, the arbiter shall add two minutes to the opponent’s remaining thinking time. Then the game shall continue. If the claim was based on an intended move, this move must be made in accordance with Articles 3 and 4.
 
 9.6
 	
-
 If one or both of the following occur(s) then the game is drawn:
 
 9.6.1
-	
 
 the same position has appeared, as in 9.2.2 at least five times.
 
 9.6.2
 	
-
 any series of at least 75 moves have been made by each player without the movement of any pawn and without any capture. If the last move resulted in checkmate, that shall take precedence.
 
-APPENDICES
+# APPENDICES
  
 
 Appendix A. Rapid chess
