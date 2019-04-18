@@ -347,49 +347,40 @@ the same position has appeared, as in 9.2.2 at least five times.
 	
 any series of at least 75 moves have been made by each player without the movement of any pawn and without any capture. If the last move resulted in checkmate, that shall take precedence.
 
-# APPENDICES
- 
+# Appendices
 
-Appendix A. Rapid chess
+## Appendix A. Rapid chess
 
 A.1
 	
-
 A ‘Rapid chess’ game is one where either all the moves must be completed in a fixed time of more than 10 minutes but less than 60 minutes for each player; or the time allotted plus 60 times any increment is of more than 10 minutes but less than 60 minutes for each player.
 
 A.2
 	
-
 Players do not need to record the moves, but do not lose their rights to claims normally based on a scoresheet. The player can, at any time, ask the arbiter to provide him with a scoresheet, in order to write the moves.
 
 A.3.1
 	
-
 The Competition Rules shall apply if:
 
 A.3.1.1
 	
-
 one arbiter supervises at most three games and
 
 A.3.1.2
 	
-
 each game is recorded by the arbiter or his assistant and, if possible, by electronic means.
 
 A.3.2
 	
-
 The player may at any time, when it is his move, ask the arbiter or his assistant to show him the scoresheet. This may be requested a maximum of five times in a game. More requests shall be considered as a distraction of the opponent.
 
 A.4
 	
-
 Otherwise the following apply:
 
 A.4.1
 	
-
 From the initial position, once 10 moves have been completed by each player,
 
 A.4.1.1
@@ -407,60 +398,48 @@ rook placement, castling with this rook is not allowed.
 
 A.4.2
 	
-
 If the arbiter observes an illegal move has been completed, he shall declare the game lost by the player, provided the opponent has not made his next move. If the arbiter does not intervene, the opponent is entitled to claim a win, provided the opponent has not made his next move. However, the game is drawn if the position is such that the opponent cannot checkmate the player’s king by any possible series of legal moves. If the opponent does not claim and the arbiter does not intervene, the illegal move shall stand and the game shall continue. Once the opponent has made his next move, an illegal move cannot be corrected unless this is agreed by the players without intervention of the arbiter.
 
 A.4.3
 	
-
 To claim a win on time, the claimant may stop the chessclock and notify the arbiter. For the claim to be successful, the claimant must have time remaining on his own clock after the chessclock has been stopped. However, the game is drawn if the position is such that the claimant cannot checkmate the player’s king by any possible series of legal moves.
 
-A.4.4
-	
+A.4.4	
 
 If the arbiter observes both kings are in check, or a pawn on the rank furthest from its starting position, he shall wait until the next move is completed. Then, if an illegal position is still on the board, he shall declare the game drawn.
 
-A.4.5
-	
+A.4.5	
 
 The arbiter can also call a flag fall, if he observes it.
 
-A.5
-	
+A.5	
 
 The regulations of an event shall specify whether Article A.3 or Article A.4 shall apply for the entire event.
- 
 
-Appendix B. Blitz
+## Appendix B. Blitz
 
 B.1
 	
-
 A ‘blitz’ game is one where all the moves must be completed in a fixed time of 10 minutes or less for each player; or the allotted time plus 60 times any increment is 10 minutes or less.
 
 B.2
 	
-
 The penalties mentioned in Articles 7 and 9 of the Competition Rules shall be one minute instead of two minutes.
 
-B.3.1
-	
+B.3.1	
 
 The Competition Rules shall apply if:
 
 B.3.1.1
 	
-
 one arbiter supervises one game and
 
 B.3.1.2
 	
-
 each game is recorded by the arbiter or his assistant and, if possible, by electronic means.
 
 B.3.2
 	
-
 The player may at any time, when it is his move, ask the arbiter or his assistant to show him the scoresheet. This may be requested a maximum of five times in a game. More requests shall be considered as a distraction of the opponent.
 
 B.4
@@ -468,13 +447,11 @@ B.4
 
 Otherwise, play shall be governed by the Rapid chess Laws as in Article A.2 and A.4.
 
-B.5
-	
+B.5	
 
 The regulations of an event shall specify whether Article B.3 or Article B.4 shall apply for the entire event.
 
-
-#Glossary of terms in the Laws of Chess
+# Glossary of terms in the Laws of Chess
 
 The number after the term refers to the first time it appears in the Laws.
 
