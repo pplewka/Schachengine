@@ -15,9 +15,10 @@ Die Schachengine ist ein Programm, das ein Schachspieler simuliert und gegen das
 
 - Die Schachengine:
 
-  - kann im Modus Blitzschach (5 Minuten) spielen 
+  - kann im Modus Blitzschach (5 Minuten) spielen [4]
   - Das Niveau der Schachengine soll sich mit einen Schachspieler mit der Elo-Zahl 1800 vergleichen lassen.
-  - kann alle für die Engine relevanten Schachregeln einhalten 
+  - kann alle für die Engine relevanten Schachregeln einhalten [1]
+  - reagiert  Sinngemäß auf alle Befehle aus dem UCI-Protokoll [2]
 
 
 ### 1.2 Wunschkriterien
@@ -27,26 +28,26 @@ Die Schachengine ist ein Programm, das ein Schachspieler simuliert und gegen das
 ### 1.3 Abgrenzungskriterien
 
 - keine besonderen Schachvarianten
-- keine Frameworks oder Bibliotheken spezifisch für Schachengines verwenden
+- keine Frameworks oder Bibliotheken spezifisch für Schachengines o.ä. verwenden
 - kein Eröffnungsburch verwenden
 
 
 
 ## 2 Produkteinsatz
 
-### 2.1 Andwendungsbereiche
+### 2.1 Anwendungsbereiche
 
 Die Schachengine wird in Kombination mit einer Schachoberfläche verwendet, um primär die Schachart Blitzschach (5 Minuten) zu spielen.
 
 ### 2.2 Zielgruppe
 
-Diese Schachengine ist für einen fortgeschrittenen Schachspieler gedacht, der aktiv noch Schach spielt und auch in einem Schachclub o. ä. vertreten ist.
+Diese Schachengine ist für einen fortgeschrittenen Schachspieler gedacht (jemand der aktiv noch Schach spielt und auch Beispielsweise in einem Schachclub o. ä. vertreten ist).
 
 ### 2.3 Betriebsbedingungen
 
 Es ist davon auszugehen, dass der Nutzer jederzeit das Programm beschaffen und starten kann. 
 
-Es soll außerdem kombiniert mit einer Schachoberfläche laufen.
+Es soll außerdem die meiste Zeit in Kombination mit einer Schachoberfläche parallel laufen.
 
 
 
@@ -56,7 +57,7 @@ Es soll außerdem kombiniert mit einer Schachoberfläche laufen.
 
 - Java-Laufzeitumgebung (Version __11__)
 - Windows (mindestens Version __Windows 7__), Mac OS (mindestens Version  __Mac OS 10.10__) oder eine beliebige Linux-Distribution (mindestens Linux-Kernel 3.x)
-- Bevorzugte Schachoberfläche: Arena GUI
+- Bevorzugte Schachoberfläche: Arena GUI [3]
 
 ### 3.2 Hardware
 
@@ -97,7 +98,7 @@ __Beschreibung:__ Der Benutzer oder die Oberfläche kann vor dem Spielstart Para
 
 __Akteure:__ Schachengine, Schachoberfläche
 
-__Beschreibung:__ Die Schachengine kann von einer Schachoberfläche durch Befehle, die dem UCI-Protokoll konform sind bedienen lassen. 
+__Beschreibung:__ Die Schachengine kann von einer Schachoberfläche durch Befehle, die dem UCI-Protokoll konform sind bedienen lassen. [2]
 
 #### /F0120/ Nach dem derzeit besten Schachzug suchen
 
@@ -129,11 +130,11 @@ __/L200/__ Die Schachengine muss sich intern um ein optimales Zeitmanagement kü
 
 __/L300/__ Es werden immer nur valide Schachzüge für alle Schachfiguren in Erwägung gezogen
 
-__/L400/__ Alle Regeln, die für ein offizielles Schachspiel gelten müssen auch von der Schachengine eingehalten werden.
+__/L400/__ Alle Regeln, die für ein offizielles Schachspiel gelten müssen auch von der Schachengine eingehalten werden. [1]
 
-__/L500/__ Die Suche nach dem bestmöglichen Schachzuges soll effizient sein. Wenn Java in diesem Fall zu begrenzt ist, so wird ein Java Native Interface in einer tiefere Sprache wie C++ dazuentwickelt.
+__/L500/__ Die Suche nach dem bestmöglichen Schachzuges soll effizient sein. Wenn Java in diesem Fall zu begrenzt ist, so wird ein Java Native Interface in einer tiefere Sprache wie C++ dazu entwickelt.
 
-__/L600/__ Die Engine soll das komplette UCI-Protokoll mit Ausnahme der optionalen Schachart "Chess960" implementieren. 
+__/L600/__ Die Engine soll das komplette UCI-Protokoll (mit Ausnahme der optionalen Schachart "Chess960") implementieren. 
 
 
 
@@ -182,18 +183,29 @@ Die Bedienung geschieht entweder über eine Konsole mit den per UCI-Protokoll de
 
 ### 11.1 Begriffserklärungen
 
-- Blitzschach: Form des Schachspiels mit einer Bedenkzeit von wenigern als 10 Minuten.
-- Elo: Die Darstellung der Spielstärke eines Schachspielers als eine Zahl
-- Für die Schachengine relevanten Regeln: 
-- Endspiel: Die Endphase einer Parte, wenn nur noch wenige Figurenarten auf den Brett sind.
+- Blitzschach: Form des Schachspiels mit einer Bedenkzeit von weniger als 10 Minuten. [4]
+- Elo: Die Darstellung der Spielstärke eines Schachspielers als eine Zahl [6]
+- Endspiel: Die Endphase einer Parte, wenn nur noch wenige Figurenarten auf den Brett sind. [5]
 
 
 
 ### 11.2 Links / Referenzen
 
-[1]: <https://www.fide.com/fide/handbook.html?id=207&view=article>	"Schachregeln"
+\[1]: https://www.fide.com/fide/handbook.html?id=208&view=article 
+
+\[2]: http://download.shredderchess.com/div/uci.zip
+
+\[3]:http://www.playwitharena.com
+
+\[4]: https://de.wikipedia.org/wiki/Blitzschach
+
+\[5]: https://de.wikipedia.org/wiki/Endspiel_(Schach)
+
+\[6]: https://de.wikipedia.org/wiki/Elo-Zahl
+
+[1]:https://www.fide.com/fide/handbook.html?id=208&view=article
 [2]: http://download.shredderchess.com/div/uci.zip	"UCI Protokoll"
-[3]: <http://www.playwitharena.com/>	"Arena GUI (Link geht momentan nicht...?)"
+[3]: <http://www.playwitharena.com>
 [4]: https://de.wikipedia.org/wiki/Blitzschach
 [5]: https://de.wikipedia.org/wiki/Endspiel_(Schach)
 [6]: <https://de.wikipedia.org/wiki/Elo-Zahl>
