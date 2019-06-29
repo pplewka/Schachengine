@@ -16,8 +16,8 @@
     <module>Board</module>
     <module>Evaluation</module>
     <module>Search</module>
-    <module>Move Generation</module>
-    <module>Time Management</module>
+    <module>MoveGeneration</module>
+    <module>TimeManagement</module>
     <module>Controller</module>
     <module>UCI</module>
   </modules>
