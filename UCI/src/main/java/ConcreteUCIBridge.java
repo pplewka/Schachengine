@@ -3,23 +3,35 @@ import java.util.Scanner;
 
 public class ConcreteUCIBridge implements UCIBridge {
 
+    private volatile static ConcreteUCIBridge instance;
+
     Scanner reader;
 
-    public ConcreteUCIBridge() {
+    private ConcreteUCIBridge() {
         reader = new Scanner(System.in);
     }
 
-    private void sendString(String string) {
+    public static ConcreteUCIBridge getInstance(){
+        if(instance == null){
+            synchronized (ConcreteUCIBridge.class){
+                if(instance == null){
+                    instance = new ConcreteUCIBridge();
+                }
+            }
+        }
+        return instance;
+    }
+
+    private synchronized void sendString(String string) {
         System.out.println(string);
     }
 
-    private String receiveString() {
+    private synchronized String receiveString() {
         return reader.nextLine();
     }
 
     @Override
     public void sendLongInfo(Map<String, Long> longValues) {
-
     }
 
     @Override
@@ -34,7 +46,12 @@ public class ConcreteUCIBridge implements UCIBridge {
 
     @Override
     public void sendStringInfo(Map<String, String> stringValues) {
-
+        StringBuilder out = new StringBuilder("info ");
+        for (String key :
+                stringValues.keySet()) {
+            out.append(key.toLowerCase()).append(" ").append(stringValues.get(key)).append(" ");
+        }
+        sendString(out.toString());
     }
 
     @Override
