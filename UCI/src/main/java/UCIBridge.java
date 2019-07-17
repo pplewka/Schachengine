@@ -1,7 +1,6 @@
 import java.util.Map;
 
 public interface UCIBridge {
-    void sendInfo(String key);
 
     void sendLongInfo(Map<String, Long> longValues);
 
