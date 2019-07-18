@@ -42,12 +42,11 @@ public interface BoardInterface{
     public boolean castlingPossible(int rockPosition);
 
     /**
-     * Method to check if a field contains a specific piece type
-     * @param pieceType pieceType to check against
+     * Method to check which Piece type is on a field
      * @param field position to check
-     * @return true if the pieceType matches the type of piece on the field
+     * @return Piece type on this field
      */
-    public boolean fieldIs(Piece pieceType,int field);
+    public Piece fieldIs(int field);
 
     /**
      * method to check if a position is on board
@@ -69,5 +68,5 @@ public interface BoardInterface{
      * @param field field to check
      * @return true if field has an opponent piece
      */
-    public boolean fieldHasOpponent(int field);
+    public boolean fieldHasOpponent(int field, boolean blacksTurn);
 }
