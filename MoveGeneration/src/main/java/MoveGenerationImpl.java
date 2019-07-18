@@ -1,10 +1,9 @@
 import java.util.ArrayList;
 
-public class MoveGenerationImpl {
+public class MoveGenerationImpl implements MoveGeneration{
 
-    public static ArrayList<Move> generateAllMoves(Board board){
+    public ArrayList<Move> generateAllMoves(Board board,boolean blacksTurn){
         for(int i=26;i<118;){
-            Piece position = board.fieldIs(i);
 
 
 
@@ -17,7 +16,57 @@ public class MoveGenerationImpl {
         return null;
     }
 
-    private static ArrayList<Move> generateMovesForOnePawn(Board board, int field, boolean blacksTurn){
+    @Override
+    public ArrayList<Move> generateAllPawnMoves(Board board, boolean blacksTurn) {
+        return null;
+    }
+
+    @Override
+    public ArrayList<Move> generateAllRookMoves(Board board, boolean blacksTurn) {
+        return null;
+    }
+
+    @Override
+    public ArrayList<Move> generateAllBishopMoves(Board board, boolean blacksTurn) {
+        return null;
+    }
+
+    @Override
+    public ArrayList<Move> generateAllKnightMoves(Board board, boolean blacksTurn) {
+        return null;
+    }
+
+    @Override
+    public ArrayList<Move> generateAllQueenMoves(Board board, boolean blacksTurn) {
+        return null;
+    }
+
+    @Override
+    public ArrayList<Move> generateRookMoves(Board board, int field, boolean blacksTurn) {
+        return null;
+    }
+
+    @Override
+    public ArrayList<Move> generateBishopMoves(Board board, int field, boolean blacksTurn) {
+        return null;
+    }
+
+    @Override
+    public ArrayList<Move> generateKnightMoves(Board board, int field, boolean blacksTurn) {
+        return null;
+    }
+
+    @Override
+    public ArrayList<Move> generateQueenMoves(Board board, int field, boolean blacksTurn) {
+        return null;
+    }
+
+    @Override
+    public ArrayList<Move> generateKingMoves(Board board, boolean blacksTurn) {
+        return null;
+    }
+
+    public ArrayList<Move> generatePawnMoves(Board board, int field, boolean blacksTurn){
         int move1=Integer.MIN_VALUE;
         int move2=Integer.MIN_VALUE;
         int validMoves=0;
