@@ -4,24 +4,31 @@ public interface MoveGeneration {
     /**
      * Method to generate all Moves on the board considering which site moves
      */
-    public ArrayList<Move> generateAllMoves(Board board,boolean blacksTurn);
-
-    /**
-     * Method to generate all Moves for any piece of a specific type
-     */
-    public ArrayList<Move> generateAllPawnMoves(Board board,boolean blacksTurn);
-    public ArrayList<Move> generateAllRookMoves(Board board,boolean blacksTurn);
-    public ArrayList<Move> generateAllBishopMoves(Board board,boolean blacksTurn);
-    public ArrayList<Move> generateAllKnightMoves(Board board,boolean blacksTurn);
-    public ArrayList<Move> generateAllQueenMoves(Board board,boolean blacksTurn);
+    public ArrayList<Move> generateAllMoves(Move parent,boolean checkAttacks);
 
     /**
      * Method to generate all moves of one specific piece
      */
-    public ArrayList<Move> generatePawnMoves(Board board,int field,boolean blacksTurn);
-    public ArrayList<Move> generateRookMoves(Board board,int field,boolean blacksTurn);
-    public ArrayList<Move> generateBishopMoves(Board board,int field, boolean blacksTurn);
-    public ArrayList<Move> generateKnightMoves(Board board, int field, boolean blacksTurn);
-    public ArrayList<Move> generateQueenMoves(Board board, int field, boolean blacksTurn);
-    public ArrayList<Move> generateKingMoves(Board board,boolean blacksTurn);
+    public ArrayList<Move> generatePawnMoves(Move parent,int field,ArrayList<Move> moves,boolean checkAttacks);
+    public ArrayList<Move> generateRookMoves(Move parent,int field,ArrayList<Move> moves,boolean checkAttacks);
+    public ArrayList<Move> generateBishopMoves(Move parent,int field,ArrayList<Move> moves,boolean checkAttacks);
+    public ArrayList<Move> generateKnightMoves(Move parent,int field,ArrayList<Move> moves,boolean checkAttacks);
+    public ArrayList<Move> generateQueenMoves(Move parent,int field,ArrayList<Move> moves,boolean checkAttacks);
+    public ArrayList<Move> generateKingMoves(Move parent,int field,ArrayList<Move> moves,boolean checkAttacks);
+
+    /**
+     * method to generate special moves
+     */
+    public ArrayList<Move> generateEnpassant(Move parent,ArrayList<Move> moves,boolean checkAttacks);
+    public ArrayList<Move> generateCastling(Move parent,ArrayList<Move> moves,boolean checkAttacks);
+
+    /**
+     * method to check if the King is in check
+     */
+    public boolean kingInCheck(Board board, boolean blacksTurn);
+
+    /**
+     * method to check if a field is attacked
+     */
+    public boolean fieldUnderAttack(Board board,int field, boolean blacksTurn);
 }
