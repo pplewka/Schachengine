@@ -15,6 +15,8 @@ public class BoardImpl implements Board{
         wRightRockMoved=false;
         bLeftRockMoved=false;
         bRightRockMoved=false;
+
+        setSpace();
         startPos();
     }
 
@@ -24,7 +26,7 @@ public class BoardImpl implements Board{
         return out;
     }
 
-    public void startPos(){
+    private void setSpace(){
         //above space
         for(int i=0;i<24;i++){
             board[i]=Piece.SPACE;
@@ -50,6 +52,10 @@ public class BoardImpl implements Board{
         for(int i=120;i<144;i++){
             board[i]=Piece.SPACE;
         }
+    }
+
+    public void startPos(){
+
 
         //empty room
         for(int i=50;i<94;){
@@ -126,16 +132,16 @@ public class BoardImpl implements Board{
      *does not check if fields are attacked
      */
     @Override
-    public boolean castlingPossible(int rockPosition) {
+    public boolean castlingDone(int rockPosition) {
         switch (rockPosition) {
             case 26:
-                return (!bLeftRockMoved)&&(!bKingMoved)&&(!pathHasPiece(26,30));
+                return !((!bLeftRockMoved)&&(!bKingMoved)&&(!pathHasPiece(26,30)));
             case 33:
-                return (!bRightRockMoved)&&(!bKingMoved)&&(!pathHasPiece(30,33));
+                return !((!bRightRockMoved)&&(!bKingMoved)&&(!pathHasPiece(30,33)));
             case 110:
-                return (!wLeftRockMoved)&&(!wKingMoved)&&(!pathHasPiece(110,114));
+                return !((!wLeftRockMoved)&&(!wKingMoved)&&(!pathHasPiece(110,114)));
             case 117:
-                return (!wRightRockMoved)&&(!wKingMoved)&&(!pathHasPiece(114,117));
+                return !((!wRightRockMoved)&&(!wKingMoved)&&(!pathHasPiece(114,117)));
             default:
                 //should never happen
                 throw new IllegalArgumentException("castlingPossible default value");
@@ -159,7 +165,55 @@ public class BoardImpl implements Board{
         return board[field].compareTo(Piece.EMPTY)>0;
     }
 
-    public boolean fieldHasOpponent(int field,boolean blacksTurn) {
+    public boolean iswKingMoved() {
+        return wKingMoved;
+    }
+
+    public void setwKingMoved(boolean wKingMoved) {
+        this.wKingMoved = wKingMoved;
+    }
+
+    public boolean isbKingMoved() {
+        return bKingMoved;
+    }
+
+    public void setbKingMoved(boolean bKingMoved) {
+        this.bKingMoved = bKingMoved;
+    }
+
+    public boolean iswLeftRockMoved() {
+        return wLeftRockMoved;
+    }
+
+    public void setwLeftRockMoved(boolean wLeftRockMoved) {
+        this.wLeftRockMoved = wLeftRockMoved;
+    }
+
+    public boolean iswRightRockMoved() {
+        return wRightRockMoved;
+    }
+
+    public void setwRightRockMoved(boolean wRightRockMoved) {
+        this.wRightRockMoved = wRightRockMoved;
+    }
+
+    public boolean isbLeftRockMoved() {
+        return bLeftRockMoved;
+    }
+
+    public void setbLeftRockMoved(boolean bLeftRockMoved) {
+        this.bLeftRockMoved = bLeftRockMoved;
+    }
+
+    public boolean isbRightRockMoved() {
+        return bRightRockMoved;
+    }
+
+    public void setbRightRockMoved(boolean bRightRockMoved) {
+        this.bRightRockMoved = bRightRockMoved;
+    }
+
+    public boolean fieldHasOpponent(int field, boolean blacksTurn) {
         if(blacksTurn){
             int compare =board[field].compareTo(Piece.WBISHOP);
             //taking out space and empty

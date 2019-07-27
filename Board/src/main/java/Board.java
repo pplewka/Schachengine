@@ -40,7 +40,7 @@ public interface Board{
      * @param rockPosition the startposition of any rook
      * @return true if castling is possible with the rook on the position
      */
-    public boolean castlingPossible(int rockPosition);
+    public boolean castlingDone(int rockPosition);
 
     /**
      * Method to check which Piece type is on a field
@@ -79,4 +79,22 @@ public interface Board{
     public boolean fieldHasOpponent(int field, boolean blacksTurn);
 
     public Piece[] getBoard();
+
+    public boolean iswKingMoved();
+    public void setwKingMoved(boolean wKingMoved);
+
+    public boolean isbKingMoved();
+    public void setbKingMoved(boolean bKingMoved);
+
+    public boolean iswLeftRockMoved();
+    public void setwLeftRockMoved(boolean wLeftRockMoved);
+
+    public boolean iswRightRockMoved();
+    public void setwRightRockMoved(boolean wRightRockMoved);
+
+    public boolean isbLeftRockMoved();
+    public void setbLeftRockMoved(boolean bLeftRockMoved);
+
+    public boolean isbRightRockMoved();
+    public void setbRightRockMoved(boolean bRightRockMoved);
 }

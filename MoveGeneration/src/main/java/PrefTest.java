@@ -2,38 +2,24 @@ import java.util.ArrayList;
 
 public class PrefTest {
 
-    public static void main(String[] args) {
-        Board board = new BoardImpl();
-        Move root = new MoveImpl(0, 0, ' ', board, false);
+    public static int perf(int i){
+        MoveGenerationImpl mg = new MoveGenerationImpl();
         ArrayList<Move> leafs1 = new ArrayList<>();
         ArrayList<Move> leafs2 = new ArrayList<>();
-        ArrayList<Move> leafs3 = new ArrayList<>();
-        ArrayList<Move> leafs4 = new ArrayList<>();
-        ArrayList<Move> leafs5 = new ArrayList<>();
-        ArrayList<Move> leafs6 = new ArrayList<>();
-        ArrayList<Move> leafs7 = new ArrayList<>();
-        ArrayList<Move> leafs8 = new ArrayList<>();
+        Move root = new MoveImpl(0, 0, ' ', new BoardImpl(), true);
+        leafs1.add(root);
 
-        MoveGenerationImpl mg = new MoveGenerationImpl();
+        for(int j=0;j<i;j++){
+            for (Move move:leafs1) {
+                leafs2.addAll(mg.generateAllMoves(move,true));
+            }
+            leafs1.clear();
 
-        leafs1 =mg.generateAllMoves(root,true);
-        System.out.println("1: "+ leafs1.size());
-
-        for (Move mv:leafs1) {
-            leafs2.addAll(mg.generateAllMoves(mv,true));
+            ArrayList<Move> temp =leafs2;
+            leafs2= leafs1;
+            leafs1=temp;
         }
 
-        System.out.println("2: "+leafs2.size());
-        leafs1.clear();
-
-        for (Move mv:leafs2) {
-            leafs3.addAll(mg.generateAllMoves(mv,true));
-        }
-
-        System.out.println("3: "+leafs3.size());
-        leafs2.clear();
-
-
-
+        return leafs1.size();
     }
 }
