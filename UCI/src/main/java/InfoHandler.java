@@ -39,7 +39,7 @@ public class InfoHandler {
     public static final String TBHITS = "TBHITS";
     public static final String SBHITS = "SBHITS";
     public static final String CPULOAD = "CPULOAD";
-    public static final String STRING = "STRING";
+    public static final String STRING = "string";
     public static final String REFUTATION = "REFUTATION";
     public static final String CURRLINE_CPUNR = "CURRLINE_CPUNR";
     public static final String CURRLINE_MOVES = "CURRLINE_MOVES";
@@ -65,6 +65,7 @@ public class InfoHandler {
      */
     private InfoHandler() {
         initializeValueMaps();
+        uciBridge = UCIBridge.getInstance();
     }
 
     /**
@@ -84,17 +85,10 @@ public class InfoHandler {
         return instance;
     }
 
-    /**
-     * Sets the UCI-Bridge
-     * IMPORTANT: Must be called before the first sendStoredInfos call
-     *
-     * @param uciBridge non-null UCI-Bridge
-     */
-    public synchronized void setUCIBridge(UCIBridge uciBridge) {
-        if (uciBridge == null) {
-            throw new IllegalArgumentException("uciBridge must be non-null");
-        }
-        this.uciBridge = uciBridge;
+    public static void sendInfo(String info){
+        getInstance().sendStoredInfos();
+        getInstance().storeInfo(STRING, info);
+        getInstance().sendStoredInfos();
     }
 
     /**
