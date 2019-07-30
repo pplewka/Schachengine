@@ -166,9 +166,6 @@ public class InfoHandler {
      * Reset the instance automatically
      */
     public synchronized void sendStoredInfos() {
-        if (uciBridge == null) {
-            throw new InitializationException("UCI-Bridge not set. Call setUCIBridge before sendStoredInfos()");
-        }
         uciBridge.sendStringListInfo(stringListValues);
         uciBridge.sendStringInfo(stringValues);
         uciBridge.sendIntInfo(intValues);
