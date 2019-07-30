@@ -18,27 +18,27 @@ import java.util.*;
  */
 public class InfoHandler {
 
-    public static final String DEPTH = "DEPTH";
-    public static final String SELDEPTH = "SELDEPTH";
-    public static final String TIME = "TIME";
-    public static final String NODES = "NODES";
-    public static final String PV = "PV";
-    public static final String MULTIPV = "MULTIPV";
-    public static final String CURRMOVE = "CURRMOVE";
-    public static final String SCORE_CP = "SCORE_CP";
-    public static final String SCORE_MATE = "SCORE_MATE";
-    public static final String SCORE_LOWERBOUND = "SCORE_LOWERBOUND";
-    public static final String SCORE_UPPERBOUND = "SCORE_UPPERBOUND";
-    public static final String CURRMOVE_NUMBER = "CURRMOVE_NUMBER";
-    public static final String HASHFULL = "HASHFULL";
-    public static final String NPS = "NPS";
-    public static final String TBHITS = "TBHITS";
-    public static final String SBHITS = "SBHITS";
-    public static final String CPULOAD = "CPULOAD";
+    public static final String DEPTH = "depth";
+    public static final String SELDEPTH = "seldepth";
+    public static final String TIME = "time";
+    public static final String NODES = "nodes";
+    public static final String PV = "pv";
+    public static final String MULTIPV = "multipv";
+    public static final String CURRMOVE = "currmove";
+    public static final String SCORE_CP = "cp";
+    public static final String SCORE_MATE = "mate";
+    public static final String SCORE_LOWERBOUND = "lowerbound";
+    public static final String SCORE_UPPERBOUND = "upperbound";
+    public static final String CURRMOVE_NUMBER = "number";
+    public static final String HASHFULL = "hashfull";
+    public static final String NPS = "nps";
+    public static final String TBHITS = "tbhits";
+    public static final String SBHITS = "sbhits";
+    public static final String CPULOAD = "cpuload";
     public static final String STRING = "string";
-    public static final String REFUTATION = "REFUTATION";
-    public static final String CURRLINE_CPUNR = "CURRLINE_CPUNR";
-    public static final String CURRLINE_MOVES = "CURRLINE_MOVES";
+    public static final String REFUTATION = "refutation";
+    public static final String CURRLINE_CPUNR = "cpunr";
+    public static final String CURRLINE_MOVES = "moves";
     public static final Set<String> INT_KEYS = Set.of(
             DEPTH, SELDEPTH, MULTIPV, SCORE_CP, SCORE_MATE,
             SCORE_LOWERBOUND, SCORE_UPPERBOUND, HASHFULL, CURRLINE_CPUNR
