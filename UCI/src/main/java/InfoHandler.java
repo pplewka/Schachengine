@@ -1,5 +1,4 @@
 
-import Exceptions.InitializationException;
 import Exceptions.MismatchedKeyTypeException;
 
 import java.util.*;
@@ -16,9 +15,6 @@ import java.util.*;
  * ih.storeInfo(ih.CPULOAD, 50.0);
  * ih.storeInfo(ih.DEPTH, 9);
  * ih.sendStoredInfos();
- * <p>
- * IMPORTANT NOTICE:
- * setUCIBridge must be called before the first sendStoredInfos
  */
 public class InfoHandler {
 
@@ -85,9 +81,14 @@ public class InfoHandler {
         return instance;
     }
 
-    public static void sendInfo(String info){
+    /**
+     * Sends a message to the GUI. Message won't be parsed by GUI (uses "info string")
+     * Sends already stored infos separately before sending the message
+     * @param msg The message
+     */
+    public synchronized static void sendMessage(String msg){
         getInstance().sendStoredInfos();
-        getInstance().storeInfo(STRING, info);
+        getInstance().storeInfo(STRING, msg);
         getInstance().sendStoredInfos();
     }
 
