@@ -41,7 +41,6 @@ public class UCI {
             options.load(Objects.requireNonNull(UCI.class.getClassLoader().getResourceAsStream(OPTIONS_CONF_FILE)));
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("fuck" + OPTIONS_CONF_FILE);
         }
         uciBridge.initialize(options);
     }
