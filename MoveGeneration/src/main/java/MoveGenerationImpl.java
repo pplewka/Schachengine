@@ -72,6 +72,7 @@ public class MoveGenerationImpl implements MoveGeneration{
         //changing site to move
         boolean blacksTurn = !parent.blacksTurn();
         Board board = parent.getBoard();
+        ArrayList<Move> pawnMoves = new ArrayList<>();
 
         int turn = blacksTurn ? 1 : -1;
         int tempmove;
@@ -81,12 +82,12 @@ public class MoveGenerationImpl implements MoveGeneration{
         if (pawnOnLastPosition(tempmove, blacksTurn)) {
             //todo add correct letters
             //cant use addIfValid because pawns cant go on fields with opponents
-            addIfValidPawn(false, board, field, tempmove, 'Q', blacksTurn, -1, moves, checkAttacks);
-            addIfValidPawn(false, board, field, tempmove, 'R', blacksTurn, -1, moves, checkAttacks);
-            addIfValidPawn(false, board, field, tempmove, 'K', blacksTurn, -1, moves, checkAttacks);
-            addIfValidPawn(false, board, field, tempmove, 'B', blacksTurn, -1, moves, checkAttacks);
+            addIfValidPawn(false, board, field, tempmove, 'Q', blacksTurn, -1, pawnMoves, checkAttacks);
+            addIfValidPawn(false, board, field, tempmove, 'R', blacksTurn, -1, pawnMoves, checkAttacks);
+            addIfValidPawn(false, board, field, tempmove, 'K', blacksTurn, -1, pawnMoves, checkAttacks);
+            addIfValidPawn(false, board, field, tempmove, 'B', blacksTurn, -1, pawnMoves, checkAttacks);
         } else {
-            addIfValidPawn(false, board, field, tempmove, ' ', blacksTurn, -1, moves, checkAttacks);
+            addIfValidPawn(false, board, field, tempmove, ' ', blacksTurn, -1, pawnMoves, checkAttacks);
         }
 
         //capturing
@@ -94,38 +95,40 @@ public class MoveGenerationImpl implements MoveGeneration{
         if (pawnOnLastPosition(tempmove, blacksTurn)) {
             //todo add correct letters
             //cant use addIfValid because pawns cant go on fields with opponents
-            addIfValidPawn(true, board, field, tempmove, 'Q', blacksTurn, -1, moves, checkAttacks);
-            addIfValidPawn(true, board, field, tempmove, 'R', blacksTurn, -1, moves, checkAttacks);
-            addIfValidPawn(true, board, field, tempmove, 'K', blacksTurn, -1, moves, checkAttacks);
-            addIfValidPawn(true, board, field, tempmove, 'B', blacksTurn, -1, moves, checkAttacks);
+            addIfValidPawn(true, board, field, tempmove, 'Q', blacksTurn, -1, pawnMoves, checkAttacks);
+            addIfValidPawn(true, board, field, tempmove, 'R', blacksTurn, -1, pawnMoves, checkAttacks);
+            addIfValidPawn(true, board, field, tempmove, 'K', blacksTurn, -1, pawnMoves, checkAttacks);
+            addIfValidPawn(true, board, field, tempmove, 'B', blacksTurn, -1, pawnMoves, checkAttacks);
         } else {
-            addIfValidPawn(true, board, field, tempmove, ' ', blacksTurn, -1, moves, checkAttacks);
+            addIfValidPawn(true, board, field, tempmove, ' ', blacksTurn, -1, pawnMoves, checkAttacks);
         }
 
         tempmove = field + (turn * 13);
         if (pawnOnLastPosition(tempmove, blacksTurn)) {
             //todo add correct letters
             //cant use addIfValid because pawns cant go on fields with opponents
-            addIfValidPawn(true, board, field, tempmove, 'Q', blacksTurn, -1, moves, checkAttacks);
-            addIfValidPawn(true, board, field, tempmove, 'R', blacksTurn, -1, moves, checkAttacks);
-            addIfValidPawn(true, board, field, tempmove, 'K', blacksTurn, -1, moves, checkAttacks);
-            addIfValidPawn(true, board, field, tempmove, 'B', blacksTurn, -1, moves, checkAttacks);
+            addIfValidPawn(true, board, field, tempmove, 'Q', blacksTurn, -1, pawnMoves, checkAttacks);
+            addIfValidPawn(true, board, field, tempmove, 'R', blacksTurn, -1, pawnMoves, checkAttacks);
+            addIfValidPawn(true, board, field, tempmove, 'K', blacksTurn, -1, pawnMoves, checkAttacks);
+            addIfValidPawn(true, board, field, tempmove, 'B', blacksTurn, -1, pawnMoves, checkAttacks);
         } else {
-            addIfValidPawn(true, board, field, tempmove, ' ', blacksTurn, -1, moves, checkAttacks);
+            addIfValidPawn(true, board, field, tempmove, ' ', blacksTurn, -1, pawnMoves, checkAttacks);
         }
-
 
         if (pawnOnFirstPosition(field, blacksTurn)) {
             tempmove = field + (24 * turn);
 
             int enpassant = tempmove + (turn * -12);
 
-            //cant use addIfValid because pawns cant go on fields with opponents
-            addIfValidPawn(false, board, field, tempmove, ' ', blacksTurn, enpassant, moves, checkAttacks);
+            if(!board.fieldIsOccupied(enpassant)) {
+                //cant use addIfValid because pawns cant go on fields with opponents
+                addIfValidPawn(false, board, field, tempmove, ' ', blacksTurn, enpassant, pawnMoves, checkAttacks);
+            }
         }
 
+        moves.addAll(pawnMoves);
 
-        return moves;
+        return pawnMoves;
     }
 
     private boolean pawnOnFirstPosition(int field,boolean blacksTurn){
@@ -150,16 +153,11 @@ public class MoveGenerationImpl implements MoveGeneration{
         boolean blacksTurn=!parent.blacksTurn();
         Board board=parent.getBoard();
         ArrayList<Move> rookMoves=new ArrayList<>();
-        ArrayList<Move> tempMoves;
 
-        tempMoves = calculatePathMoves( board, field,  blacksTurn,  -12 , moves,checkAttacks);
-        rookMoves.addAll(tempMoves);
-        tempMoves = calculatePathMoves( board, field,  blacksTurn,  12 , moves,checkAttacks);
-        rookMoves.addAll(tempMoves);
-        tempMoves = calculatePathMoves( board, field,  blacksTurn,  -1 , moves,checkAttacks);
-        rookMoves.addAll(tempMoves);
-        tempMoves = calculatePathMoves( board, field,  blacksTurn,  1 , moves,checkAttacks);
-        rookMoves.addAll(tempMoves);
+        calculatePathMoves( board, field,  blacksTurn,  -12 , rookMoves,checkAttacks);
+        calculatePathMoves( board, field,  blacksTurn,  12 , rookMoves,checkAttacks);
+        calculatePathMoves( board, field,  blacksTurn,  -1 , rookMoves,checkAttacks);
+        calculatePathMoves( board, field,  blacksTurn,  1 , rookMoves,checkAttacks);
 
         //changing the bool
         if(blacksTurn){
@@ -185,6 +183,8 @@ public class MoveGenerationImpl implements MoveGeneration{
             }
         }
 
+        moves.addAll(rookMoves);
+
         return rookMoves;
     }
 
@@ -193,81 +193,99 @@ public class MoveGenerationImpl implements MoveGeneration{
         //changing site to move
         boolean blacksTurn=!parent.blacksTurn();
         Board board=parent.getBoard();
+        ArrayList<Move> bishopMoves = new ArrayList<>();
 
-        calculatePathMoves( board, field,  blacksTurn,  -13 , moves,checkAttacks);
-        calculatePathMoves( board, field,  blacksTurn,  13 , moves,checkAttacks);
-        calculatePathMoves( board, field,  blacksTurn,  -11 , moves,checkAttacks);
-        calculatePathMoves( board, field,  blacksTurn,  11 , moves,checkAttacks);
+        calculatePathMoves( board, field,  blacksTurn,  -13 , bishopMoves,checkAttacks);
+        calculatePathMoves( board, field,  blacksTurn,  13 , bishopMoves,checkAttacks);
+        calculatePathMoves( board, field,  blacksTurn,  -11 , bishopMoves,checkAttacks);
+        calculatePathMoves( board, field,  blacksTurn,  11 , bishopMoves,checkAttacks);
 
-        return moves;
+        moves.addAll(bishopMoves);
+
+        return bishopMoves;
     }
 
     @Override
     public ArrayList<Move> generateKnightMoves(Move parent, int field, ArrayList<Move> moves,boolean checkAttacks) {
         //changing site to move
         boolean blacksTurn=!parent.blacksTurn();
+        ArrayList<Move> knightMoves = new ArrayList<>();
 
-        int [] knightMoves= new int[8];
-        knightMoves[0]=field+10;
-        knightMoves[1]=field-10;
-        knightMoves[2]=field+14;
-        knightMoves[3]=field-14;
-        knightMoves[4]=field+25;
-        knightMoves[5]=field-25;
-        knightMoves[6]=field+23;
-        knightMoves[7]=field-23;
+        int [] nextMoves= new int[8];
+        nextMoves[0]=field+10;
+        nextMoves[1]=field-10;
+        nextMoves[2]=field+14;
+        nextMoves[3]=field-14;
+        nextMoves[4]=field+25;
+        nextMoves[5]=field-25;
+        nextMoves[6]=field+23;
+        nextMoves[7]=field-23;
 
-        for(int temp:knightMoves){
-            addIfValid(parent.getBoard(),field,temp,blacksTurn,moves, checkAttacks);
+        for(int nextField:nextMoves){
+            addIfValid(parent.getBoard(),field,nextField,blacksTurn,knightMoves, checkAttacks);
         }
 
-        return moves;
+        moves.addAll(knightMoves);
+
+        return knightMoves;
     }
 
     @Override
     public ArrayList<Move> generateQueenMoves(Move parent, int field, ArrayList<Move> moves,boolean checkAttacks) {
-        //not changing site to move because it is changed in the methods below
+        Board board = parent.getBoard();
+        boolean blacksTurn = !parent.blacksTurn();
+        ArrayList<Move> queenMoves = new ArrayList<>();
 
-        generateRookMoves(parent,field,moves,checkAttacks);
-        generateBishopMoves(parent,field,moves,checkAttacks);
+        //bishop moves
+        calculatePathMoves( board, field,  blacksTurn,  -13 , queenMoves,checkAttacks);
+        calculatePathMoves( board, field,  blacksTurn,  13 , queenMoves,checkAttacks);
+        calculatePathMoves( board, field,  blacksTurn,  -11 , queenMoves,checkAttacks);
+        calculatePathMoves( board, field,  blacksTurn,  11 , queenMoves,checkAttacks);
 
-        return moves;
+        //rook moves
+        calculatePathMoves( board, field,  blacksTurn,  -12 , queenMoves,checkAttacks);
+        calculatePathMoves( board, field,  blacksTurn,  12 , queenMoves,checkAttacks);
+        calculatePathMoves( board, field,  blacksTurn,  -1 , queenMoves,checkAttacks);
+        calculatePathMoves( board, field,  blacksTurn,  1 , queenMoves,checkAttacks);
+
+        moves.addAll(queenMoves);
+
+        return queenMoves;
     }
 
     @Override
     public ArrayList<Move> generateKingMoves(Move parent, int field, ArrayList<Move> moves,boolean checkAttacks) {
         //changing site to move
         boolean blacksTurn=!parent.blacksTurn();
-        ArrayList<Move> tempMoves= new ArrayList<>();
+        ArrayList<Move> kingMoves= new ArrayList<>();
         Board parentBoard= parent.getBoard();
 
-        int [] kingMoves= new int[8];
-        kingMoves[0]=field+12;
-        kingMoves[1]=field-12;
-        kingMoves[2]=field+1;
-        kingMoves[3]=field-1;
-        kingMoves[4]=field+13;
-        kingMoves[5]=field-13;
-        kingMoves[6]=field+11;
-        kingMoves[7]=field-11;
+        int [] nextMoves= new int[8];
+        nextMoves[0]=field+12;
+        nextMoves[1]=field-12;
+        nextMoves[2]=field+1;
+        nextMoves[3]=field-1;
+        nextMoves[4]=field+13;
+        nextMoves[5]=field-13;
+        nextMoves[6]=field+11;
+        nextMoves[7]=field-11;
 
-        for(int temp:kingMoves){
-            Move tempMove = addIfValid(parentBoard,field,temp,blacksTurn,moves, checkAttacks);
-            if(tempMove!=null){
-                tempMoves.add(tempMove);
-            }
+        for(int nextField:nextMoves){
+            addIfValid(parentBoard,field,nextField,blacksTurn,kingMoves, checkAttacks);
         }
 
         //changing the bool
-        if(tempMoves.size()>0) {
+        if(kingMoves.size()>0) {
             if (!parentBoard.isbKingMoved()) {
-                tempMoves.forEach(move -> move.getBoard().setbKingMoved(true));
+                kingMoves.forEach(move -> move.getBoard().setbKingMoved(true));
             } else if (!parentBoard.iswKingMoved()) {
-                tempMoves.forEach(move -> move.getBoard().setwKingMoved(true));
+                kingMoves.forEach(move -> move.getBoard().setwKingMoved(true));
             }
         }
 
-        return tempMoves;
+        moves.addAll(kingMoves);
+
+        return kingMoves;
     }
 
     @Override
@@ -276,6 +294,7 @@ public class MoveGenerationImpl implements MoveGeneration{
         boolean blacksTurn=!parent.blacksTurn();
         int enpassant=parent.getEnpassant();
         Board board = parent.getBoard();
+        ArrayList<Move> enpassantMoves = new ArrayList<>();
 
         if (enpassant>-1) {
             int possiblePawn1;
@@ -294,15 +313,17 @@ public class MoveGenerationImpl implements MoveGeneration{
 
             //check if there are pawns on this fields
             if(board.getPiece(possiblePawn1)==tempPawn){
-                addIfValid(parent.getBoard(),possiblePawn1,enpassant,blacksTurn,moves,checkAttacks);
+                addIfValid(parent.getBoard(),possiblePawn1,enpassant,blacksTurn,enpassantMoves,checkAttacks);
             }
 
             if(board.getPiece(possiblePawn2)==tempPawn){
-                addIfValid(parent.getBoard(),possiblePawn2,enpassant,blacksTurn,moves,checkAttacks);
+                addIfValid(parent.getBoard(),possiblePawn2,enpassant,blacksTurn,enpassantMoves,checkAttacks);
             }
         }
 
-        return moves;
+        moves.addAll(enpassantMoves);
+
+        return enpassantMoves;
     }
 
     @Override
@@ -310,6 +331,7 @@ public class MoveGenerationImpl implements MoveGeneration{
         //changing site to move
         boolean blacksTurn=!parent.blacksTurn();
         Board board=parent.getBoard();
+        ArrayList<Move> castlingMoves = new ArrayList<>();
 
         if(blacksTurn){
             if((!board.castlingDone(26))&&castlingAttacked(26,board)){
@@ -320,7 +342,7 @@ public class MoveGenerationImpl implements MoveGeneration{
                 temp.setbLeftRockMoved(true);
 
                 //todo add right notation
-                moves.add(new MoveImpl(0,0,'0',temp,true));
+                castlingMoves.add(new MoveImpl(0,0,'0',temp,true));
             }
 
             if((!board.castlingDone(33))&&castlingAttacked(33,board)){
@@ -331,7 +353,7 @@ public class MoveGenerationImpl implements MoveGeneration{
                 temp.setbRightRockMoved(true);
 
                 //todo add right notation
-                moves.add(new MoveImpl(0,0,'0',temp,true));
+                castlingMoves.add(new MoveImpl(0,0,'0',temp,true));
             }
         }else{
             if((!board.castlingDone(110))&&castlingAttacked(110,board)){
@@ -342,7 +364,7 @@ public class MoveGenerationImpl implements MoveGeneration{
                 temp.setwLeftRockMoved(true);
 
                 //todo add right notation
-                moves.add(new MoveImpl(0,0,'0',temp,false));
+                castlingMoves.add(new MoveImpl(0,0,'0',temp,false));
             }
 
             if((!board.castlingDone(117))&&castlingAttacked(117,board)){
@@ -353,10 +375,13 @@ public class MoveGenerationImpl implements MoveGeneration{
                 temp.setwRightRockMoved(true);
 
                 //todo add right notation
-                moves.add(new MoveImpl(0,0,'0',temp,false));
+                castlingMoves.add(new MoveImpl(0,0,'0',temp,false));
             }
         }
-        return moves;
+
+        moves.addAll(castlingMoves);
+
+        return castlingMoves;
     }
 
     private boolean castlingAttacked(int rookPosition,Board board){
@@ -470,13 +495,39 @@ public class MoveGenerationImpl implements MoveGeneration{
     }
 
 
-    private boolean addIfValidPawn(boolean capture,Board board,int from,int to,char c,boolean blacksTurn,int enpassant,ArrayList<Move> moves,boolean checkAttacks){
+    private Move addIfValidPawn(boolean capture,Board board,int from,int to,char c,boolean blacksTurn,int enpassant,ArrayList<Move> moves,boolean checkAttacks){
         if (validPawnMove(capture,board,from,to,blacksTurn,checkAttacks)) {
             Move temp=makeMove(from, to, c, board,blacksTurn,enpassant);
+            Board tempBoard = temp.getBoard();
+            if(c!=' '){
+                Piece queen = blacksTurn? Piece.BQUEEN:Piece.WQUEEN;
+                Piece knight = blacksTurn? Piece.BKNIGHT:Piece.WKNIGHT;
+                Piece rook = blacksTurn? Piece.BROOK:Piece.WROOK;
+                Piece bishop = blacksTurn? Piece.BBISHOP:Piece.WBISHOP;
+
+                switch (c){
+                    //todo add Right notation
+                    case 'Q':
+                        tempBoard.setField(queen,to);
+                        break;
+                    case 'K':
+                        tempBoard.setField(knight,to);
+                        break;
+                    case 'R':
+                        tempBoard.setField(rook,to);
+                        break;
+                    case 'B':
+                        tempBoard.setField(bishop,to);
+                        break;
+                    default:
+                        throw new RuntimeException("invalid char in Move");
+                }
+            }
+
             moves.add(temp);
-            return true;
+            return temp;
         }
-        return false;
+        return null;
     }
 
     private boolean validPawnMove(boolean capture,Board board,int from,int to,boolean blacksTurn,boolean checkAttacks){
@@ -487,7 +538,7 @@ public class MoveGenerationImpl implements MoveGeneration{
         if(capture){
             fieldValid = board.fieldHasOpponent(to, blacksTurn);
         }else{
-            fieldValid = !board.fieldHasOpponent(to, blacksTurn);
+            fieldValid = !board.fieldIsOccupied(to);
         }
 
         return onBoard_AND_kingNotInCheck && fieldValid;

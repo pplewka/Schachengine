@@ -17,7 +17,7 @@ public class BoardImpl implements Board{
         bRightRockMoved=false;
 
         setSpace();
-        startPos();
+        setEmptyRoom();
     }
 
     public BoardImpl copy(){
@@ -54,18 +54,18 @@ public class BoardImpl implements Board{
         }
     }
 
-    public void startPos(){
-
-
-        //empty room
-        for(int i=50;i<94;){
+    private void setEmptyRoom(){
+        for(int i = 26; i < 118; ) {
             board[i]=Piece.EMPTY;
 
             i++;
-            if((i+2)%12==0){
-                i+=4;
+            if ((i + 2) % 12 == 0) {
+                i += 4;
             }
         }
+    }
+
+    public void startPos(){
 
         //White Pawns
         for(int i=38;i<46;i++){
@@ -106,16 +106,6 @@ public class BoardImpl implements Board{
     public void applyMove(int from, int to){
         board[to]=board[from];
         board[from]=Piece.EMPTY;
-    }
-
-    public void printBoard(){
-        for(int i=0;i<144;i++){
-            if((i+1)%12==0){
-                System.out.print(board[i]+"\n");
-            }else{
-                System.out.print(board[i]+"\t");
-            }
-        }
     }
 
     @Override

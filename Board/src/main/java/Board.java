@@ -18,12 +18,6 @@ public interface Board{
     public void applyMove(int from, int to);
 
     /**
-     * debug use only
-     * method to print the content of the entire board
-     */
-    public void printBoard();
-
-    /**
      * method to check if a direct line path from field1 to field2
      * has a valid piece in it.
      * only checks horizontal!
