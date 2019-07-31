@@ -1,5 +1,6 @@
 public class BoardImpl implements Board{
-    private Piece[] board;
+    //fields
+    private byte[] board;
     private boolean wKingMoved;
     private boolean bKingMoved;
     private boolean wLeftRockMoved;
@@ -8,7 +9,7 @@ public class BoardImpl implements Board{
     private boolean bRightRockMoved;
 
     public BoardImpl(){
-        this.board= new Piece[144];
+        this.board= new byte[144];
         wKingMoved=false;
         bKingMoved=false;
         wLeftRockMoved=false;
@@ -22,7 +23,14 @@ public class BoardImpl implements Board{
 
     public BoardImpl copy(){
         BoardImpl out = new BoardImpl();
-        out.board=this.board.clone();
+        out.board=board.clone();
+        out.wKingMoved=this.wKingMoved;
+        out.bKingMoved=this.bKingMoved;
+        out.wLeftRockMoved=this.wLeftRockMoved;
+        out.wRightRockMoved=this.wRightRockMoved;
+        out.bLeftRockMoved=this.bLeftRockMoved;
+        out.bRightRockMoved=this.bRightRockMoved;
+
         return out;
     }
 
@@ -100,7 +108,6 @@ public class BoardImpl implements Board{
 
         board[113]=Piece.WQUEEN;
         board[114]=Piece.WKING;
-
     }
 
     public void applyMove(int from, int to){
@@ -138,12 +145,12 @@ public class BoardImpl implements Board{
         }
     }
 
-    public Piece getPiece(int field){
+    public byte getPiece(int field){
         return board[field];
     }
 
     @Override
-    public void setField(Piece piece, int field){
+    public void setField(byte piece, int field){
         board[field]=piece;
     }
 
@@ -152,7 +159,8 @@ public class BoardImpl implements Board{
     }
 
     public boolean fieldIsOccupied(int field){
-        return board[field].compareTo(Piece.EMPTY)>0;
+        byte temp = board[field];
+        return temp!=Piece.EMPTY&&temp!=Piece.SPACE;
     }
 
     public boolean iswKingMoved() {
@@ -204,17 +212,16 @@ public class BoardImpl implements Board{
     }
 
     public boolean fieldHasOpponent(int field, boolean blacksTurn) {
+        int temp = board[field];
         if(blacksTurn){
-            int compare =board[field].compareTo(Piece.WBISHOP);
-            //taking out space and empty
-            return compare<1&&compare>-6;
+            return temp<=9&&temp>=4;
         }else{
-            return board[field].compareTo(Piece.WBISHOP)>0;
+            return temp<=-4&&temp>=-9;
         }
     }
 
     @Override
-    public Piece[] getBoard() {
+    public byte[] getBoard() {
         return board;
     }
 }

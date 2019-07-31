@@ -8,44 +8,44 @@ public class MoveGenerationImpl implements MoveGeneration{
         Board board = parent.getBoard();
 
         for(int i = 26; i < 118; ) {
-            Piece temp=board.getPiece(i);
+            byte temp=board.getPiece(i);
 
             //most fields are Empty
             if(temp!=Piece.EMPTY) {
                 //half of not empty fields are opponents
                 if (!board.fieldHasOpponent(i, !parent.blacksTurn())) {
                     switch (temp) {
-                        case BPAWN:
-                        case WPAWN:
+                        case Piece.BPAWN:
+                        case Piece.WPAWN:
                             generatePawnMoves(parent, i, moves);
                             break;
 
-                        case BROOK:
-                        case WROOK:
+                        case Piece.BROOK:
+                        case Piece.WROOK:
                             generateRookMoves(parent, i, moves);
                             break;
 
-                        case BBISHOP:
-                        case WBISHOP:
+                        case Piece.BBISHOP:
+                        case Piece.WBISHOP:
                             generateBishopMoves(parent, i, moves);
                             break;
 
-                        case BKNIGHT:
-                        case WKNIGHT:
+                        case Piece.BKNIGHT:
+                        case Piece.WKNIGHT:
                             generateKnightMoves(parent, i, moves);
                             break;
 
-                        case BQUEEN:
-                        case WQUEEN:
+                        case Piece.BQUEEN:
+                        case Piece.WQUEEN:
                             generateQueenMoves(parent, i, moves);
                             break;
 
-                        case BKING:
-                        case WKING:
+                        case Piece.BKING:
+                        case Piece.WKING:
                             generateKingMoves(parent, i, moves);
                             break;
 
-                        case SPACE:
+                        case Piece.SPACE:
                             //should never happen
                             throw new IndexOutOfBoundsException("generateAllMoves reached space");
                     }
@@ -298,7 +298,7 @@ public class MoveGenerationImpl implements MoveGeneration{
         if (enpassant>-1) {
             int possiblePawn1;
             int possiblePawn2;
-            Piece tempPawn;
+            byte tempPawn;
 
             if(blacksTurn){
                 tempPawn=Piece.BPAWN;
@@ -447,7 +447,7 @@ public class MoveGenerationImpl implements MoveGeneration{
 
     @Override
     public boolean kingInCheck(Board board, boolean blacksTurn){
-        Piece tempKing;
+        byte tempKing;
         if(blacksTurn){
             tempKing=Piece.BKING;
         }else{
@@ -472,17 +472,17 @@ public class MoveGenerationImpl implements MoveGeneration{
 
     @Override
     public boolean fieldUnderAttack(Board board,int field, boolean blacksTurn) {
-        Piece pawn = blacksTurn? Piece.WPAWN : Piece.BPAWN ;
-        Piece king = blacksTurn? Piece.WKING : Piece.BKING ;
-        Piece queen = blacksTurn? Piece.WQUEEN : Piece.BQUEEN ;
-        Piece knight = blacksTurn? Piece.WKNIGHT : Piece.BKNIGHT ;
-        Piece bishop = blacksTurn? Piece.WBISHOP : Piece.BBISHOP ;
-        Piece rook = blacksTurn? Piece.WROOK : Piece.BROOK ;
+        byte pawn = blacksTurn? Piece.WPAWN : Piece.BPAWN ;
+        byte king = blacksTurn? Piece.WKING : Piece.BKING ;
+        byte queen = blacksTurn? Piece.WQUEEN : Piece.BQUEEN ;
+        byte knight = blacksTurn? Piece.WKNIGHT : Piece.BKNIGHT ;
+        byte bishop = blacksTurn? Piece.WBISHOP : Piece.BBISHOP ;
+        byte rook = blacksTurn? Piece.WROOK : Piece.BROOK ;
 
         int [] pawns={blacksTurn? field+11 : field-11   ,  blacksTurn? field+13 : field-13};
         for(int i:pawns){
             if(board.fieldHasOpponent(i,blacksTurn)){
-                Piece temp= board.getPiece(i);
+                byte temp= board.getPiece(i);
                 if(temp==pawn){
                     return true;
                 }
@@ -492,7 +492,7 @@ public class MoveGenerationImpl implements MoveGeneration{
         int [] kings= {field+12,field-12,field+1,field-1,field+13,field-13,field+11,field-11};
         for(int i:kings){
             if(board.fieldHasOpponent(i,blacksTurn)){
-                Piece temp= board.getPiece(i);
+                byte temp= board.getPiece(i);
                 if(temp==king){
                     return true;
                 }
@@ -502,7 +502,7 @@ public class MoveGenerationImpl implements MoveGeneration{
         int [] knights= {field+10,field-10,field+14,field-14,field+25,field-25,field+23,field-23};
         for(int i:knights){
             if(board.fieldHasOpponent(i,blacksTurn)){
-                Piece temp= board.getPiece(i);
+                byte temp= board.getPiece(i);
                 if(temp==knight){
                     return true;
                 }
@@ -519,7 +519,7 @@ public class MoveGenerationImpl implements MoveGeneration{
 
                 if (board.fieldIsOccupied(temp)) {
                     if (board.fieldHasOpponent(temp, blacksTurn)) {
-                        Piece tempPiece = board.getPiece(temp);
+                        byte tempPiece = board.getPiece(temp);
                         if (tempPiece == rook || tempPiece == queen) {
                             return true;
                         } else {
@@ -543,7 +543,7 @@ public class MoveGenerationImpl implements MoveGeneration{
 
                 if (board.fieldIsOccupied(temp)) {
                     if (board.fieldHasOpponent(temp, blacksTurn)) {
-                        Piece tempPiece = board.getPiece(temp);
+                        byte tempPiece = board.getPiece(temp);
                         if (tempPiece == bishop || tempPiece == queen) {
                             return true;
                         } else {
@@ -567,10 +567,10 @@ public class MoveGenerationImpl implements MoveGeneration{
             Move temp=makeMove(from, to, c, board,blacksTurn,enpassant);
             Board tempBoard = temp.getBoard();
             if(c!=' '){
-                Piece queen = blacksTurn? Piece.BQUEEN:Piece.WQUEEN;
-                Piece knight = blacksTurn? Piece.BKNIGHT:Piece.WKNIGHT;
-                Piece rook = blacksTurn? Piece.BROOK:Piece.WROOK;
-                Piece bishop = blacksTurn? Piece.BBISHOP:Piece.WBISHOP;
+                byte queen = blacksTurn? Piece.BQUEEN:Piece.WQUEEN;
+                byte knight = blacksTurn? Piece.BKNIGHT:Piece.WKNIGHT;
+                byte rook = blacksTurn? Piece.BROOK:Piece.WROOK;
+                byte bishop = blacksTurn? Piece.BBISHOP:Piece.WBISHOP;
 
                 switch (c){
                     //todo add Right notation
@@ -587,7 +587,7 @@ public class MoveGenerationImpl implements MoveGeneration{
                         tempBoard.setField(bishop,to);
                         break;
                     default:
-                        throw new IllegalArgumentException("invalid char in Move");
+                        throw new IllegalArgumentException("invalid byte in Move");
                 }
             }
 
@@ -622,7 +622,7 @@ public class MoveGenerationImpl implements MoveGeneration{
     private Move addIfValid(Board board,int from,int to,boolean blacksTurn,ArrayList<Move> moves){
         if (validMove(board,from,to,blacksTurn)) {
 
-            //todo correct values for char and enpassant
+            //todo correct values for byte and enpassant
             Move temp=makeMove(from, to, ' ', board,blacksTurn,-1);
             moves.add(temp);
             return temp;

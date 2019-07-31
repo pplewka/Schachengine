@@ -41,14 +41,14 @@ public interface Board{
      * @param field position to check
      * @return Piece type on this field
      */
-    public Piece getPiece(int field);
+    public byte getPiece(int field);
 
     /**
      * Method to set a Piece type on a field
-     * @param piece Piece to seton field
+     * @param c Piece to seton field
      * @param field position to set
      */
-    public void setField(Piece piece, int field);
+    public void setField(byte c, int field);
 
     /**
      * method to check if a position is on board
@@ -72,7 +72,7 @@ public interface Board{
      */
     public boolean fieldHasOpponent(int field, boolean blacksTurn);
 
-    public Piece[] getBoard();
+    public byte[] getBoard();
 
     public boolean iswKingMoved();
     public void setwKingMoved(boolean wKingMoved);

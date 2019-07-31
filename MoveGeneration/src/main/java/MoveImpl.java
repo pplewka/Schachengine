@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-
 public class MoveImpl implements Move {
     private int from;
     private int to;
@@ -13,7 +11,7 @@ public class MoveImpl implements Move {
     private int eval;
     private int maxMin;
 
-    private ArrayList<Move> children;
+    private Move [] children;
     private Move parent;
 
     public MoveImpl(int from, int to,char c,Board board,boolean blacksTurn){
@@ -44,17 +42,12 @@ public class MoveImpl implements Move {
 
 
     @Override
-    public void setChildren(ArrayList<Move> children) {
+    public void setChildren(Move [] children) {
         this.children=children;
     }
 
     @Override
-    public void addChildren(ArrayList<Move> children) {
-        this.children.addAll(children);
-    }
-
-    @Override
-    public ArrayList<Move> getChildren() {
+    public Move [] getChildren() {
         return children;
     }
 

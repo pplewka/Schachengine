@@ -294,7 +294,7 @@ public class PawnTest {
 
         boolean rightPromotion = true;
         for(Move m:moves){
-            Piece p = m.getBoard().getPiece(28);
+            byte p = m.getBoard().getPiece(28);
 
             if(!(p==Piece.WBISHOP||p==Piece.WQUEEN||p==Piece.WKNIGHT||p==Piece.WROOK)){
                 rightPromotion=false;
@@ -319,7 +319,7 @@ public class PawnTest {
 
         boolean rightPromotion = true;
         for(Move m:moves){
-            Piece p = m.getBoard().getPiece(111);
+            byte p = m.getBoard().getPiece(111);
 
             if(!(p==Piece.BBISHOP||p==Piece.BQUEEN||p==Piece.BKNIGHT||p==Piece.BROOK)){
                 rightPromotion=false;
