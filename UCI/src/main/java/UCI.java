@@ -80,6 +80,6 @@ public class UCI {
     public static void main(String[] bla) throws EngineQuitSignal {
         UCI uci = UCI.getInstance();
         uci.initialize();
-        InfoHandler.sendMessage("Hello");
+        InfoHandler.sendMessage("Hello\nWorld!");
     }
 }
