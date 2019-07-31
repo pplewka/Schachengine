@@ -15,7 +15,7 @@ public class PawnTest {
         Move root = new MoveImpl(0,0,' ',b,true);
         MoveGeneration moveGen = new MoveGenerationImpl();
         ArrayList<Move> moves = new ArrayList<>();
-        moveGen.generatePawnMoves(root,88,moves,true);
+        moveGen.generatePawnMoves(root,88,moves);
 
         assertEquals(1,moves.size());
         assertArrayEquals(expected.getBoard(),moves.get(0).getBoard().getBoard());
@@ -32,7 +32,7 @@ public class PawnTest {
         Move root = new MoveImpl(0,0,' ',b,false);
         MoveGeneration moveGen = new MoveGenerationImpl();
         ArrayList<Move> moves = new ArrayList<>();
-        moveGen.generatePawnMoves(root,88,moves,true);
+        moveGen.generatePawnMoves(root,88,moves);
 
         assertEquals(1,moves.size());
         assertArrayEquals(expected.getBoard(),moves.get(0).getBoard().getBoard());
@@ -46,7 +46,7 @@ public class PawnTest {
         Move root = new MoveImpl(0,0,' ',b,true);
         MoveGeneration moveGen = new MoveGenerationImpl();
         ArrayList<Move> moves = new ArrayList<>();
-        moveGen.generatePawnMoves(root,100,moves,true);
+        moveGen.generatePawnMoves(root,100,moves);
 
         boolean jumped=false;
         for (Move m:moves) {
@@ -67,7 +67,7 @@ public class PawnTest {
         Move root = new MoveImpl(0,0,' ',b,false);
         MoveGeneration moveGen = new MoveGenerationImpl();
         ArrayList<Move> moves = new ArrayList<>();
-        moveGen.generatePawnMoves(root,40,moves,true);
+        moveGen.generatePawnMoves(root,40,moves);
 
         boolean jumped=false;
         for (Move m:moves) {
@@ -93,7 +93,7 @@ public class PawnTest {
         MoveGeneration moveGen = new MoveGenerationImpl();
 
         ArrayList<Move> moves = new ArrayList<>();
-        moveGen.generatePawnMoves(root,100,moves,true);
+        moveGen.generatePawnMoves(root,100,moves);
 
         for (Move m:moves) {
             assertEquals(m.getBoard().getPiece(76),Piece.WKNIGHT);
@@ -134,7 +134,7 @@ public class PawnTest {
         MoveGeneration moveGen = new MoveGenerationImpl();
 
         ArrayList<Move> moves = new ArrayList<>();
-        moveGen.generatePawnMoves(root,40,moves,true);
+        moveGen.generatePawnMoves(root,40,moves);
 
         for (Move m:moves) {
             assertEquals(m.getBoard().getPiece(52),Piece.BKNIGHT);
@@ -176,7 +176,7 @@ public class PawnTest {
         MoveGeneration moveGen = new MoveGenerationImpl();
 
         ArrayList<Move> moves = new ArrayList<>();
-        moveGen.generatePawnMoves(root,100,moves,true);
+        moveGen.generatePawnMoves(root,100,moves);
 
         for (Move m:moves) {
             assertEquals(m.getBoard().getPiece(76),Piece.BKNIGHT);
@@ -217,7 +217,7 @@ public class PawnTest {
         MoveGeneration moveGen = new MoveGenerationImpl();
 
         ArrayList<Move> moves = new ArrayList<>();
-        moveGen.generatePawnMoves(root,40,moves,true);
+        moveGen.generatePawnMoves(root,40,moves);
 
         for (Move m:moves) {
             assertEquals(m.getBoard().getPiece(52),Piece.WKNIGHT);
@@ -257,7 +257,7 @@ public class PawnTest {
         Move root = new MoveImpl(0,0,' ',b,true);
         MoveGeneration moveGen = new MoveGenerationImpl();
         ArrayList<Move> moves = new ArrayList<>();
-        moveGen.generatePawnMoves(root,90,moves,true);
+        moveGen.generatePawnMoves(root,90,moves);
 
         assertEquals(0,moves.size());
     }
@@ -274,7 +274,7 @@ public class PawnTest {
         Move root = new MoveImpl(0,0,' ',b,false);
         MoveGeneration moveGen = new MoveGenerationImpl();
         ArrayList<Move> moves = new ArrayList<>();
-        moveGen.generatePawnMoves(root,54,moves,true);
+        moveGen.generatePawnMoves(root,54,moves);
 
         assertEquals(0,moves.size());
     }
@@ -288,7 +288,7 @@ public class PawnTest {
 
         MoveGeneration moveGen = new MoveGenerationImpl();
         ArrayList<Move> moves = new ArrayList<>();
-        moveGen.generatePawnMoves(root,40,moves,true);
+        moveGen.generatePawnMoves(root,40,moves);
 
         assertEquals(4,moves.size());
 
@@ -313,7 +313,7 @@ public class PawnTest {
 
         MoveGeneration moveGen = new MoveGenerationImpl();
         ArrayList<Move> moves = new ArrayList<>();
-        moveGen.generatePawnMoves(root,99,moves,true);
+        moveGen.generatePawnMoves(root,99,moves);
 
         assertEquals(4,moves.size());
 

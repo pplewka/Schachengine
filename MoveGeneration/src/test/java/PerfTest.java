@@ -15,7 +15,7 @@ public class PerfTest {
 
         for(int j=0;j<i;j++){
             for (Move move:leafs1) {
-                ArrayList<Move> gen = mg.generateAllMoves(move,true);
+                ArrayList<Move> gen = mg.generateAllMoves(move);
                 leafs2.addAll(gen);
             }
 
@@ -31,11 +31,11 @@ public class PerfTest {
 
     @Test //@Disabled
     public void perfTest() {
-        assertEquals(20, perf(1));
-        assertEquals(400, perf(2));
-        assertEquals(8902, perf(3));
+        //assertEquals(20, perf(1));
+        //assertEquals(400, perf(2));
+        //assertEquals(8902, perf(3));
         //assertEquals(197281, perf(4));
-        //assertEquals(4865609, perf(5));
+        assertEquals(4865609, perf(5));
         //assertEquals(119060324, perf(6));
     }
 }
