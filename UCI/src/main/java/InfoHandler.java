@@ -84,11 +84,19 @@ public class InfoHandler {
     /**
      * Sends a message to the GUI. Message won't be parsed by GUI (uses "info string")
      * Sends already stored infos separately before sending the message
+     * Allows multiline messages.
      * @param msg The message
      */
     public synchronized static void sendMessage(String msg){
         getInstance().sendStoredInfos();
-        getInstance().storeInfo(STRING, msg);
+
+        if(msg.contains("\n")){
+            for(String line: msg.split("\n")){
+                sendMessage(line);
+            }
+        }else {
+            getInstance().storeInfo(STRING, msg);
+        }
         getInstance().sendStoredInfos();
     }
 
