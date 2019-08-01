@@ -59,7 +59,7 @@ public class UCIBridge {
      * @return the String (trimmed and multiple whitespaces replaced with a single space)
      * @throws EngineQuitSignal if the "quit" command was received
      */
-    private synchronized String receiveString() throws EngineQuitSignal {
+    public synchronized String receiveString() throws EngineQuitSignal {
 
         String input = reader.nextLine();
         input = removeUnnecessaryWS(input);

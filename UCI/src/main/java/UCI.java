@@ -2,6 +2,8 @@ import Exceptions.EngineQuitSignal;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
 
@@ -19,8 +21,11 @@ public class UCI {
 
     private UCIBridge uciBridge;
 
+    private List<UCIListener> listeners;
+
     /**
      * Returns the unique UCI instance
+     *
      * @return the instance
      */
     public static UCI getInstance() {
@@ -36,14 +41,21 @@ public class UCI {
 
     /**
      * Sets debug mode. Engine should determine what it wants to send based on the debugmode
+     *
      * @param debugmode the debug mode
      */
     public static void setDebug(boolean debugmode) {
         debug = debugmode;
+        if (debug) {
+            getInstance().attachListener(new DebugUCIListener());
+        } else {
+            //TODO remove DebugListener
+        }
     }
 
     /**
      * Gets debug mode. Engine should determine what it wants to send based on the debugmode
+     *
      * @return the debug mode
      */
     public static boolean getDebug() {
@@ -52,6 +64,7 @@ public class UCI {
 
     /**
      * Initialize the UCI engine and GUI. See UCIBridge.initialize for more information
+     *
      * @throws EngineQuitSignal if the engine received the quit command from GUI
      */
     public void initialize() throws EngineQuitSignal {
@@ -70,16 +83,81 @@ public class UCI {
      */
     private UCI() {
         uciBridge = UCIBridge.getInstance();
+        listeners = new ArrayList<>();
+    }
+
+    /**
+     * Waits for the next command from GUI and informs all attached listeners
+     *
+     * @throws EngineQuitSignal if the GUI sends the quit command
+     */
+    public synchronized void awaitNextCommand() throws EngineQuitSignal {
+        String input = uciBridge.receiveString();
+        if (input.startsWith(UCICommands.GO)) {
+            for (UCIListener listener : listeners) {
+                listener.receivedGo();
+            }
+        } else if (input.startsWith(UCICommands.STOP)) {
+            for (UCIListener listener : listeners) {
+                listener.receivedStop();
+            }
+        } else if (input.startsWith(UCICommands.UCI_NEW_GAME)) {
+            for (UCIListener listener : listeners) {
+                listener.receivedNewGame();
+            }
+        } else if (input.startsWith(UCICommands.POSITION)) {
+            for (UCIListener listener : listeners) {
+                listener.receivedPosition(input);
+            }
+        }
+    }
+
+    /**
+     * Attaches a UCIListener to UCI.
+     * This Listener will be informed of all inputs
+     *
+     * @param listener the listener
+     */
+    public synchronized void attachListener(UCIListener listener) {
+        listeners.add(listener);
+    }
+
+    /**
+     * Removes an attached UCIListener from UCI
+     *
+     * @param listener the listener
+     */
+    public synchronized void removeListener(UCIListener listener) {
+        listeners.remove(listener);
+    }
+
+    /**
+     * Waits forever for all commands from GUI
+     * Informs all listeners, when there is a new command
+     *
+     * @throws EngineQuitSignal if quit command was send from GUI
+     */
+    public synchronized void awaitCommandsForever() throws EngineQuitSignal {
+
+        while (true) {
+            awaitNextCommand();
+        }
+
     }
 
     /**
      * A test-main
-     * @param bla will be ignored
+     *
+     * @param args all arguments will be printed as info string
      * @throws EngineQuitSignal if engine receives the quit command
      */
-    public static void main(String[] bla) throws EngineQuitSignal {
+    public static void main(String[] args) throws EngineQuitSignal {
         UCI uci = UCI.getInstance();
         uci.initialize();
         InfoHandler.sendMessage("Hello\nWorld!");
+        for (String argument : args) {
+            InfoHandler.sendMessage(argument);
+        }
+        uci.awaitCommandsForever();
     }
 }

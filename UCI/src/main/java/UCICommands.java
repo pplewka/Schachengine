@@ -14,4 +14,7 @@ public class UCICommands {
     public static final String QUIT = "quit";
     public static final String DEBUG_ON = "debug on";
     public static final String DEBUG_OFF = "debug off";
+    public static final String GO = "go";
+    public static final String STOP = "stop";
+    public static final String POSITION = "position";
 }
