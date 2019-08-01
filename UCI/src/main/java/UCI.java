@@ -40,16 +40,26 @@ public class UCI {
     }
 
     /**
-     * Sets debug mode. Engine should determine what it wants to send based on the debugmode
-     *
-     * @param debugmode the debug mode
+     * Sets debug mode. Engine should determine what it wants to send based on the debug_mode
+     * Attaches (or removes) the DebugUCIListener depending on debug_mode
+     * @param debug_mode the debug mode
      */
-    public static void setDebug(boolean debugmode) {
-        debug = debugmode;
+    public static void setDebug(boolean debug_mode) {
+        if(debug == debug_mode){
+            return;
+        }
+        debug = debug_mode;
         if (debug) {
             getInstance().attachListener(new DebugUCIListener());
         } else {
-            //TODO remove DebugListener
+            List<UCIListener> listeners = getInstance().listeners;
+            List<UCIListener> new_listeners = new ArrayList<>();
+            for (UCIListener lis : listeners) {
+                if(!(lis instanceof DebugUCIListener)){
+                    new_listeners.add(lis);
+                }
+            }
+            getInstance().listeners = new_listeners;
         }
     }
 
