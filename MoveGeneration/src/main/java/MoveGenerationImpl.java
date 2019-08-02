@@ -333,7 +333,7 @@ public class MoveGenerationImpl implements MoveGeneration{
         ArrayList<Move> castlingMoves = new ArrayList<>();
 
         if(blacksTurn){
-            if((!board.castlingDone(26))&&castlingAttacked(26,board)){
+            if((!board.castlingDone(26))&&(!castlingAttacked(26,board))){
                 Board temp= board.copy();
                 temp.applyMove(30,28);
                 temp.applyMove(26,29);
@@ -344,7 +344,7 @@ public class MoveGenerationImpl implements MoveGeneration{
                 castlingMoves.add(new MoveImpl(0,0,'0',temp,true));
             }
 
-            if((!board.castlingDone(33))&&castlingAttacked(33,board)){
+            if((!board.castlingDone(33))&&(!castlingAttacked(33,board))){
                 Board temp= board.copy();
                 temp.applyMove(30,32);
                 temp.applyMove(33,31);
@@ -355,7 +355,7 @@ public class MoveGenerationImpl implements MoveGeneration{
                 castlingMoves.add(new MoveImpl(0,0,'0',temp,true));
             }
         }else{
-            if((!board.castlingDone(110))&&castlingAttacked(110,board)){
+            if((!board.castlingDone(110))&&(!castlingAttacked(110,board))){
                 Board temp= board.copy();
                 temp.applyMove(114,112);
                 temp.applyMove(110,113);
@@ -366,7 +366,7 @@ public class MoveGenerationImpl implements MoveGeneration{
                 castlingMoves.add(new MoveImpl(0,0,'0',temp,false));
             }
 
-            if((!board.castlingDone(117))&&castlingAttacked(117,board)){
+            if((!board.castlingDone(117))&&(!castlingAttacked(117,board))){
                 Board temp= board.copy();
                 temp.applyMove(114,116);
                 temp.applyMove(117,115);

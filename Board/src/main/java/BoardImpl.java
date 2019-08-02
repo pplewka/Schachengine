@@ -10,12 +10,13 @@ public class BoardImpl implements Board{
 
     public BoardImpl(){
         this.board= new byte[144];
-        wKingMoved=false;
-        bKingMoved=false;
-        wLeftRockMoved=false;
-        wRightRockMoved=false;
-        bLeftRockMoved=false;
-        bRightRockMoved=false;
+
+        wKingMoved=true;
+        bKingMoved=true;
+        wLeftRockMoved=true;
+        wRightRockMoved=true;
+        bLeftRockMoved=true;
+        bRightRockMoved=true;
 
         setSpace();
         setEmptyRoom();
@@ -108,8 +109,16 @@ public class BoardImpl implements Board{
 
         board[113]=Piece.WQUEEN;
         board[114]=Piece.WKING;
+
+        wKingMoved=false;
+        bKingMoved=false;
+        wLeftRockMoved=false;
+        wRightRockMoved=false;
+        bLeftRockMoved=false;
+        bRightRockMoved=false;
     }
 
+    @Override
     public void applyMove(int from, int to){
         board[to]=board[from];
         board[from]=Piece.EMPTY;
@@ -132,13 +141,13 @@ public class BoardImpl implements Board{
     public boolean castlingDone(int rockPosition) {
         switch (rockPosition) {
             case 26:
-                return !((!bLeftRockMoved)&&(!bKingMoved)&&(!pathHasPiece(26,30)));
+                return ((bLeftRockMoved)||(bKingMoved)||(pathHasPiece(26,30)));
             case 33:
-                return !((!bRightRockMoved)&&(!bKingMoved)&&(!pathHasPiece(30,33)));
+                return ((bRightRockMoved)||(bKingMoved)||(pathHasPiece(30,33)));
             case 110:
-                return !((!wLeftRockMoved)&&(!wKingMoved)&&(!pathHasPiece(110,114)));
+                return ((wLeftRockMoved)||(wKingMoved)||(pathHasPiece(110,114)));
             case 117:
-                return !((!wRightRockMoved)&&(!wKingMoved)&&(!pathHasPiece(114,117)));
+                return ((wRightRockMoved)||(wKingMoved)||(pathHasPiece(114,117)));
             default:
                 //should never happen
                 throw new IllegalArgumentException("castlingPossible default value");
