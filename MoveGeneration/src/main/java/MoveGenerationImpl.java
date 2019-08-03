@@ -311,12 +311,12 @@ public class MoveGenerationImpl implements MoveGeneration{
 
             if(blacksTurn){
                 tempPawn=Piece.BPAWN;
-                possiblePawn1=enpassant+13;
-                possiblePawn2=enpassant+11;
-            }else{
-                tempPawn=Piece.WPAWN;
                 possiblePawn1=enpassant-13;
                 possiblePawn2=enpassant-11;
+            }else{
+                tempPawn=Piece.WPAWN;
+                possiblePawn1=enpassant+13;
+                possiblePawn2=enpassant+11;
             }
 
             //check if there are pawns on this fields
@@ -329,6 +329,11 @@ public class MoveGenerationImpl implements MoveGeneration{
             }
         }
 
+        //removing pawn
+        int toRemove=blacksTurn? enpassant-12:enpassant+12;
+        for(Move enpm: enpassantMoves){
+            enpm.getBoard().setField(Piece.EMPTY,toRemove);
+        }
         moves.addAll(enpassantMoves);
 
         return enpassantMoves;
