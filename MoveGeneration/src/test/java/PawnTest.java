@@ -13,7 +13,7 @@ public class PawnTest {
         expected.setField(Piece.WPAWN,76);
 
         Move root = new MoveImpl(0,0,' ',b,true);
-        MoveGeneration moveGen = new MoveGenerationImpl();
+        MoveGeneration moveGen = MoveGenerationImpl.getMoveGeneration();
         ArrayList<Move> moves = new ArrayList<>();
         moveGen.generatePawnMoves(root,88,moves);
 
@@ -30,7 +30,7 @@ public class PawnTest {
         expected.setField(Piece.BPAWN,100);
 
         Move root = new MoveImpl(0,0,' ',b,false);
-        MoveGeneration moveGen = new MoveGenerationImpl();
+        MoveGeneration moveGen = MoveGenerationImpl.getMoveGeneration();
         ArrayList<Move> moves = new ArrayList<>();
         moveGen.generatePawnMoves(root,88,moves);
 
@@ -44,7 +44,7 @@ public class PawnTest {
         b.setField(Piece.WPAWN,100);
 
         Move root = new MoveImpl(0,0,' ',b,true);
-        MoveGeneration moveGen = new MoveGenerationImpl();
+        MoveGeneration moveGen = MoveGenerationImpl.getMoveGeneration();
         ArrayList<Move> moves = new ArrayList<>();
         moveGen.generatePawnMoves(root,100,moves);
 
@@ -65,7 +65,7 @@ public class PawnTest {
         b.setField(Piece.WPAWN,40);
 
         Move root = new MoveImpl(0,0,' ',b,false);
-        MoveGeneration moveGen = new MoveGenerationImpl();
+        MoveGeneration moveGen = MoveGenerationImpl.getMoveGeneration();
         ArrayList<Move> moves = new ArrayList<>();
         moveGen.generatePawnMoves(root,40,moves);
 
@@ -90,7 +90,7 @@ public class PawnTest {
         b.setField(Piece.WKNIGHT,89);
 
         Move root = new MoveImpl(0,0,' ',b,true);
-        MoveGeneration moveGen = new MoveGenerationImpl();
+        MoveGeneration moveGen = MoveGenerationImpl.getMoveGeneration();
 
         ArrayList<Move> moves = new ArrayList<>();
         moveGen.generatePawnMoves(root,100,moves);
@@ -131,7 +131,7 @@ public class PawnTest {
         b.setField(Piece.BKNIGHT,53);
 
         Move root = new MoveImpl(0,0,' ',b,false);
-        MoveGeneration moveGen = new MoveGenerationImpl();
+        MoveGeneration moveGen = MoveGenerationImpl.getMoveGeneration();
 
         ArrayList<Move> moves = new ArrayList<>();
         moveGen.generatePawnMoves(root,40,moves);
@@ -173,7 +173,7 @@ public class PawnTest {
         b.setField(Piece.BKNIGHT,89);
 
         Move root = new MoveImpl(0,0,' ',b,true);
-        MoveGeneration moveGen = new MoveGenerationImpl();
+        MoveGeneration moveGen = MoveGenerationImpl.getMoveGeneration();
 
         ArrayList<Move> moves = new ArrayList<>();
         moveGen.generatePawnMoves(root,100,moves);
@@ -214,7 +214,7 @@ public class PawnTest {
         b.setField(Piece.WKNIGHT,53);
 
         Move root = new MoveImpl(0,0,' ',b,false);
-        MoveGeneration moveGen = new MoveGenerationImpl();
+        MoveGeneration moveGen = MoveGenerationImpl.getMoveGeneration();
 
         ArrayList<Move> moves = new ArrayList<>();
         moveGen.generatePawnMoves(root,40,moves);
@@ -255,7 +255,7 @@ public class PawnTest {
         b.setField(Piece.WKING,114);
 
         Move root = new MoveImpl(0,0,' ',b,true);
-        MoveGeneration moveGen = new MoveGenerationImpl();
+        MoveGeneration moveGen = MoveGenerationImpl.getMoveGeneration();
         ArrayList<Move> moves = new ArrayList<>();
         moveGen.generatePawnMoves(root,90,moves);
 
@@ -272,7 +272,7 @@ public class PawnTest {
         b.setField(Piece.BKING,30);
 
         Move root = new MoveImpl(0,0,' ',b,false);
-        MoveGeneration moveGen = new MoveGenerationImpl();
+        MoveGeneration moveGen = MoveGenerationImpl.getMoveGeneration();
         ArrayList<Move> moves = new ArrayList<>();
         moveGen.generatePawnMoves(root,54,moves);
 
@@ -286,7 +286,7 @@ public class PawnTest {
 
         Move root = new MoveImpl(0,0,' ',b,true);
 
-        MoveGeneration moveGen = new MoveGenerationImpl();
+        MoveGeneration moveGen = MoveGenerationImpl.getMoveGeneration();
         ArrayList<Move> moves = new ArrayList<>();
         moveGen.generatePawnMoves(root,40,moves);
 
@@ -311,7 +311,7 @@ public class PawnTest {
 
         Move root = new MoveImpl(0,0,' ',b,false);
 
-        MoveGeneration moveGen = new MoveGenerationImpl();
+        MoveGeneration moveGen = MoveGenerationImpl.getMoveGeneration();
         ArrayList<Move> moves = new ArrayList<>();
         moveGen.generatePawnMoves(root,99,moves);
 

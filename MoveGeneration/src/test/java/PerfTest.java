@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class PerfTest {
 
     private static long perf(int i) {
-            MoveGenerationImpl mg = new MoveGenerationImpl();
+            MoveGeneration mg = MoveGenerationImpl.getMoveGeneration();
             ArrayList<ArrayList<Move>> leafs1 = new ArrayList<>();
             ArrayList<ArrayList<Move>> leafs2 = new ArrayList<>();
             Board b = new BoardImpl();

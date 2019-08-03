@@ -12,7 +12,7 @@ public class RookTest {
 
         int[] expected={29,41,53,77,89,101,113,62,63,64,66,67,68,69};
 
-        MoveGeneration mg= new MoveGenerationImpl();
+        MoveGeneration mg= MoveGenerationImpl.getMoveGeneration();
         ArrayList<Move> moves= new ArrayList<>();
         Move parent = new MoveImpl(0,0,'0',b,true);
 
@@ -46,7 +46,7 @@ public class RookTest {
 
         int[] expected={29,41,53,77,89,101,113,62,63,64,66,67,68,69};
 
-        MoveGeneration mg= new MoveGenerationImpl();
+        MoveGeneration mg= MoveGenerationImpl.getMoveGeneration();
         ArrayList<Move> moves= new ArrayList<>();
         Move parent = new MoveImpl(0,0,'0',b,false);
 
@@ -84,7 +84,7 @@ public class RookTest {
 
         int[] expected={53,77,89,64,66,67};
 
-        MoveGeneration mg= new MoveGenerationImpl();
+        MoveGeneration mg= MoveGenerationImpl.getMoveGeneration();
         ArrayList<Move> moves= new ArrayList<>();
         Move parent = new MoveImpl(0,0,'0',b,true);
 
@@ -120,7 +120,7 @@ public class RookTest {
 
         int[] expected={53,77,89,64,66,67};
 
-        MoveGeneration mg= new MoveGenerationImpl();
+        MoveGeneration mg= MoveGenerationImpl.getMoveGeneration();
         ArrayList<Move> moves= new ArrayList<>();
         Move parent = new MoveImpl(0,0,'0',b,false);
 
@@ -156,7 +156,7 @@ public class RookTest {
 
         int[] expected={53,77,89,64,66,67,63,41,68,101};
 
-        MoveGeneration mg= new MoveGenerationImpl();
+        MoveGeneration mg= MoveGenerationImpl.getMoveGeneration();
         ArrayList<Move> moves= new ArrayList<>();
         Move parent = new MoveImpl(0,0,'0',b,true);
 
@@ -192,7 +192,7 @@ public class RookTest {
 
         int[] expected={53,77,89,64,66,67,63,41,68,101};
 
-        MoveGeneration mg= new MoveGenerationImpl();
+        MoveGeneration mg= MoveGenerationImpl.getMoveGeneration();
         ArrayList<Move> moves= new ArrayList<>();
         Move parent = new MoveImpl(0,0,'0',b,false);
 
