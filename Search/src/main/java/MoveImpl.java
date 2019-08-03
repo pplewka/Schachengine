@@ -122,8 +122,11 @@ public class MoveImpl implements Move {
     }
 
     @Override
-    public synchronized boolean setMaxMinIfBiggerSmaller(boolean blacksTurn, int newValue) {
+    public synchronized void setMaxMinIfBiggerSmaller(int newValue) {
         //todo
-        return false;
+        /*
+        if(changed){
+        parent.setMaxIfBiggerSmaller(newValue);
+         */
     }
 }

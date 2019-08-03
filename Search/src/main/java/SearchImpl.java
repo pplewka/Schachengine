@@ -7,6 +7,16 @@ public class SearchImpl implements Search {
     private Move ponder;
     private Collection lookUpTable;
 
+    private static Search sr;
+    private SearchImpl(){}
+
+    public static Search getSearch(){
+        if(sr==null){
+            sr= new SearchImpl();
+        }
+        return sr;
+    }
+
     @Override
     public int getDepth() {
         return depth;

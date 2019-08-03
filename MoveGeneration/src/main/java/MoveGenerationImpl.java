@@ -1,6 +1,15 @@
 import java.util.ArrayList;
 
 public class MoveGenerationImpl implements MoveGeneration{
+    private static MoveGeneration moveGen;
+    private MoveGenerationImpl(){}
+
+    public static MoveGeneration getMoveGeneration(){
+        if(moveGen==null){
+            moveGen= new MoveGenerationImpl();
+        }
+        return moveGen;
+    }
 
     @Override
     public ArrayList<Move> generateAllMoves(Move parent) {

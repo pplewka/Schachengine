@@ -27,5 +27,5 @@ public interface Move {
     /**
      *!Has to be synchronised!
      */
-    public boolean setMaxMinIfBiggerSmaller(boolean blacksTurn,int newValue);
+    public void setMaxMinIfBiggerSmaller(int newValue);
 }

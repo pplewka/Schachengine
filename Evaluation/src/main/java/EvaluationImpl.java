@@ -1,4 +1,14 @@
 public class EvaluationImpl implements Evaluation {
+    private static Evaluation eval;
+    private EvaluationImpl(){}
+
+    public static Evaluation getEvaluation(){
+        if(eval==null){
+            eval= new EvaluationImpl();
+        }
+        return eval;
+    }
+
     @Override
     public void evaluate(Move parent) {
         /*
