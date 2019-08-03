@@ -9,7 +9,7 @@ public class KnightTest {
         Board b= new BoardImpl();
         b.setField(Piece.WKNIGHT,78);
         Move root= new MoveImpl(0,0,'0',b,true);
-        MoveGeneration mg = new MoveGenerationImpl();
+        MoveGeneration mg =MoveGenerationImpl.getMoveGeneration();
         ArrayList<Move> list = new ArrayList<>();
         mg.generateKnightMoves(root,78,list);
         int [] expected = new int[]{55,68,92,103,101,88,64,53};
@@ -38,7 +38,7 @@ public class KnightTest {
         Board b= new BoardImpl();
         b.setField(Piece.BKNIGHT,78);
         Move root= new MoveImpl(0,0,'0',b,false);
-        MoveGeneration mg = new MoveGenerationImpl();
+        MoveGeneration mg =MoveGenerationImpl.getMoveGeneration();
         ArrayList<Move> list = new ArrayList<>();
         mg.generateKnightMoves(root,78,list);
         int [] expected = new int[]{55,68,92,103,101,88,64,53};
@@ -71,7 +71,7 @@ public class KnightTest {
             b.setField(Piece.WPAWN,i);
         }
         Move root= new MoveImpl(0,0,'0',b,true);
-        MoveGeneration mg = new MoveGenerationImpl();
+        MoveGeneration mg =MoveGenerationImpl.getMoveGeneration();
         ArrayList<Move> list = new ArrayList<>();
         mg.generateKnightMoves(root,78,list);
 
@@ -87,7 +87,7 @@ public class KnightTest {
             b.setField(Piece.BPAWN,i);
         }
         Move root= new MoveImpl(0,0,'0',b,false);
-        MoveGeneration mg = new MoveGenerationImpl();
+        MoveGeneration mg =MoveGenerationImpl.getMoveGeneration();
         ArrayList<Move> list = new ArrayList<>();
         mg.generateKnightMoves(root,78,list);
 
@@ -103,7 +103,7 @@ public class KnightTest {
             b.setField(Piece.BPAWN,i);
         }
         Move root= new MoveImpl(0,0,'0',b,true);
-        MoveGeneration mg = new MoveGenerationImpl();
+        MoveGeneration mg =MoveGenerationImpl.getMoveGeneration();
         ArrayList<Move> list = new ArrayList<>();
         mg.generateKnightMoves(root,78,list);
 
@@ -136,7 +136,7 @@ public class KnightTest {
             b.setField(Piece.WPAWN,i);
         }
         Move root= new MoveImpl(0,0,'0',b,false);
-        MoveGeneration mg = new MoveGenerationImpl();
+        MoveGeneration mg =MoveGenerationImpl.getMoveGeneration();
         ArrayList<Move> list = new ArrayList<>();
         mg.generateKnightMoves(root,78,list);
 
@@ -166,7 +166,7 @@ public class KnightTest {
         b.setField(Piece.WKNIGHT,110);
         int [] expected = new int[]{100,87};
         Move root= new MoveImpl(0,0,'0',b,true);
-        MoveGeneration mg = new MoveGenerationImpl();
+        MoveGeneration mg =MoveGenerationImpl.getMoveGeneration();
         ArrayList<Move> list = new ArrayList<>();
         mg.generateKnightMoves(root,110,list);
 
@@ -193,7 +193,6 @@ public class KnightTest {
         b.setField(Piece.WKNIGHT,26);
         expected = new int[]{40,51};
         root= new MoveImpl(0,0,'0',b,true);
-        mg = new MoveGenerationImpl();
         list = new ArrayList<>();
         mg.generateKnightMoves(root,26,list);
 
@@ -220,7 +219,6 @@ public class KnightTest {
         b.setField(Piece.WKNIGHT,33);
         expected = new int[]{43,56};
         root= new MoveImpl(0,0,'0',b,true);
-        mg = new MoveGenerationImpl();
         list = new ArrayList<>();
         mg.generateKnightMoves(root,33,list);
 
@@ -247,7 +245,6 @@ public class KnightTest {
         b.setField(Piece.WKNIGHT,117);
         expected = new int[]{92,103};
         root= new MoveImpl(0,0,'0',b,true);
-        mg = new MoveGenerationImpl();
         list = new ArrayList<>();
         mg.generateKnightMoves(root,117,list);
 
@@ -277,7 +274,7 @@ public class KnightTest {
         b.setField(Piece.BKNIGHT,110);
         int [] expected = new int[]{100,87};
         Move root= new MoveImpl(0,0,'0',b,false);
-        MoveGeneration mg = new MoveGenerationImpl();
+        MoveGeneration mg =MoveGenerationImpl.getMoveGeneration();
         ArrayList<Move> list = new ArrayList<>();
         mg.generateKnightMoves(root,110,list);
 
@@ -304,7 +301,6 @@ public class KnightTest {
         b.setField(Piece.BKNIGHT,26);
         expected = new int[]{40,51};
         root= new MoveImpl(0,0,'0',b,false);
-        mg = new MoveGenerationImpl();
         list = new ArrayList<>();
         mg.generateKnightMoves(root,26,list);
 
@@ -331,7 +327,6 @@ public class KnightTest {
         b.setField(Piece.BKNIGHT,33);
         expected = new int[]{43,56};
         root= new MoveImpl(0,0,'0',b,false);
-        mg = new MoveGenerationImpl();
         list = new ArrayList<>();
         mg.generateKnightMoves(root,33,list);
 
@@ -358,7 +353,6 @@ public class KnightTest {
         b.setField(Piece.BKNIGHT,117);
         expected = new int[]{92,103};
         root= new MoveImpl(0,0,'0',b,false);
-        mg = new MoveGenerationImpl();
         list = new ArrayList<>();
         mg.generateKnightMoves(root,117,list);
 
