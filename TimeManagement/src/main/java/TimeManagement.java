@@ -22,4 +22,14 @@ public interface TimeManagement {
      */
     public boolean isEnoughTime();
 
+    /**
+     * Return the amount of time left in the current time-frame
+     */
+    public long timeLeft();
+
+    /**
+     * Get the time (in msec) allocated for current move
+     */
+    public long getTimeFrame();
+
 }
