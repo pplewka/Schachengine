@@ -440,19 +440,31 @@ public class MoveGenerationImpl implements MoveGeneration{
         int temp = field;
         boolean pathBlocked=false;
         ArrayList<Move> pathmoves= new ArrayList<>();
+        ArrayList<Integer> possiblePositions= new ArrayList<>();
 
         while (!pathBlocked) {
             temp = temp + direction;
 
-            Move tempMove=addIfValid(board,field,temp,blacksTurn,moves);
-
-            if(tempMove!=null){
+            if(board.fieldIsOccupied(temp)){
                 if(board.fieldHasOpponent(temp,blacksTurn)){
                     pathBlocked=true;
+                    possiblePositions.add(temp);
+                }else{
+                    pathBlocked=true;
                 }
-                pathmoves.add(tempMove);
+
+            }else if(!board.fieldIsOnBoard(temp)) {
+                pathBlocked = true;
+
             }else{
-                pathBlocked =true;
+                possiblePositions.add(temp);
+            }
+        }
+
+        for(int i:possiblePositions){
+            Move tempMove=addIfValid(board,field,i,blacksTurn,moves);
+            if(tempMove!=null){
+                pathmoves.add(tempMove);
             }
         }
 
