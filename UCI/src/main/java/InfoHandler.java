@@ -48,7 +48,6 @@ public class InfoHandler {
     public static final Set<String> STRING_KEYS = Set.of(STRING, CURRMOVE);
     public static final Set<String> LIST_STRING_KEYS = Set.of(PV, REFUTATION, CURRLINE_MOVES);
     private volatile static InfoHandler instance;
-    private UCIBridge uciBridge;
     private Map<String, String> stringValues;
     private Map<String, Long> longValues;
     private Map<String, Double> doubleValues;
@@ -61,7 +60,6 @@ public class InfoHandler {
      */
     private InfoHandler() {
         initializeValueMaps();
-        uciBridge = UCIBridge.getInstance();
     }
 
     /**
@@ -175,11 +173,11 @@ public class InfoHandler {
      * Reset the instance automatically
      */
     public synchronized void sendStoredInfos() {
-        uciBridge.sendStringListInfo(stringListValues);
-        uciBridge.sendStringInfo(stringValues);
-        uciBridge.sendIntInfo(intValues);
-        uciBridge.sendDoubleInfo(doubleValues);
-        uciBridge.sendLongInfo(longValues);
+        UCIBridge.getInstance().sendStringListInfo(stringListValues);
+        UCIBridge.getInstance().sendStringInfo(stringValues);
+        UCIBridge.getInstance().sendIntInfo(intValues);
+        UCIBridge.getInstance().sendDoubleInfo(doubleValues);
+        UCIBridge.getInstance().sendLongInfo(longValues);
         initializeValueMaps();
     }
 

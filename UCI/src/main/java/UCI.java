@@ -85,14 +85,13 @@ public class UCI {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        uciBridge.initialize(options);
+        UCIBridge.getInstance().initialize(options);
     }
 
     /**
      * private constructor
      */
     private UCI() {
-        uciBridge = UCIBridge.getInstance();
         listeners = new ArrayList<>();
     }
 
@@ -102,7 +101,7 @@ public class UCI {
      * @throws EngineQuitSignal if the GUI sends the quit command
      */
     public synchronized void awaitNextCommand() throws EngineQuitSignal {
-        String input = uciBridge.receiveString();
+        String input = UCIBridge.getInstance().receiveString();
         if (input.startsWith(UCICommands.GO)) {
             for (UCIListener listener : listeners) {
                 listener.receivedGo();

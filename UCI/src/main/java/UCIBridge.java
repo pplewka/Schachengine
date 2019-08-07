@@ -215,4 +215,12 @@ public class UCIBridge {
     public synchronized void sendUnknownCommandMessage(String command) {
         InfoHandler.sendMessage(UCICommands.UNKNOWN_CMD + " " + command);
     }
+
+    /**
+     * Deletes the unique UCIBridge instance
+     * Used in test to reload the reader attribute
+     */
+    public static synchronized void deleteInstance(){
+        instance = null;
+    }
 }
