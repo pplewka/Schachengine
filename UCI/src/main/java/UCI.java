@@ -23,6 +23,7 @@ public class UCI {
 
     private List<UCIListener> listeners;
 
+
     /**
      * Returns the unique UCI instance
      *
@@ -42,10 +43,11 @@ public class UCI {
     /**
      * Sets debug mode. Engine should determine what it wants to send based on the debug_mode
      * Attaches (or removes) the DebugUCIListener depending on debug_mode
+     *
      * @param debug_mode the debug mode
      */
     public static void setDebug(boolean debug_mode) {
-        if(debug == debug_mode){
+        if (debug == debug_mode) {
             return;
         }
         debug = debug_mode;
@@ -55,7 +57,7 @@ public class UCI {
             List<UCIListener> listeners = getInstance().listeners;
             List<UCIListener> new_listeners = new ArrayList<>();
             for (UCIListener lis : listeners) {
-                if(!(lis instanceof DebugUCIListener)){
+                if (!(lis instanceof DebugUCIListener)) {
                     new_listeners.add(lis);
                 }
             }
@@ -93,6 +95,7 @@ public class UCI {
      */
     private UCI() {
         listeners = new ArrayList<>();
+
     }
 
     /**
@@ -150,6 +153,7 @@ public class UCI {
 
         while (true) {
             awaitNextCommand();
+            InfoHandler.getInstance().flushInfoBuffer();
         }
 
     }
@@ -164,9 +168,13 @@ public class UCI {
         UCI uci = UCI.getInstance();
         uci.initialize();
         InfoHandler.sendMessage("Hello\nWorld!");
+        InfoHandler.getInstance().storeInfo("nodes", 5L);
+        InfoHandler.getInstance().storeInfo(InfoHandler.CPULOAD, 10.0);
+        InfoHandler.getInstance().flushInfoBuffer();
         for (String argument : args) {
             InfoHandler.sendMessage(argument);
         }
+        InfoHandler.getInstance().flushInfoBuffer();
         uci.awaitCommandsForever();
     }
 }

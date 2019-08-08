@@ -9,12 +9,12 @@ import java.util.*;
  * <p>
  * Usage:
  * set a bunch of infos with the corresponding InfoHandler::storeInfo()
- * commit and send send your infos with InfoHandler::sendStoredInfos()
+ * commit and send send your infos with InfoHandler::flushInfoBuffer()
  * Example usage:
  * InfoHandler ih = InfoHandler.getInstance();
  * ih.storeInfo(ih.CPULOAD, 50.0);
  * ih.storeInfo(ih.DEPTH, 9);
- * ih.sendStoredInfos();
+ * ih.flushInfoBuffer();
  */
 public class InfoHandler {
 
@@ -48,18 +48,29 @@ public class InfoHandler {
     public static final Set<String> STRING_KEYS = Set.of(STRING, CURRMOVE);
     public static final Set<String> LIST_STRING_KEYS = Set.of(PV, REFUTATION, CURRLINE_MOVES);
     private volatile static InfoHandler instance;
-    private Map<String, String> stringValues;
-    private Map<String, Long> longValues;
-    private Map<String, Double> doubleValues;
-    private Map<String, Integer> intValues;
-    private Map<String, String[]> stringListValues;
+
+    private StringBuffer infoBuffer;
 
 
     /**
      * Constructor. Only used by getInstance
      */
     private InfoHandler() {
-        initializeValueMaps();
+        infoBuffer = new StringBuffer();
+        flushInfoBuffer();
+    }
+
+    /**
+     * Empties the info buffer to System.out
+     * Only prints, if stored string != "" && != "info"
+     */
+    public synchronized void flushInfoBuffer() {
+        String out = infoBuffer.toString();
+        if (!(out.equals(UCICommands.INFO) || out.equals(""))) {
+            UCIBridge.getInstance().sendString(infoBuffer.toString().trim());
+        }
+        infoBuffer = new StringBuffer();
+        infoBuffer.append(UCICommands.INFO);
     }
 
     /**
@@ -83,19 +94,20 @@ public class InfoHandler {
      * Sends a message to the GUI. Message won't be parsed by GUI (uses "info string")
      * Sends already stored infos separately before sending the message
      * Allows multiline messages.
+     *
      * @param msg The message
      */
-    public synchronized static void sendMessage(String msg){
-        getInstance().sendStoredInfos();
+    public synchronized static void sendMessage(String msg) {
+        getInstance().flushInfoBuffer();
 
-        if(msg.contains("\n")){
-            for(String line: msg.split("\n")){
+        if (msg.contains("\n")) {
+            for (String line : msg.split("\n")) {
                 sendMessage(line);
             }
-        }else {
-            getInstance().storeInfo(STRING, msg);
+        } else {
+            getInstance().storeInfo(STRING, "\"" + msg + "\"");
         }
-        getInstance().sendStoredInfos();
+        getInstance().flushInfoBuffer();
     }
 
     /**
@@ -109,7 +121,7 @@ public class InfoHandler {
             throw new MismatchedKeyTypeException("NOT ALLOWED KEY USED IN storeInfo(STRING, STRING). " +
                     "ONLY USE KEYS FROM InfoHandler.STRING_KEYS");
         }
-        stringValues.put(key, value);
+        infoBuffer.append(" ").append(key).append(" ").append(value);
     }
 
     /**
@@ -123,7 +135,8 @@ public class InfoHandler {
             throw new MismatchedKeyTypeException("NOT ALLOWED KEY USED IN storeInfo(STRING, STRING[]). " +
                     "ONLY USE KEYS FROM InfoHandler.LIST_STRING_KEYS");
         }
-        stringListValues.put(key, value);
+        throw new RuntimeException("NOT IMPLEMENTED");
+        // stringListValues.put(key, value);
     }
 
     /**
@@ -137,7 +150,7 @@ public class InfoHandler {
             throw new MismatchedKeyTypeException("NOT ALLOWED KEY USED IN storeInfo(STRING, LONG). " +
                     "ONLY USE KEYS FROM InfoHandler.LONG_KEYS");
         }
-        longValues.put(key, value);
+        infoBuffer.append(" ").append(key).append(" ").append(value);
     }
 
     /**
@@ -151,7 +164,7 @@ public class InfoHandler {
             throw new MismatchedKeyTypeException("NOT ALLOWED KEY USED IN storeInfo(STRING, INTEGER). " +
                     "ONLY USE KEYS FROM InfoHandler.INT_KEYS");
         }
-        intValues.put(key, value);
+        infoBuffer.append(" ").append(key).append(" ").append(value);
     }
 
     /**
@@ -165,32 +178,6 @@ public class InfoHandler {
             throw new MismatchedKeyTypeException("NOT ALLOWED KEY USED IN storeInfo(STRING, DOUBLE). " +
                     "ONLY USE KEYS FROM InfoHandler.DOUBLE_KEYS");
         }
-        doubleValues.put(key, value);
+        infoBuffer.append(" ").append(key).append(" ").append(value.intValue());
     }
-
-    /**
-     * Sends all stored infos via UCI-Bridge to the GUI.
-     * Reset the instance automatically
-     */
-    public synchronized void sendStoredInfos() {
-        UCIBridge.getInstance().sendStringListInfo(stringListValues);
-        UCIBridge.getInstance().sendStringInfo(stringValues);
-        UCIBridge.getInstance().sendIntInfo(intValues);
-        UCIBridge.getInstance().sendDoubleInfo(doubleValues);
-        UCIBridge.getInstance().sendLongInfo(longValues);
-        initializeValueMaps();
-    }
-
-    /**
-     * Initializes and resets the value-maps responsible for storing the infos
-     */
-    private synchronized void initializeValueMaps() {
-        stringValues = new HashMap<>();
-        longValues = new HashMap<>();
-        doubleValues = new HashMap<>();
-        intValues = new HashMap<>();
-        stringListValues = new HashMap<>();
-    }
-
-
 }

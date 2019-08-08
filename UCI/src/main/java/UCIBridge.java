@@ -45,7 +45,7 @@ public class UCIBridge {
      *
      * @param string The String
      */
-    private synchronized void sendString(String string) {
+    public synchronized void sendString(String string) {
         System.out.println(string);
     }
 
@@ -93,38 +93,6 @@ public class UCIBridge {
         return input;
     }
 
-
-    public synchronized void sendLongInfo(Map<String, Long> longValues) {
-    }
-
-
-    public synchronized void sendDoubleInfo(Map<String, Double> doubleValues) {
-
-    }
-
-
-    public synchronized void sendIntInfo(Map<String, Integer> intValues) {
-
-    }
-
-
-    public synchronized void sendStringInfo(Map<String, String> stringValues) {
-        StringBuilder out = new StringBuilder(UCICommands.INFO + " ");
-        for (String key :
-                stringValues.keySet()) {
-            out.append(key.toLowerCase()).append(" ").append(stringValues.get(key)).append(" ");
-        }
-        String complete = removeUnnecessaryWS(out.toString());
-        if (!complete.equals(UCICommands.INFO)) {
-            sendString(out.toString());
-        }
-    }
-
-
-    public synchronized void sendStringListInfo(Map<String, String[]> stringListValues) {
-
-    }
-
     /**
      * Sends the id's. Used at engine initialization
      *
@@ -143,7 +111,7 @@ public class UCIBridge {
      * @throws EngineQuitSignal if the engine received the quit input from the GUI
      */
     public synchronized void initialize(Properties ucioptions) throws EngineQuitSignal {
-        String input = receiveCommand(UCICommands.UCI);
+        receiveCommand(UCICommands.UCI);
         sendID(ucioptions);
         sendAvailableOptions(ucioptions);
         sendUCIOk();
@@ -220,7 +188,7 @@ public class UCIBridge {
      * Deletes the unique UCIBridge instance
      * Used in test to reload the reader attribute
      */
-    public static synchronized void deleteInstance(){
+    public static synchronized void deleteInstance() {
         instance = null;
     }
 }

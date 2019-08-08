@@ -1,7 +1,7 @@
 /**
  * All used UCI commands as constants
  */
-public class UCICommands {
+public abstract class UCICommands {
     public static final String UCI = "uci";
     public static final String UCI_OK = "uciok";
     public static final String UNKNOWN_CMD = "unknown command:";

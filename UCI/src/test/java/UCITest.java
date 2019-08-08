@@ -14,19 +14,20 @@ public class UCITest {
     private static final String ENGINE_STARTUP_INPUT = "uci\nisready\nquit\n";
     private static final String ENGINE_STARTUP_OUTPUT = "id name HTW-Schachengine\n" +
             "id author Alessio Ragusa Matthias Sennikow Patrick Plewka\n" +
-            "uciok\ninfo string Hello \ninfo string World! \nreadyok\n";
+            "uciok\ninfo string \"Hello\"\ninfo string \"World!\"\ninfo nodes 5 cpuload 10\nreadyok\n";
 
     private static final String ENGINE_ONE_TURN_DEBUG_INPUT = "uci\nisready\ndebug on\nucinewgame\ngo\nstop\ngo\nquit\n";
     private static final String ENGINE_ONE_TURN_DEBUG_OUTPUT = "id name HTW-Schachengine\n" +
             "id author Alessio Ragusa Matthias Sennikow Patrick Plewka\n" +
             "uciok\n" +
-            "info string Hello \n" +
-            "info string World! \n" +
+            "info string \"Hello\"\n" +
+            "info string \"World!\"\n" +
+            "info nodes 5 cpuload 10\n" +
             "readyok\n" +
-            "info string received ucinewgame command \n" +
-            "info string received go command \n" +
-            "info string received stop command \n" +
-            "info string received go command \n";
+            "info string \"received ucinewgame command\"\n" +
+            "info string \"received go command\"\n" +
+            "info string \"received stop command\"\n" +
+            "info string \"received go command\"\n";
 
     @AfterEach
     void teardown() {
