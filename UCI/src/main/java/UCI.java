@@ -23,6 +23,7 @@ public class UCI {
 
     private List<UCIListener> listeners;
 
+
     /**
      * Returns the unique UCI instance
      *
@@ -93,7 +94,10 @@ public class UCI {
      */
     private UCI() {
         listeners = new ArrayList<>();
+
     }
+
+
 
     /**
      * Waits for the next command from GUI and informs all attached listeners
@@ -164,6 +168,8 @@ public class UCI {
         UCI uci = UCI.getInstance();
         uci.initialize();
         InfoHandler.sendMessage("Hello\nWorld!");
+        InfoHandler.getInstance().storeInfo("nodes", 5L);
+        InfoHandler.getInstance().sendStoredInfos();
         for (String argument : args) {
             InfoHandler.sendMessage(argument);
         }

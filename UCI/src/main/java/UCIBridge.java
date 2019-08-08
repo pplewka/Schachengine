@@ -45,7 +45,7 @@ public class UCIBridge {
      *
      * @param string The String
      */
-    private synchronized void sendString(String string) {
+    public synchronized void sendString(String string) {
         System.out.println(string);
     }
 
@@ -93,8 +93,17 @@ public class UCIBridge {
         return input;
     }
 
-
+    /**
+     * Sends Long infos
+     * @param longValues long infos
+     */
     public synchronized void sendLongInfo(Map<String, Long> longValues) {
+        StringBuilder temp = new StringBuilder();
+        temp.append(UCICommands.INFO).append(" ");
+        for (String key : longValues.keySet()) {
+            temp.append(key).append(" ").append(longValues.get(key));
+        }
+        sendString(temp.toString());
     }
 
 

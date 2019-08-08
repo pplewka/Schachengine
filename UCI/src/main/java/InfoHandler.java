@@ -54,12 +54,22 @@ public class InfoHandler {
     private Map<String, Integer> intValues;
     private Map<String, String[]> stringListValues;
 
+    private StringBuffer infoBuffer;
+
 
     /**
      * Constructor. Only used by getInstance
      */
     private InfoHandler() {
         initializeValueMaps();
+        infoBuffer = new StringBuffer();
+        flushInfoBuffer();
+    }
+
+    private synchronized void flushInfoBuffer() {
+        UCIBridge.getInstance().sendString(infoBuffer.toString());
+        infoBuffer = new StringBuffer();
+        infoBuffer.append(UCICommands.INFO).append(" ");
     }
 
     /**
