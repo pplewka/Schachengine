@@ -94,47 +94,6 @@ public class UCIBridge {
     }
 
     /**
-     * Sends Long infos
-     * @param longValues long infos
-     */
-    public synchronized void sendLongInfo(Map<String, Long> longValues) {
-        StringBuilder temp = new StringBuilder();
-        temp.append(UCICommands.INFO).append(" ");
-        for (String key : longValues.keySet()) {
-            temp.append(key).append(" ").append(longValues.get(key));
-        }
-        sendString(temp.toString());
-    }
-
-
-    public synchronized void sendDoubleInfo(Map<String, Double> doubleValues) {
-
-    }
-
-
-    public synchronized void sendIntInfo(Map<String, Integer> intValues) {
-
-    }
-
-
-    public synchronized void sendStringInfo(Map<String, String> stringValues) {
-        StringBuilder out = new StringBuilder(UCICommands.INFO + " ");
-        for (String key :
-                stringValues.keySet()) {
-            out.append(key.toLowerCase()).append(" ").append(stringValues.get(key)).append(" ");
-        }
-        String complete = removeUnnecessaryWS(out.toString());
-        if (!complete.equals(UCICommands.INFO)) {
-            sendString(out.toString());
-        }
-    }
-
-
-    public synchronized void sendStringListInfo(Map<String, String[]> stringListValues) {
-
-    }
-
-    /**
      * Sends the id's. Used at engine initialization
      *
      * @param ucioptions
@@ -152,7 +111,7 @@ public class UCIBridge {
      * @throws EngineQuitSignal if the engine received the quit input from the GUI
      */
     public synchronized void initialize(Properties ucioptions) throws EngineQuitSignal {
-        String input = receiveCommand(UCICommands.UCI);
+        receiveCommand(UCICommands.UCI);
         sendID(ucioptions);
         sendAvailableOptions(ucioptions);
         sendUCIOk();
@@ -229,7 +188,7 @@ public class UCIBridge {
      * Deletes the unique UCIBridge instance
      * Used in test to reload the reader attribute
      */
-    public static synchronized void deleteInstance(){
+    public static synchronized void deleteInstance() {
         instance = null;
     }
 }
