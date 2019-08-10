@@ -7,12 +7,12 @@ import java.util.Arrays;
 public class CastlingTest {
 
     private void setRooksAndKings(Board b){
-        b.setField(Piece.BROOK,26);
-        b.setField(Piece.BROOK,33);
-        b.setField(Piece.BKING,30);
-        b.setField(Piece.WROOK,110);
-        b.setField(Piece.WROOK,117);
-        b.setField(Piece.WKING,114);
+        b.setField(Piece.BROOK,0);
+        b.setField(Piece.BROOK,7);
+        b.setField(Piece.BKING,4);
+        b.setField(Piece.WROOK,56);
+        b.setField(Piece.WROOK,63);
+        b.setField(Piece.WKING,60);
     }
 
     private void setNotMoved(Board b){
@@ -42,15 +42,15 @@ public class CastlingTest {
         expected[1]= new BoardImpl();
         setRooksAndKings(expected[0]);
         setRooksAndKings(expected[1]);
-        expected[0].setField(Piece.WROOK,113);
-        expected[0].setField(Piece.WKING,112);
-        expected[0].setField(Piece.EMPTY,110);
-        expected[0].setField(Piece.EMPTY,114);
+        expected[0].setField(Piece.WROOK,59);
+        expected[0].setField(Piece.WKING,58);
+        expected[0].setField(Piece.EMPTY,56);
+        expected[0].setField(Piece.EMPTY,60);
 
-        expected[1].setField(Piece.WROOK,115);
-        expected[1].setField(Piece.WKING,116);
-        expected[1].setField(Piece.EMPTY,117);
-        expected[1].setField(Piece.EMPTY,114);
+        expected[1].setField(Piece.WROOK,61);
+        expected[1].setField(Piece.WKING,62);
+        expected[1].setField(Piece.EMPTY,63);
+        expected[1].setField(Piece.EMPTY,60);
 
         assertEquals(castels.size(),2);
 
@@ -85,15 +85,15 @@ public class CastlingTest {
         expected[1]= new BoardImpl();
         setRooksAndKings(expected[0]);
         setRooksAndKings(expected[1]);
-        expected[0].setField(Piece.BROOK,29);
-        expected[0].setField(Piece.BKING,28);
-        expected[0].setField(Piece.EMPTY,26);
-        expected[0].setField(Piece.EMPTY,30);
+        expected[0].setField(Piece.BROOK,3);
+        expected[0].setField(Piece.BKING,2);
+        expected[0].setField(Piece.EMPTY,0);
+        expected[0].setField(Piece.EMPTY,4);
 
-        expected[1].setField(Piece.BROOK,31);
-        expected[1].setField(Piece.BKING,32);
-        expected[1].setField(Piece.EMPTY,33);
-        expected[1].setField(Piece.EMPTY,30);
+        expected[1].setField(Piece.BROOK,5);
+        expected[1].setField(Piece.BKING,6);
+        expected[1].setField(Piece.EMPTY,7);
+        expected[1].setField(Piece.EMPTY,4);
 
         assertEquals(castels.size(),2);
 
@@ -145,8 +145,8 @@ public class CastlingTest {
         Board b= new BoardImpl();
         setRooksAndKings(b);
         setNotMoved(b);
-        b.setField(Piece.WPAWN,111);
-        b.setField(Piece.BPAWN,116);
+        b.setField(Piece.WPAWN,57);
+        b.setField(Piece.BPAWN,62);
 
         Move root = new MoveImpl(0,0,'0',b,true);
         MoveGeneration mg = MoveGenerationImpl.getMoveGeneration();
@@ -162,8 +162,8 @@ public class CastlingTest {
         Board b= new BoardImpl();
         setRooksAndKings(b);
         setNotMoved(b);
-        b.setField(Piece.BPAWN,27);
-        b.setField(Piece.WPAWN,31);
+        b.setField(Piece.BPAWN,1);
+        b.setField(Piece.WPAWN,5);
 
         Move root = new MoveImpl(0,0,'0',b,false);
         MoveGeneration mg = MoveGenerationImpl.getMoveGeneration();
@@ -179,8 +179,8 @@ public class CastlingTest {
         Board b= new BoardImpl();
         setRooksAndKings(b);
         setNotMoved(b);
-        b.setField(Piece.BROOK,65);
-        b.setField(Piece.BROOK,67);
+        b.setField(Piece.BROOK,27);
+        b.setField(Piece.BROOK,29);
 
         Move root = new MoveImpl(0,0,'0',b,true);
         MoveGeneration mg = MoveGenerationImpl.getMoveGeneration();
@@ -196,8 +196,8 @@ public class CastlingTest {
         Board b= new BoardImpl();
         setRooksAndKings(b);
         setNotMoved(b);
-        b.setField(Piece.WROOK,65);
-        b.setField(Piece.WROOK,67);
+        b.setField(Piece.WROOK,27);
+        b.setField(Piece.WROOK,29);
 
         Move root = new MoveImpl(0,0,'0',b,false);
         MoveGeneration mg = MoveGenerationImpl.getMoveGeneration();

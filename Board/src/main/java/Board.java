@@ -51,14 +51,6 @@ public interface Board{
     public void setField(byte c, int field);
 
     /**
-     * method to check if a position is on board
-     *
-     * @param field position to check
-     * @return true if this field is not in space
-     */
-    public boolean fieldIsOnBoard(int field);
-
-    /**
      * method to check if a field is occupied by a valid piece
      * @param field field to check
      * @return true if field has a valid piece

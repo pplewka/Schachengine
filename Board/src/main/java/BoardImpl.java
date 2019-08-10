@@ -9,7 +9,7 @@ public class BoardImpl implements Board{
     private boolean bRightRockMoved;
 
     public BoardImpl(){
-        this.board= new byte[144];
+        this.board= new byte[64];
 
         wKingMoved=true;
         bKingMoved=true;
@@ -18,7 +18,6 @@ public class BoardImpl implements Board{
         bLeftRockMoved=true;
         bRightRockMoved=true;
 
-        setSpace();
         setEmptyRoom();
     }
 
@@ -35,80 +34,47 @@ public class BoardImpl implements Board{
         return out;
     }
 
-    private void setSpace(){
-        //above space
-        for(int i=0;i<24;i++){
-            board[i]=Piece.SPACE;
-        }
-
-        //left space
-        for(int i=24;i<109;i+=12){
-            board[i]=Piece.SPACE;
-        }
-        for(int i=25;i<110;i+=12){
-            board[i]=Piece.SPACE;
-        }
-
-        //right space
-        for(int i=34;i<119;i+=12){
-            board[i]=Piece.SPACE;
-        }
-        for(int i=35;i<120;i+=12){
-            board[i]=Piece.SPACE;
-        }
-
-        //below space
-        for(int i=120;i<144;i++){
-            board[i]=Piece.SPACE;
-        }
-    }
-
     private void setEmptyRoom(){
-        for(int i = 26; i < 118; ) {
+        for(int i = 0; i < 64;i++ ) {
             board[i]=Piece.EMPTY;
-
-            i++;
-            if ((i + 2) % 12 == 0) {
-                i += 4;
-            }
         }
     }
 
     public void startPos(){
 
-        //White Pawns
-        for(int i=38;i<46;i++){
+        //Black Pawns
+        for(int i=8;i<16;i++){
             board[i]=Piece.BPAWN;
         }
 
-        //Black Pawns
-        for(int i=98;i<106;i++){
+        //White Pawns
+        for(int i=48;i<56;i++){
             board[i]=Piece.WPAWN;
         }
 
-        board[26]=Piece.BROOK;
-        board[33]=Piece.BROOK;
+        board[0]=Piece.BROOK;
+        board[7]=Piece.BROOK;
 
-        board[110]=Piece.WROOK;
-        board[117]=Piece.WROOK;
+        board[56]=Piece.WROOK;
+        board[63]=Piece.WROOK;
 
-        board[27]=Piece.BKNIGHT;
-        board[32]=Piece.BKNIGHT;
+        board[1]=Piece.BKNIGHT;
+        board[6]=Piece.BKNIGHT;
 
-        board[111]=Piece.WKNIGHT;
-        board[116]=Piece.WKNIGHT;
+        board[57]=Piece.WKNIGHT;
+        board[62]=Piece.WKNIGHT;
 
-        board[28]=Piece.BBISHOP;
-        board[31]=Piece.BBISHOP;
+        board[2]=Piece.BBISHOP;
+        board[5]=Piece.BBISHOP;
 
-        board[112]=Piece.WBISHOP;
-        board[115]=Piece.WBISHOP;
+        board[58]=Piece.WBISHOP;
+        board[61]=Piece.WBISHOP;
 
-        board[29]=Piece.BQUEEN;
-        board[30]=Piece.BKING;
+        board[3]=Piece.BQUEEN;
+        board[4]=Piece.BKING;
 
-        board[113]=Piece.WQUEEN;
-        board[114]=Piece.WKING;
+        board[59]=Piece.WQUEEN;
+        board[60]=Piece.WKING;
 
         wKingMoved=false;
         bKingMoved=false;
@@ -140,14 +106,14 @@ public class BoardImpl implements Board{
     @Override
     public boolean castlingDone(int rockPosition) {
         switch (rockPosition) {
-            case 26:
-                return ((bLeftRockMoved)||(bKingMoved)||(pathHasPiece(26,30)));
-            case 33:
-                return ((bRightRockMoved)||(bKingMoved)||(pathHasPiece(30,33)));
-            case 110:
-                return ((wLeftRockMoved)||(wKingMoved)||(pathHasPiece(110,114)));
-            case 117:
-                return ((wRightRockMoved)||(wKingMoved)||(pathHasPiece(114,117)));
+            case 0:
+                return ((bLeftRockMoved)||(bKingMoved)||(pathHasPiece(0,4)));
+            case 7:
+                return ((bRightRockMoved)||(bKingMoved)||(pathHasPiece(4,7)));
+            case 56:
+                return ((wLeftRockMoved)||(wKingMoved)||(pathHasPiece(56,60)));
+            case 63:
+                return ((wRightRockMoved)||(wKingMoved)||(pathHasPiece(60,63)));
             default:
                 //should never happen
                 throw new IllegalArgumentException("castlingPossible default value");
@@ -163,13 +129,9 @@ public class BoardImpl implements Board{
         board[field]=piece;
     }
 
-    public boolean fieldIsOnBoard(int field){
-        return board[field]!=Piece.SPACE;
-    }
-
     public boolean fieldIsOccupied(int field){
         byte temp = board[field];
-        return temp!=Piece.EMPTY&&temp!=Piece.SPACE;
+        return temp!=Piece.EMPTY;
     }
 
     public boolean iswKingMoved() {

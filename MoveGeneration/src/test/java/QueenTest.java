@@ -7,9 +7,9 @@ public class QueenTest {
     @Test
     public void emptyMovementWhite(){
         Board b= new BoardImpl();
-        b.setField(Piece.WQUEEN,65);
+        b.setField(Piece.WQUEEN,27);
 
-        int[] expected={26,39,52,78,91,104,117,32,43,54,76,87,98,29,41,53,77,89,101,113,62,63,64,66,67,68,69};
+        int[] expected={0,9,18,36,45,54,63,6,13,20,34,41,48,3,11,19,35,43,51,59,24,25,26,28,29,30,31};
 
         MoveGeneration mg= MoveGenerationImpl.getMoveGeneration();
         ArrayList<Move> moves= new ArrayList<>();
@@ -41,9 +41,9 @@ public class QueenTest {
     @Test
     public void emptyMovementBlack(){
         Board b= new BoardImpl();
-        b.setField(Piece.BQUEEN,65);
+        b.setField(Piece.BQUEEN,27);
 
-        int[] expected={26,39,52,78,91,104,117,32,43,54,76,87,98,29,41,53,77,89,101,113,62,63,64,66,67,68,69};
+        int[] expected={0,9,18,36,45,54,63,6,13,20,34,41,48,3,11,19,35,43,51,59,24,25,26,28,29,30,31};
 
         MoveGeneration mg= MoveGenerationImpl.getMoveGeneration();
         ArrayList<Move> moves= new ArrayList<>();
@@ -75,18 +75,18 @@ public class QueenTest {
     @Test
     public void ownPiecesBlockingWhite(){
         Board b= new BoardImpl();
-        b.setField(Piece.WQUEEN,65);
+        b.setField(Piece.WQUEEN,27);
 
-        b.setField(Piece.WPAWN,39);
-        b.setField(Piece.WPAWN,43);
-        b.setField(Piece.WPAWN,91);
-        b.setField(Piece.WPAWN,87);
-        b.setField(Piece.WPAWN,63);
+        b.setField(Piece.WPAWN,9);
+        b.setField(Piece.WPAWN,13);
+        b.setField(Piece.WPAWN,45);
         b.setField(Piece.WPAWN,41);
-        b.setField(Piece.WPAWN,68);
-        b.setField(Piece.WPAWN,101);
+        b.setField(Piece.WPAWN,25);
+        b.setField(Piece.WPAWN,11);
+        b.setField(Piece.WPAWN,30);
+        b.setField(Piece.WPAWN,51);
 
-        int[] expected={52,78,54,76,53,77,89,64,66,67};
+        int[] expected={18,36,20,34,19,35,43,26,28,29};
 
         MoveGeneration mg= MoveGenerationImpl.getMoveGeneration();
         ArrayList<Move> moves= new ArrayList<>();
@@ -117,18 +117,18 @@ public class QueenTest {
     @Test
     public void ownPiecesBlockingBlack(){
         Board b= new BoardImpl();
-        b.setField(Piece.BQUEEN,65);
+        b.setField(Piece.BQUEEN,27);
 
-        b.setField(Piece.BPAWN,39);
-        b.setField(Piece.BPAWN,43);
-        b.setField(Piece.BPAWN,91);
-        b.setField(Piece.BPAWN,87);
-        b.setField(Piece.BPAWN,63);
+        b.setField(Piece.BPAWN,9);
+        b.setField(Piece.BPAWN,13);
+        b.setField(Piece.BPAWN,45);
         b.setField(Piece.BPAWN,41);
-        b.setField(Piece.BPAWN,68);
-        b.setField(Piece.BPAWN,101);
+        b.setField(Piece.BPAWN,25);
+        b.setField(Piece.BPAWN,11);
+        b.setField(Piece.BPAWN,30);
+        b.setField(Piece.BPAWN,51);
 
-        int[] expected={52,78,54,76,53,77,89,64,66,67};
+        int[] expected={18,36,20,34,19,35,43,26,28,29};
 
         MoveGeneration mg= MoveGenerationImpl.getMoveGeneration();
         ArrayList<Move> moves= new ArrayList<>();
@@ -159,18 +159,18 @@ public class QueenTest {
     @Test
     public void opponentBlockingWhite(){
         Board b= new BoardImpl();
-        b.setField(Piece.WQUEEN,65);
+        b.setField(Piece.WQUEEN,27);
 
-        b.setField(Piece.BPAWN,39);
-        b.setField(Piece.BPAWN,43);
-        b.setField(Piece.BPAWN,91);
-        b.setField(Piece.BPAWN,87);
-        b.setField(Piece.BPAWN,63);
+        b.setField(Piece.BPAWN,9);
+        b.setField(Piece.BPAWN,13);
+        b.setField(Piece.BPAWN,45);
         b.setField(Piece.BPAWN,41);
-        b.setField(Piece.BPAWN,68);
-        b.setField(Piece.BPAWN,101);
+        b.setField(Piece.BPAWN,25);
+        b.setField(Piece.BPAWN,11);
+        b.setField(Piece.BPAWN,30);
+        b.setField(Piece.BPAWN,51);
 
-        int[] expected={52,78,54,76,39,43,91,87,53,77,89,64,66,67,63,41,68,101};
+        int[] expected={18,36,20,34,9,13,45,41,19,35,43,26,28,29,25,11,30,51};
 
         MoveGeneration mg= MoveGenerationImpl.getMoveGeneration();
         ArrayList<Move> moves= new ArrayList<>();
@@ -201,18 +201,18 @@ public class QueenTest {
     @Test
     public void opponentBlockingBlack(){
         Board b= new BoardImpl();
-        b.setField(Piece.BQUEEN,65);
+        b.setField(Piece.BQUEEN,27);
 
-        b.setField(Piece.WPAWN,39);
-        b.setField(Piece.WPAWN,43);
-        b.setField(Piece.WPAWN,91);
-        b.setField(Piece.WPAWN,87);
-        b.setField(Piece.WPAWN,63);
+        b.setField(Piece.WPAWN,9);
+        b.setField(Piece.WPAWN,13);
+        b.setField(Piece.WPAWN,45);
         b.setField(Piece.WPAWN,41);
-        b.setField(Piece.WPAWN,68);
-        b.setField(Piece.WPAWN,101);
+        b.setField(Piece.WPAWN,25);
+        b.setField(Piece.WPAWN,11);
+        b.setField(Piece.WPAWN,30);
+        b.setField(Piece.WPAWN,51);
 
-        int[] expected={52,78,54,76,39,43,91,87,53,77,89,64,66,67,63,41,68,101};
+        int[] expected={18,36,20,34,9,13,45,41,19,35,43,26,28,29,25,11,30,51};
 
         MoveGeneration mg= MoveGenerationImpl.getMoveGeneration();
         ArrayList<Move> moves= new ArrayList<>();

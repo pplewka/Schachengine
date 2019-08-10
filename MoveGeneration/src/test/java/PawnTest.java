@@ -7,10 +7,10 @@ public class PawnTest {
     @Test
     public void justForwardMoveWhite(){
         Board b= new BoardImpl();
-        b.setField(Piece.WPAWN,88);
+        b.setField(Piece.WPAWN,42);
 
         Board expected= new BoardImpl();
-        expected.setField(Piece.WPAWN,76);
+        expected.setField(Piece.WPAWN,34);
 
         Move root = new MoveImpl(0,0,' ',b,true);
         MoveGeneration moveGen = MoveGenerationImpl.getMoveGeneration();
@@ -24,10 +24,10 @@ public class PawnTest {
     @Test
     public void justForwardMoveBlack(){
         Board b= new BoardImpl();
-        b.setField(Piece.BPAWN,88);
+        b.setField(Piece.BPAWN,42);
 
         Board expected= new BoardImpl();
-        expected.setField(Piece.BPAWN,100);
+        expected.setField(Piece.BPAWN,50);
 
         Move root = new MoveImpl(0,0,' ',b,false);
         MoveGeneration moveGen = MoveGenerationImpl.getMoveGeneration();
@@ -41,7 +41,7 @@ public class PawnTest {
     @Test
     public void firstMoveWhite(){
         Board b= new BoardImpl();
-        b.setField(Piece.WPAWN,100);
+        b.setField(Piece.WPAWN,50);
 
         Move root = new MoveImpl(0,0,' ',b,true);
         MoveGeneration moveGen = MoveGenerationImpl.getMoveGeneration();
@@ -50,7 +50,7 @@ public class PawnTest {
 
         boolean jumped=false;
         for (Move m:moves) {
-            if(m.getBoard().getPiece(76)==Piece.WPAWN){
+            if(m.getBoard().getPiece(34)==Piece.WPAWN){
                 jumped=true;
             }
         }
@@ -62,7 +62,7 @@ public class PawnTest {
     @Test
     public void firstMoveBlack(){
         Board b= new BoardImpl();
-        b.setField(Piece.WPAWN,40);
+        b.setField(Piece.WPAWN,10);
 
         Move root = new MoveImpl(0,0,' ',b,false);
         MoveGeneration moveGen = MoveGenerationImpl.getMoveGeneration();
@@ -71,7 +71,7 @@ public class PawnTest {
 
         boolean jumped=false;
         for (Move m:moves) {
-            if(m.getBoard().getPiece(64)==Piece.WPAWN){
+            if(m.getBoard().getPiece(26)==Piece.WPAWN){
                 jumped=true;
             }
         }
@@ -83,11 +83,11 @@ public class PawnTest {
     @Test
     public void dontCaptureOwnPiecesTestWhite(){
         Board b= new BoardImpl();
-        b.setField(Piece.WPAWN,100);
-        b.setField(Piece.WKNIGHT,76);
-        b.setField(Piece.WKNIGHT,88);
-        b.setField(Piece.WKNIGHT,87);
-        b.setField(Piece.WKNIGHT,89);
+        b.setField(Piece.WPAWN,50);
+        b.setField(Piece.WKNIGHT,34);
+        b.setField(Piece.WKNIGHT,42);
+        b.setField(Piece.WKNIGHT,41);
+        b.setField(Piece.WKNIGHT,43);
 
         Move root = new MoveImpl(0,0,' ',b,true);
         MoveGeneration moveGen = MoveGenerationImpl.getMoveGeneration();
@@ -96,16 +96,16 @@ public class PawnTest {
         moveGen.generatePawnMoves(root,100,moves);
 
         for (Move m:moves) {
-            assertEquals(m.getBoard().getPiece(76),Piece.WKNIGHT);
+            assertEquals(m.getBoard().getPiece(34),Piece.WKNIGHT);
         }
 
         for (Move m:moves) {
-            assertEquals(m.getBoard().getPiece(88),Piece.WKNIGHT);
+            assertEquals(m.getBoard().getPiece(42),Piece.WKNIGHT);
         }
 
         boolean captured1=false;
         for (Move m:moves) {
-            if(m.getBoard().getPiece(87)==Piece.WPAWN){
+            if(m.getBoard().getPiece(41)==Piece.WPAWN){
                 captured1=true;
             }
         }
@@ -113,7 +113,7 @@ public class PawnTest {
 
         boolean captured2=false;
         for (Move m:moves) {
-            if(m.getBoard().getPiece(89)==Piece.WPAWN){
+            if(m.getBoard().getPiece(43)==Piece.WPAWN){
                 captured2=true;
             }
         }
@@ -124,11 +124,11 @@ public class PawnTest {
     @Test
     public void dontCaptureOwnPiecesTestBlack(){
         Board b= new BoardImpl();
-        b.setField(Piece.BPAWN,40);
-        b.setField(Piece.BKNIGHT,52);
-        b.setField(Piece.BKNIGHT,64);
-        b.setField(Piece.BKNIGHT,51);
-        b.setField(Piece.BKNIGHT,53);
+        b.setField(Piece.BPAWN,10);
+        b.setField(Piece.BKNIGHT,18);
+        b.setField(Piece.BKNIGHT,26);
+        b.setField(Piece.BKNIGHT,17);
+        b.setField(Piece.BKNIGHT,19);
 
         Move root = new MoveImpl(0,0,' ',b,false);
         MoveGeneration moveGen = MoveGenerationImpl.getMoveGeneration();
@@ -137,17 +137,17 @@ public class PawnTest {
         moveGen.generatePawnMoves(root,40,moves);
 
         for (Move m:moves) {
-            assertEquals(m.getBoard().getPiece(52),Piece.BKNIGHT);
+            assertEquals(m.getBoard().getPiece(18),Piece.BKNIGHT);
         }
 
         for (Move m:moves) {
-            assertEquals(m.getBoard().getPiece(64),Piece.BKNIGHT);
+            assertEquals(m.getBoard().getPiece(26),Piece.BKNIGHT);
         }
 
         boolean captured1=false;
         for (Move m:moves) {
 
-            if(m.getBoard().getPiece(51)==Piece.BPAWN){
+            if(m.getBoard().getPiece(17)==Piece.BPAWN){
                 captured1=true;
             }
         }
@@ -155,7 +155,7 @@ public class PawnTest {
 
         boolean captured2=false;
         for (Move m:moves) {
-            if(m.getBoard().getPiece(53)==Piece.BPAWN){
+            if(m.getBoard().getPiece(19)==Piece.BPAWN){
                 captured2=true;
             }
         }
@@ -166,11 +166,11 @@ public class PawnTest {
     @Test
     public void captureOpponentPiecesTestWhite(){
         Board b= new BoardImpl();
-        b.setField(Piece.WPAWN,100);
-        b.setField(Piece.BKNIGHT,76);
-        b.setField(Piece.BKNIGHT,88);
-        b.setField(Piece.BKNIGHT,87);
-        b.setField(Piece.BKNIGHT,89);
+        b.setField(Piece.WPAWN,50);
+        b.setField(Piece.BKNIGHT,34);
+        b.setField(Piece.BKNIGHT,42);
+        b.setField(Piece.BKNIGHT,41);
+        b.setField(Piece.BKNIGHT,43);
 
         Move root = new MoveImpl(0,0,' ',b,true);
         MoveGeneration moveGen = MoveGenerationImpl.getMoveGeneration();
@@ -179,16 +179,16 @@ public class PawnTest {
         moveGen.generatePawnMoves(root,100,moves);
 
         for (Move m:moves) {
-            assertEquals(m.getBoard().getPiece(76),Piece.BKNIGHT);
+            assertEquals(m.getBoard().getPiece(34),Piece.BKNIGHT);
         }
 
         for (Move m:moves) {
-            assertEquals(m.getBoard().getPiece(88),Piece.BKNIGHT);
+            assertEquals(m.getBoard().getPiece(42),Piece.BKNIGHT);
         }
 
         boolean captured1=false;
         for (Move m:moves) {
-            if(m.getBoard().getPiece(87)==Piece.WPAWN){
+            if(m.getBoard().getPiece(41)==Piece.WPAWN){
                 captured1=true;
             }
         }
@@ -196,7 +196,7 @@ public class PawnTest {
 
         boolean captured2=false;
         for (Move m:moves) {
-            if(m.getBoard().getPiece(89)==Piece.WPAWN){
+            if(m.getBoard().getPiece(43)==Piece.WPAWN){
                 captured2=true;
             }
         }
@@ -207,11 +207,11 @@ public class PawnTest {
     @Test
     public void captureOpponentPiecesTestBlack(){
         Board b= new BoardImpl();
-        b.setField(Piece.BPAWN,40);
-        b.setField(Piece.WKNIGHT,52);
-        b.setField(Piece.WKNIGHT,64);
-        b.setField(Piece.WKNIGHT,51);
-        b.setField(Piece.WKNIGHT,53);
+        b.setField(Piece.BPAWN,10);
+        b.setField(Piece.WKNIGHT,18);
+        b.setField(Piece.WKNIGHT,26);
+        b.setField(Piece.WKNIGHT,17);
+        b.setField(Piece.WKNIGHT,19);
 
         Move root = new MoveImpl(0,0,' ',b,false);
         MoveGeneration moveGen = MoveGenerationImpl.getMoveGeneration();
@@ -220,16 +220,16 @@ public class PawnTest {
         moveGen.generatePawnMoves(root,40,moves);
 
         for (Move m:moves) {
-            assertEquals(m.getBoard().getPiece(52),Piece.WKNIGHT);
+            assertEquals(m.getBoard().getPiece(18),Piece.WKNIGHT);
         }
 
         for (Move m:moves) {
-            assertEquals(m.getBoard().getPiece(64),Piece.WKNIGHT);
+            assertEquals(m.getBoard().getPiece(26),Piece.WKNIGHT);
         }
 
         boolean captured1=false;
         for (Move m:moves) {
-            if(m.getBoard().getPiece(51)==Piece.BPAWN){
+            if(m.getBoard().getPiece(17)==Piece.BPAWN){
                 captured1=true;
             }
         }
@@ -237,7 +237,7 @@ public class PawnTest {
 
         boolean captured2=false;
         for (Move m:moves) {
-            if(m.getBoard().getPiece(53)==Piece.BPAWN){
+            if(m.getBoard().getPiece(19)==Piece.BPAWN){
                 captured2=true;
             }
         }
@@ -248,11 +248,11 @@ public class PawnTest {
     @Test
     public void kingInCheckTestWhite(){
         Board b= new BoardImpl();
-        b.setField(Piece.WPAWN,90);
-        b.setField(Piece.BPAWN,77);
-        b.setField(Piece.BPAWN,79);
-        b.setField(Piece.BROOK,78);
-        b.setField(Piece.WKING,114);
+        b.setField(Piece.WPAWN,44);
+        b.setField(Piece.BPAWN,35);
+        b.setField(Piece.BPAWN,37);
+        b.setField(Piece.BROOK,36);
+        b.setField(Piece.WKING,60);
 
         Move root = new MoveImpl(0,0,' ',b,true);
         MoveGeneration moveGen = MoveGenerationImpl.getMoveGeneration();
@@ -265,11 +265,11 @@ public class PawnTest {
     @Test
     public void kingInCheckTestBlack(){
         Board b= new BoardImpl();
-        b.setField(Piece.BPAWN,54);
-        b.setField(Piece.WPAWN,67);
-        b.setField(Piece.WPAWN,65);
-        b.setField(Piece.WROOK,66);
-        b.setField(Piece.BKING,30);
+        b.setField(Piece.BPAWN,20);
+        b.setField(Piece.WPAWN,29);
+        b.setField(Piece.WPAWN,27);
+        b.setField(Piece.WROOK,28);
+        b.setField(Piece.BKING,4);
 
         Move root = new MoveImpl(0,0,' ',b,false);
         MoveGeneration moveGen = MoveGenerationImpl.getMoveGeneration();
@@ -282,7 +282,7 @@ public class PawnTest {
     @Test
     public void promotionTestWhite(){
         Board b= new BoardImpl();
-        b.setField(Piece.WPAWN,40);
+        b.setField(Piece.WPAWN,10);
 
         Move root = new MoveImpl(0,0,' ',b,true);
 
@@ -294,7 +294,8 @@ public class PawnTest {
 
         boolean rightPromotion = true;
         for(Move m:moves){
-            byte p = m.getBoard().getPiece(28);
+            Board mboard=m.getBoard();
+            byte p = mboard.getPiece(2);
 
             if(!(p==Piece.WBISHOP||p==Piece.WQUEEN||p==Piece.WKNIGHT||p==Piece.WROOK)){
                 rightPromotion=false;
@@ -307,7 +308,7 @@ public class PawnTest {
     @Test
     public void promotionTestBlack(){
         Board b= new BoardImpl();
-        b.setField(Piece.BPAWN,99);
+        b.setField(Piece.BPAWN,49);
 
         Move root = new MoveImpl(0,0,' ',b,false);
 
@@ -319,7 +320,7 @@ public class PawnTest {
 
         boolean rightPromotion = true;
         for(Move m:moves){
-            byte p = m.getBoard().getPiece(111);
+            byte p = m.getBoard().getPiece(57);
 
             if(!(p==Piece.BBISHOP||p==Piece.BQUEEN||p==Piece.BKNIGHT||p==Piece.BROOK)){
                 rightPromotion=false;

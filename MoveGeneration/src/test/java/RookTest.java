@@ -8,9 +8,9 @@ public class RookTest {
     @Test
     public void emptyMovementWhite(){
         Board b= new BoardImpl();
-        b.setField(Piece.WROOK,65);
+        b.setField(Piece.WROOK,27);
 
-        int[] expected={29,41,53,77,89,101,113,62,63,64,66,67,68,69};
+        int[] expected={3,11,19,35,43,51,59,24,25,26,28,29,30,31};
 
         MoveGeneration mg= MoveGenerationImpl.getMoveGeneration();
         ArrayList<Move> moves= new ArrayList<>();
@@ -42,9 +42,9 @@ public class RookTest {
     @Test
     public void emptyMovementBlack(){
         Board b= new BoardImpl();
-        b.setField(Piece.BROOK,65);
+        b.setField(Piece.BROOK,27);
 
-        int[] expected={29,41,53,77,89,101,113,62,63,64,66,67,68,69};
+        int[] expected={3,11,19,35,43,51,59,24,25,26,28,29,30,31};
 
         MoveGeneration mg= MoveGenerationImpl.getMoveGeneration();
         ArrayList<Move> moves= new ArrayList<>();
@@ -76,13 +76,13 @@ public class RookTest {
     @Test
     public void ownPiecesBlockingWhite(){
         Board b= new BoardImpl();
-        b.setField(Piece.WROOK,65);
-        b.setField(Piece.WPAWN,63);
-        b.setField(Piece.WPAWN,41);
-        b.setField(Piece.WPAWN,68);
-        b.setField(Piece.WPAWN,101);
+        b.setField(Piece.WROOK,27);
+        b.setField(Piece.WPAWN,25);
+        b.setField(Piece.WPAWN,11);
+        b.setField(Piece.WPAWN,30);
+        b.setField(Piece.WPAWN,51);
 
-        int[] expected={53,77,89,64,66,67};
+        int[] expected={19,35,43,26,28,29};
 
         MoveGeneration mg= MoveGenerationImpl.getMoveGeneration();
         ArrayList<Move> moves= new ArrayList<>();
@@ -112,13 +112,13 @@ public class RookTest {
     @Test
     public void ownPiecesBlockingBlack(){
         Board b= new BoardImpl();
-        b.setField(Piece.BROOK,65);
-        b.setField(Piece.BPAWN,63);
-        b.setField(Piece.BPAWN,41);
-        b.setField(Piece.BPAWN,68);
-        b.setField(Piece.BPAWN,101);
+        b.setField(Piece.BROOK,27);
+        b.setField(Piece.BPAWN,25);
+        b.setField(Piece.BPAWN,11);
+        b.setField(Piece.BPAWN,30);
+        b.setField(Piece.BPAWN,51);
 
-        int[] expected={53,77,89,64,66,67};
+        int[] expected={19,35,43,26,28,29};
 
         MoveGeneration mg= MoveGenerationImpl.getMoveGeneration();
         ArrayList<Move> moves= new ArrayList<>();
@@ -148,13 +148,13 @@ public class RookTest {
     @Test
     public void opponentBlockingWhite(){
         Board b= new BoardImpl();
-        b.setField(Piece.WROOK,65);
-        b.setField(Piece.BPAWN,63);
-        b.setField(Piece.BPAWN,41);
-        b.setField(Piece.BPAWN,68);
-        b.setField(Piece.BPAWN,101);
+        b.setField(Piece.WROOK,27);
+        b.setField(Piece.BPAWN,25);
+        b.setField(Piece.BPAWN,11);
+        b.setField(Piece.BPAWN,30);
+        b.setField(Piece.BPAWN,51);
 
-        int[] expected={53,77,89,64,66,67,63,41,68,101};
+        int[] expected={19,35,43,26,28,29,25,11,30,51};
 
         MoveGeneration mg= MoveGenerationImpl.getMoveGeneration();
         ArrayList<Move> moves= new ArrayList<>();
@@ -184,13 +184,13 @@ public class RookTest {
     @Test
     public void opponentBlockingBlack(){
         Board b= new BoardImpl();
-        b.setField(Piece.BROOK,65);
-        b.setField(Piece.WPAWN,63);
-        b.setField(Piece.WPAWN,41);
-        b.setField(Piece.WPAWN,68);
-        b.setField(Piece.WPAWN,101);
+        b.setField(Piece.BROOK,27);
+        b.setField(Piece.WPAWN,25);
+        b.setField(Piece.WPAWN,11);
+        b.setField(Piece.WPAWN,30);
+        b.setField(Piece.WPAWN,51);
 
-        int[] expected={53,77,89,64,66,67,63,41,68,101};
+        int[] expected={19,35,43,26,28,29,25,11,30,51};
 
         MoveGeneration mg= MoveGenerationImpl.getMoveGeneration();
         ArrayList<Move> moves= new ArrayList<>();
@@ -220,10 +220,10 @@ public class RookTest {
     @Test
     public void changingBool(){
         Board b= new BoardImpl();
-        b.setField(Piece.WROOK,110);
-        b.setField(Piece.WROOK,117);
-        b.setField(Piece.BROOK,26);
-        b.setField(Piece.BROOK,33);
+        b.setField(Piece.WROOK,56);
+        b.setField(Piece.WROOK,63);
+        b.setField(Piece.BROOK,0);
+        b.setField(Piece.BROOK,7);
         b.setbLeftRockMoved(false);
         b.setbRightRockMoved(false);
         b.setwLeftRockMoved(false);

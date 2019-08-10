@@ -8,9 +8,9 @@ public class BishopTest {
     @Test
     public void emptyMovementWhite(){
         Board b= new BoardImpl();
-        b.setField(Piece.WBISHOP,65);
+        b.setField(Piece.WBISHOP,27);
 
-        int[] expected={26,39,52,78,91,104,117,32,43,54,76,87,98};
+        int[] expected={0,9,18,36,45,54,63,6,13,20,34,41,48};
 
         MoveGeneration mg= MoveGenerationImpl.getMoveGeneration();
         ArrayList<Move> moves= new ArrayList<>();
@@ -42,9 +42,9 @@ public class BishopTest {
     @Test
     public void emptyMovementBlack(){
         Board b= new BoardImpl();
-        b.setField(Piece.BBISHOP,65);
+        b.setField(Piece.BBISHOP,27);
 
-        int[] expected={26,39,52,78,91,104,117,32,43,54,76,87,98};
+        int[] expected={0,9,18,36,45,54,63,6,13,20,34,41,48};
 
         MoveGeneration mg= MoveGenerationImpl.getMoveGeneration();
         ArrayList<Move> moves= new ArrayList<>();
@@ -76,14 +76,14 @@ public class BishopTest {
     @Test
     public void ownPiecesBlockingWhite(){
         Board b= new BoardImpl();
-        b.setField(Piece.WBISHOP,65);
+        b.setField(Piece.WBISHOP,27);
 
-        b.setField(Piece.WPAWN,39);
-        b.setField(Piece.WPAWN,43);
-        b.setField(Piece.WPAWN,91);
-        b.setField(Piece.WPAWN,87);
+        b.setField(Piece.WPAWN,9);
+        b.setField(Piece.WPAWN,13);
+        b.setField(Piece.WPAWN,45);
+        b.setField(Piece.WPAWN,41);
 
-        int[] expected={52,78,54,76};
+        int[] expected={18,36,20,34};
 
         MoveGeneration mg= MoveGenerationImpl.getMoveGeneration();
         ArrayList<Move> moves= new ArrayList<>();
@@ -114,14 +114,14 @@ public class BishopTest {
     @Test
     public void ownPiecesBlockingBlack(){
         Board b= new BoardImpl();
-        b.setField(Piece.BBISHOP,65);
+        b.setField(Piece.BBISHOP,27);
 
-        b.setField(Piece.BPAWN,39);
-        b.setField(Piece.BPAWN,43);
-        b.setField(Piece.BPAWN,91);
-        b.setField(Piece.BPAWN,87);
+        b.setField(Piece.BPAWN,9);
+        b.setField(Piece.BPAWN,13);
+        b.setField(Piece.BPAWN,45);
+        b.setField(Piece.BPAWN,41);
 
-        int[] expected={52,78,54,76};
+        int[] expected={18,36,20,34};
 
         MoveGeneration mg= MoveGenerationImpl.getMoveGeneration();
         ArrayList<Move> moves= new ArrayList<>();
@@ -152,14 +152,14 @@ public class BishopTest {
     @Test
     public void opponentBlockingWhite(){
         Board b= new BoardImpl();
-        b.setField(Piece.WBISHOP,65);
+        b.setField(Piece.WBISHOP,27);
 
-        b.setField(Piece.BPAWN,39);
-        b.setField(Piece.BPAWN,43);
-        b.setField(Piece.BPAWN,91);
-        b.setField(Piece.BPAWN,87);
+        b.setField(Piece.BPAWN,9);
+        b.setField(Piece.BPAWN,13);
+        b.setField(Piece.BPAWN,45);
+        b.setField(Piece.BPAWN,41);
 
-        int[] expected={52,78,54,76,39,43,91,87};
+        int[] expected={18,36,20,34,9,13,45,41};
 
         MoveGeneration mg= MoveGenerationImpl.getMoveGeneration();
         ArrayList<Move> moves= new ArrayList<>();
@@ -190,14 +190,14 @@ public class BishopTest {
     @Test
     public void opponentBlockingBlack(){
         Board b= new BoardImpl();
-        b.setField(Piece.BBISHOP,65);
+        b.setField(Piece.BBISHOP,27);
 
-        b.setField(Piece.WPAWN,39);
-        b.setField(Piece.WPAWN,43);
-        b.setField(Piece.WPAWN,91);
-        b.setField(Piece.WPAWN,87);
+        b.setField(Piece.WPAWN,9);
+        b.setField(Piece.WPAWN,13);
+        b.setField(Piece.WPAWN,45);
+        b.setField(Piece.WPAWN,41);
 
-        int[] expected={52,78,54,76,39,43,91,87};
+        int[] expected={18,36,20,34,9,13,45,41};
 
         MoveGeneration mg= MoveGenerationImpl.getMoveGeneration();
         ArrayList<Move> moves= new ArrayList<>();

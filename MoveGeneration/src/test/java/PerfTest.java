@@ -4,85 +4,60 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class PerfTest {
-    private static String [] translationMatrix= new String [144];
+    private static String [] translationMatrix= new String [64];
     static {
-        //above space
-        for(int i=0;i<24;i++){
-            translationMatrix[i]="Space";
-        }
-
-        //left space
-        for(int i=24;i<109;i+=12){
-            translationMatrix[i]="Space";
-        }
-        for(int i=25;i<110;i+=12){
-            translationMatrix[i]="Space";
-        }
-
-        //right space
-        for(int i=34;i<119;i+=12){
-            translationMatrix[i]="Space";
-        }
-        for(int i=35;i<120;i+=12){
-            translationMatrix[i]="Space";
-        }
-
-        //below space
-        for(int i=120;i<144;i++){
-            translationMatrix[i]="Space";
-        }
 
         int j=0;
-        for(int i=26;i<34;i++){
+        for(int i=0;i<8;i++){
             char pre =(char)(97+j);
             translationMatrix[i]=pre+"8";
                     j++;
         }
 
         j=0;
-        for(int i=38;i<46;i++){
+        for(int i=8;i<16;i++){
             char pre =(char)(97+j);
             translationMatrix[i]=pre+"7";
             j++;
         }
 
         j=0;
-        for(int i=50;i<58;i++){
+        for(int i=16;i<24;i++){
             char pre =(char)(97+j);
             translationMatrix[i]=pre+"6";
             j++;
         }
 
         j=0;
-        for(int i=62;i<70;i++){
+        for(int i=24;i<32;i++){
             char pre =(char)(97+j);
             translationMatrix[i]=pre+"5";
             j++;
         }
 
         j=0;
-        for(int i=74;i<82;i++){
+        for(int i=32;i<40;i++){
             char pre =(char)(97+j);
             translationMatrix[i]=pre+"4";
             j++;
         }
 
         j=0;
-        for(int i=86;i<94;i++){
+        for(int i=40;i<48;i++){
             char pre =(char)(97+j);
             translationMatrix[i]=pre+"3";
             j++;
         }
 
         j=0;
-        for(int i=98;i<106;i++){
+        for(int i=48;i<56;i++){
             char pre =(char)(97+j);
             translationMatrix[i]=pre+"2";
             j++;
         }
 
         j=0;
-        for(int i=110;i<118;i++){
+        for(int i=56;i<64;i++){
             char pre =(char)(97+j);
             translationMatrix[i]=pre+"1";
             j++;
@@ -114,43 +89,60 @@ public class PerfTest {
     }
 
     private static long debugPerf(int i, Board b) {
-        MoveGeneration mg = MoveGenerationImpl.getMoveGeneration();
-        Move root = new MoveImpl(0, 0, ' ', b, true);
+        if (i == 1) {
+            MoveGeneration mg = MoveGenerationImpl.getMoveGeneration();
+            Move root = new MoveImpl(0, 0, ' ', b, true);
 
-        ArrayList<Move> rootMoves= mg.generateAllMoves(root);
+            ArrayList<Move> rootMoves = mg.generateAllMoves(root);
+            HashMap<String, Long> countingMap = new HashMap<>();
 
-        long output=0;
-        HashMap<String, Long> countingMap = new HashMap<>();
-        for(Move tempMove:rootMoves) {
-            long movesPerRootMove = recursivePerf(i-1,tempMove);
-            output+=movesPerRootMove;
-
-            String mstring=translationMatrix[tempMove.getFrom()]+translationMatrix[tempMove.getTo()];
-            if(tempMove.getChar()!=' '){
-                mstring+=tempMove.getChar();
+            for(Move tempMove:rootMoves) {
+                String mstring = translationMatrix[tempMove.getFrom()] + translationMatrix[tempMove.getTo()];
+                if (tempMove.getChar() != ' ') {
+                    mstring += tempMove.getChar();
+                }
+                countingMap.put(mstring, 1L);
             }
-            countingMap.put(mstring,movesPerRootMove);
 
+            countingMap.forEach((String s, Long lon) -> {
+                System.out.println(s + ": " + lon);
+            });
+
+
+            return rootMoves.size();
+        } else {
+            MoveGeneration mg = MoveGenerationImpl.getMoveGeneration();
+            Move root = new MoveImpl(0, 0, ' ', b, true);
+
+            ArrayList<Move> rootMoves = mg.generateAllMoves(root);
+
+            long output = 0;
+            HashMap<String, Long> countingMap = new HashMap<>();
+            for (Move tempMove : rootMoves) {
+                long movesPerRootMove = recursivePerf(i - 1, tempMove);
+                output += movesPerRootMove;
+
+                String mstring = translationMatrix[tempMove.getFrom()] + translationMatrix[tempMove.getTo()];
+                if (tempMove.getChar() != ' ') {
+                    mstring += tempMove.getChar();
+                }
+                countingMap.put(mstring, movesPerRootMove);
+
+            }
+
+            countingMap.forEach((String s, Long lon) -> {
+                System.out.println(s + ": " + lon);
+            });
+
+
+            return output;
         }
-
-        countingMap.forEach((String s,Long lon)->{
-            System.out.println(s+": "+ lon);
-        });
-
-
-        return output;
 
     }
 
     @Test @Disabled
     public void debugPerf() {
-        Board b = new BoardImpl();
-        b.startPos();
 
-        assertEquals(20, debugPerf(1,b));
-        assertEquals(400, debugPerf(2,b));
-        assertEquals(8902, debugPerf(3,b));
-        assertEquals(197281, debugPerf(4,b));
 
         //assertEquals(4865609, debugPerf(5,b));  //fail
         //assertEquals(119060324, debugPerf(6,b)); //outOfMemory
@@ -173,8 +165,8 @@ public class PerfTest {
         //assertEquals(400, perf(2,b));
         //assertEquals(8902, perf(3,b));
         //assertEquals(197281, perf(4,b));
-        //assertEquals(4865609, perf(5,b));
-        assertEquals(119060324, perf(6,b));
+        assertEquals(4865609, perf(5,b));
+        //assertEquals(119060324, perf(6,b));
         //assertEquals(3195901860L, perf(7,b)); //number cruncher
         //assertEquals(84998978956L, perf(8,b));
         //assertEquals(2439530234167L, perf(9,b));
@@ -186,7 +178,7 @@ public class PerfTest {
         //assertEquals(1981066775000396239L, perf(13,b));
     }
 
-    @Test //@Disabled
+    @Test @Disabled
     public void perfTestKiwipetePosition() {
         Board b = KiwipeteBoard();
         assertEquals(48, perf(1,b));
@@ -197,7 +189,7 @@ public class PerfTest {
         //assertEquals(8031647685, perf(6,b));
     }
 
-    @Test //@Disabled
+    @Test @Disabled
     public void perfTestPosition3() {
         Board b = Position3();
         assertEquals(14, perf(1,b));
@@ -210,7 +202,7 @@ public class PerfTest {
         //assertEquals(3009794393, perf(8,b));
     }
 
-    @Test //@Disabled
+    @Test @Disabled
     public void perfTestPosition4() {
         Board b = Position4();
         assertEquals(6, perf(1,b));
@@ -221,7 +213,7 @@ public class PerfTest {
         //assertEquals(706045033, perf(6,b));
     }
 
-    @Test //@Disabled
+    @Test @Disabled
     public void perfTestPosition5() {
         Board b = Position5();
         //assertEquals(44, perf(1,b));
@@ -231,7 +223,7 @@ public class PerfTest {
         //assertEquals(89941194, perf(5,b));
     }
 
-    @Test //@Disabled
+    @Test @Disabled
     public void perfTestPosition6() {
         Board b = Position6();
         //assertEquals(46, perf(1,b));

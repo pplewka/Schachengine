@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-
 public interface Move {
     public void setChildren(Move[] children);
     public Move [] getChildren();
