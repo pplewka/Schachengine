@@ -6,6 +6,9 @@ import java.util.Arrays;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
+/**
+ * Handles sending and receiving option commands
+ */
 public class UCIOptionHandler {
 
 
@@ -32,6 +35,10 @@ public class UCIOptionHandler {
     private static final String TYPE_STRING = "string";
     private static final String TYPE_BUTTON = "button";
 
+    /**
+     * Sends all available options to the GUI
+     * @param ucioptions the ucioptions property
+     */
     public static void sendAvailableOptions(Properties ucioptions) {
         ArrayList<String> allOptionIDs = getAllOptionIDs(ucioptions);
         ArrayList<String> optionCommands = new ArrayList<>();
@@ -43,6 +50,11 @@ public class UCIOptionHandler {
         }
     }
 
+    /**
+     * Gets all supported option ids
+     * @param ucioptions
+     * @return a List with all supported ids
+     */
     private static ArrayList<String> getAllOptionIDs(Properties ucioptions) {
         ArrayList<String> optionIDs = new ArrayList<>();
         for (String property : ucioptions.stringPropertyNames()) {
@@ -53,8 +65,12 @@ public class UCIOptionHandler {
         return optionIDs;
     }
 
-    ;
-
+    /**
+     * Returns the type of an id
+     * @param optionID the id
+     * @param ucioptions
+     * @return the type
+     */
     private static OptionType getType(String optionID, Properties ucioptions) {
         String type = ucioptions.getProperty(PROP_TYPE_TAG + optionID);
         switch (type) {
@@ -73,6 +89,13 @@ public class UCIOptionHandler {
         }
     }
 
+    /**
+     * Builds a command ready to send to the gui describing the option
+     * Eg. "option name Threads type spin min 1 max 4 default 1"
+     * @param optionID the id
+     * @param ucioptions
+     * @return the command
+     */
     private static String buildOptionCommand(String optionID, Properties ucioptions) {
         OptionType type = getType(optionID, ucioptions);
         String displayName = ucioptions.getProperty(PROP_NAME_TAG + optionID);
@@ -109,6 +132,13 @@ public class UCIOptionHandler {
         }
     }
 
+    /**
+     * Receives setoption commands from the GUI until isready is send
+     * Stores all send options with values and returns them
+     * @param ucioptions
+     * @return all options with values, unset options will have the corresponding default value
+     * @throws EngineQuitSignal if the quit command was send
+     */
     public static ArrayList<OptionValuePair> receiveOptions(Properties ucioptions) throws EngineQuitSignal {
 
         // receive new options via GUI
@@ -160,10 +190,24 @@ public class UCIOptionHandler {
         return results;
     }
 
+    /**
+     * Check if the give id is supported by the engine
+     * @param id the id
+     * @param ucioptions
+     * @return true if supported, false else
+     */
     private static boolean isValidID(String id, Properties ucioptions) {
         return ucioptions.getProperty(PROP_NAME_TAG + id) != null;
     }
 
+    /**
+     * Check if the given value is supported by the given id
+     * @param id the id
+     * @param displaynameAndValueSplitted the displayname and the value in a String[] (or only the displayname if
+     *                                    id is from a button)
+     * @param ucioptions
+     * @return true if value is supported, else false
+     */
     private static boolean isValidValue(String id, String[] displaynameAndValueSplitted, Properties ucioptions) {
         OptionType type = getType(id, ucioptions);
         int len = displaynameAndValueSplitted.length;
@@ -173,14 +217,19 @@ public class UCIOptionHandler {
             case STRING:
                 return len == 2;
             case CHECK:
-                return len == 2 && (displaynameAndValueSplitted[1].equals("true") ||
-                        displaynameAndValueSplitted[1].equals("false"));
+                return len == 2 && (displaynameAndValueSplitted[1].trim().equals("true") ||
+                        displaynameAndValueSplitted[1].trim().equals("false"));
             case COMBO:
                 if (len != 2) {
                     return false;
                 }
                 String[] possibleValues = ucioptions.getProperty(PROP_VAR_TAG + id).toLowerCase().split(";");
-                return Arrays.asList(possibleValues).contains(displaynameAndValueSplitted[1]);
+                for (String possibleValue : possibleValues) {
+                    if(possibleValue.equals(displaynameAndValueSplitted[1].trim())){
+                        return true;
+                    }
+                }
+                return false;
             case SPIN:
                 if (len != 2) {
                     return false;
@@ -210,6 +259,12 @@ public class UCIOptionHandler {
         }
     }
 
+    /**
+     * Gets the id corresponding to a displayName
+     * @param displayName the name
+     * @param ucioptions
+     * @return the id if displayName is supported, else null
+     */
     private static String getID(String displayName, Properties ucioptions) {
         for (String stringPropertyName : ucioptions.stringPropertyNames()) {
             if (stringPropertyName.startsWith(PROP_NAME_TAG)) {
@@ -222,9 +277,18 @@ public class UCIOptionHandler {
         return null;
     }
 
+    /**
+     * Check if the given command is a valid setoption command
+     * (some invalid commands will pass this check, but there are no false-negatives)
+     * @param command the command
+     * @return true if command is more or less a valid setoption command, false if it is definitely not one
+     */
     private static boolean isValidSetOption(String command) {
         return Pattern.matches(UCICommands.SET_OPTION + " name .+", command);
     }
 
+    /**
+     * Enum to describe the possible type of an option
+     */
     public enum OptionType {CHECK, SPIN, COMBO, STRING, BUTTON}
 }

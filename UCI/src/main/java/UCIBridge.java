@@ -168,11 +168,11 @@ public class UCIBridge {
     }
 
     /**
-     * Should handle the option commands at initialization
-     * Currently empty, because we don't support options at this moment
+     * Handles all incoming options
      *
      * @param ucioptions options for uci
      * @throws EngineQuitSignal if the engine received the quit input from the GUI
+     * @return a List of the options with values. if options are unset by the GUI, then they will be set with default
      */
     private ArrayList<OptionValuePair> receiveOptions(Properties ucioptions) throws EngineQuitSignal {
         return UCIOptionHandler.receiveOptions(ucioptions);
