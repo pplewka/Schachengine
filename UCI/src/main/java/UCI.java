@@ -1,6 +1,5 @@
 import Exceptions.EngineQuitSignal;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +24,14 @@ public class UCI {
 
 
     /**
+     * private constructor
+     */
+    private UCI() {
+        listeners = new ArrayList<>();
+
+    }
+
+    /**
      * Returns the unique UCI instance
      *
      * @return the instance
@@ -38,6 +45,15 @@ public class UCI {
             }
         }
         return instance;
+    }
+
+    /**
+     * Gets debug mode. Engine should determine what it wants to send based on the debugmode
+     *
+     * @return the debug mode
+     */
+    public static boolean getDebug() {
+        return debug;
     }
 
     /**
@@ -66,20 +82,35 @@ public class UCI {
     }
 
     /**
-     * Gets debug mode. Engine should determine what it wants to send based on the debugmode
+     * A test-main
      *
-     * @return the debug mode
+     * @param args all arguments will be printed as info string
+     * @throws EngineQuitSignal if engine receives the quit command
      */
-    public static boolean getDebug() {
-        return debug;
+    public static void main(String[] args) throws EngineQuitSignal {
+        UCI uci = UCI.getInstance();
+        var options = uci.initialize();
+        for (OptionValuePair optionValuePair : options) {
+            InfoHandler.sendMessage(optionValuePair.option + " value " + optionValuePair.value);
+        }
+        InfoHandler.sendMessage("Hello\nWorld!");
+        InfoHandler.getInstance().storeInfo("nodes", 5L);
+        InfoHandler.getInstance().storeInfo(InfoHandler.CPULOAD, 10.0);
+        InfoHandler.getInstance().flushInfoBuffer();
+        for (String argument : args) {
+            InfoHandler.sendMessage(argument);
+        }
+        InfoHandler.getInstance().flushInfoBuffer();
+        uci.awaitCommandsForever();
     }
 
     /**
      * Initialize the UCI engine and GUI. See UCIBridge.initialize for more information
      *
+     * @return
      * @throws EngineQuitSignal if the engine received the quit command from GUI
      */
-    public void initialize() throws EngineQuitSignal {
+    public ArrayList<OptionValuePair> initialize() throws EngineQuitSignal {
         Properties options = new Properties();
 
         try {
@@ -87,15 +118,7 @@ public class UCI {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        UCIBridge.getInstance().initialize(options);
-    }
-
-    /**
-     * private constructor
-     */
-    private UCI() {
-        listeners = new ArrayList<>();
-
+        return UCIBridge.getInstance().initialize(options);
     }
 
     /**
@@ -103,7 +126,7 @@ public class UCI {
      *
      * @throws EngineQuitSignal if the GUI sends the quit command
      */
-    public synchronized void awaitNextCommand() throws EngineQuitSignal {
+    public void awaitNextCommand() throws EngineQuitSignal {
         String input = UCIBridge.getInstance().receiveString();
         if (input.startsWith(UCICommands.GO)) {
             for (UCIListener listener : listeners) {
@@ -149,32 +172,12 @@ public class UCI {
      *
      * @throws EngineQuitSignal if quit command was send from GUI
      */
-    public synchronized void awaitCommandsForever() throws EngineQuitSignal {
+    public void awaitCommandsForever() throws EngineQuitSignal {
 
         while (true) {
             awaitNextCommand();
             InfoHandler.getInstance().flushInfoBuffer();
         }
 
-    }
-
-    /**
-     * A test-main
-     *
-     * @param args all arguments will be printed as info string
-     * @throws EngineQuitSignal if engine receives the quit command
-     */
-    public static void main(String[] args) throws EngineQuitSignal {
-        UCI uci = UCI.getInstance();
-        uci.initialize();
-        InfoHandler.sendMessage("Hello\nWorld!");
-        InfoHandler.getInstance().storeInfo("nodes", 5L);
-        InfoHandler.getInstance().storeInfo(InfoHandler.CPULOAD, 10.0);
-        InfoHandler.getInstance().flushInfoBuffer();
-        for (String argument : args) {
-            InfoHandler.sendMessage(argument);
-        }
-        InfoHandler.getInstance().flushInfoBuffer();
-        uci.awaitCommandsForever();
     }
 }

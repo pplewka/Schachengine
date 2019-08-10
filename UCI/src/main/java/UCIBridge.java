@@ -1,6 +1,6 @@
 import Exceptions.EngineQuitSignal;
 
-import java.util.Map;
+import java.util.ArrayList;
 import java.util.Properties;
 import java.util.Scanner;
 
@@ -40,6 +40,14 @@ public class UCIBridge {
     }
 
     /**
+     * Deletes the unique UCIBridge instance
+     * Used in test to reload the reader attribute
+     */
+    public static synchronized void deleteInstance() {
+        instance = null;
+    }
+
+    /**
      * Sends a String to the GUI
      * Use carefully, because the GUI expects input according to UCI specifications
      *
@@ -59,11 +67,27 @@ public class UCIBridge {
      * @return the String (trimmed and multiple whitespaces replaced with a single space)
      * @throws EngineQuitSignal if the "quit" command was received
      */
-    public synchronized String receiveString() throws EngineQuitSignal {
+    public String receiveString() throws EngineQuitSignal {
+        return receiveString(true);
+    }
+
+    /**
+     * Waits for the next String
+     * The following commands will be executed directly and receiveString will wait for the next String:
+     * isready will be answered directly with readyok
+     * debug on/off will use UCI.setDebug()
+     * Quit will throw a EngineQuitSignal
+     *
+     * @param handleIsReadyCommand handles the isready command internally. if set to false, it won't and isready is a
+     *                             valid return value
+     * @return the String (trimmed and multiple whitespaces replaced with a single space)
+     * @throws EngineQuitSignal if the "quit" command was received
+     */
+    public String receiveString(boolean handleIsReadyCommand) throws EngineQuitSignal {
 
         String input = reader.nextLine();
         input = removeUnnecessaryWS(input);
-        if (input.equals(UCICommands.IS_READY)) {
+        if (input.equals(UCICommands.IS_READY) && handleIsReadyCommand) {
             sendReadyOk();
             return receiveString();
         }
@@ -101,21 +125,24 @@ public class UCIBridge {
     private synchronized void sendID(Properties ucioptions) {
         sendString(UCICommands.ID_NAME + " " + ucioptions.getProperty("id.name"));
         sendString(UCICommands.ID_AUTHOR + " " + ucioptions.getProperty("id.author"));
-
     }
 
     /**
      * Initializes the engine. Engine and GUI will be before the first "ucinewgame" after this
      *
-     * @param ucioptions options for uci TODO: necessary? can setoptions and option be ignored?
+     * @param ucioptions options for uci
+     * @return a ArrayList of the set options.
+     * If option is not set (but supports default values) a Pair with default value is added
      * @throws EngineQuitSignal if the engine received the quit input from the GUI
      */
-    public synchronized void initialize(Properties ucioptions) throws EngineQuitSignal {
+    public synchronized ArrayList<OptionValuePair> initialize(Properties ucioptions) throws EngineQuitSignal {
         receiveCommand(UCICommands.UCI);
         sendID(ucioptions);
         sendAvailableOptions(ucioptions);
         sendUCIOk();
-        receiveOptions(ucioptions);
+        var result = receiveOptions(ucioptions);
+        sendReadyOk();
+        return result;
     }
 
     /**
@@ -147,8 +174,8 @@ public class UCIBridge {
      * @param ucioptions options for uci
      * @throws EngineQuitSignal if the engine received the quit input from the GUI
      */
-    private void receiveOptions(Properties ucioptions) throws EngineQuitSignal {
-        //TODO: receive options correctly
+    private ArrayList<OptionValuePair> receiveOptions(Properties ucioptions) throws EngineQuitSignal {
+        return UCIOptionHandler.receiveOptions(ucioptions);
     }
 
     /**
@@ -172,6 +199,7 @@ public class UCIBridge {
      * @param ucioptions options for uci
      */
     private void sendAvailableOptions(Properties ucioptions) {
+        UCIOptionHandler.sendAvailableOptions(ucioptions);
 
     }
 
@@ -182,13 +210,5 @@ public class UCIBridge {
      */
     public synchronized void sendUnknownCommandMessage(String command) {
         InfoHandler.sendMessage(UCICommands.UNKNOWN_CMD + " " + command);
-    }
-
-    /**
-     * Deletes the unique UCIBridge instance
-     * Used in test to reload the reader attribute
-     */
-    public static synchronized void deleteInstance() {
-        instance = null;
     }
 }
