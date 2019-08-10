@@ -36,6 +36,7 @@ public class UCIOptionHandler {
 
     /**
      * Sends all available options to the GUI
+     *
      * @param ucioptions the ucioptions property
      */
     public static void sendAvailableOptions(Properties ucioptions) {
@@ -51,7 +52,8 @@ public class UCIOptionHandler {
 
     /**
      * Gets all supported option ids
-     * @param ucioptions
+     *
+     * @param ucioptions the ucioptions property
      * @return a List with all supported ids
      */
     private static ArrayList<String> getAllOptionIDs(Properties ucioptions) {
@@ -66,8 +68,9 @@ public class UCIOptionHandler {
 
     /**
      * Returns the type of an id
-     * @param optionID the id
-     * @param ucioptions
+     *
+     * @param optionID   the id
+     * @param ucioptions the ucioptions property
      * @return the type
      */
     private static OptionType getType(String optionID, Properties ucioptions) {
@@ -91,8 +94,9 @@ public class UCIOptionHandler {
     /**
      * Builds a command ready to send to the gui describing the option
      * Eg. "option name Threads type spin min 1 max 4 default 1"
-     * @param optionID the id
-     * @param ucioptions
+     *
+     * @param optionID   the id
+     * @param ucioptions the ucioptions property
      * @return the command
      */
     private static String buildOptionCommand(String optionID, Properties ucioptions) {
@@ -134,7 +138,8 @@ public class UCIOptionHandler {
     /**
      * Receives setoption commands from the GUI until isready is send
      * Stores all send options with values and returns them
-     * @param ucioptions
+     *
+     * @param ucioptions the ucioptions property
      * @return all options with values, unset options will have the corresponding default value
      * @throws EngineQuitSignal if the quit command was send
      */
@@ -191,8 +196,9 @@ public class UCIOptionHandler {
 
     /**
      * Check if the give id is supported by the engine
-     * @param id the id
-     * @param ucioptions
+     *
+     * @param id         the id
+     * @param ucioptions the ucioptions property
      * @return true if supported, false else
      */
     private static boolean isValidID(String id, Properties ucioptions) {
@@ -201,10 +207,11 @@ public class UCIOptionHandler {
 
     /**
      * Check if the given value is supported by the given id
-     * @param id the id
+     *
+     * @param id                          the id
      * @param displaynameAndValueSplitted the displayname and the value in a String[] (or only the displayname if
      *                                    id is from a button)
-     * @param ucioptions
+     * @param ucioptions                  the ucioptions property
      * @return true if value is supported, else false
      */
     private static boolean isValidValue(String id, String[] displaynameAndValueSplitted, Properties ucioptions) {
@@ -214,7 +221,7 @@ public class UCIOptionHandler {
             case BUTTON:
                 return len == 1;
             case STRING:
-                return len == 2;
+                return len == 2 || len == 1;
             case CHECK:
                 return len == 2 && (displaynameAndValueSplitted[1].trim().equals("true") ||
                         displaynameAndValueSplitted[1].trim().equals("false"));
@@ -224,7 +231,7 @@ public class UCIOptionHandler {
                 }
                 String[] possibleValues = ucioptions.getProperty(PROP_VAR_TAG + id).toLowerCase().split(";");
                 for (String possibleValue : possibleValues) {
-                    if(possibleValue.equals(displaynameAndValueSplitted[1].trim())){
+                    if (possibleValue.equals(displaynameAndValueSplitted[1].trim())) {
                         return true;
                     }
                 }
@@ -235,14 +242,14 @@ public class UCIOptionHandler {
                 }
                 Long min, max, value;
                 try {
-                     min = Long.valueOf(ucioptions.getProperty(PROP_MIN_TAG + id));
+                    min = Long.valueOf(ucioptions.getProperty(PROP_MIN_TAG + id));
                 } catch (NumberFormatException e) {
                     throw new FixYourConfigFileException(String.format("min value %s of %s cant be converted",
                             ucioptions.getProperty(PROP_MIN_TAG + id), id));
                 }
                 try {
-                     max = Long.valueOf(ucioptions.getProperty(PROP_MAX_TAG + id));
-                }catch (NumberFormatException e) {
+                    max = Long.valueOf(ucioptions.getProperty(PROP_MAX_TAG + id));
+                } catch (NumberFormatException e) {
                     throw new FixYourConfigFileException(String.format("max value %s of %s cant be converted",
                             ucioptions.getProperty(PROP_MAX_TAG + id), id));
                 }
@@ -260,8 +267,9 @@ public class UCIOptionHandler {
 
     /**
      * Gets the id corresponding to a displayName
+     *
      * @param displayName the name
-     * @param ucioptions
+     * @param ucioptions  the ucioptions property
      * @return the id if displayName is supported, else null
      */
     private static String getID(String displayName, Properties ucioptions) {
@@ -279,6 +287,7 @@ public class UCIOptionHandler {
     /**
      * Check if the given command is a valid setoption command
      * (some invalid commands will pass this check, but there are no false-negatives)
+     *
      * @param command the command
      * @return true if command is more or less a valid setoption command, false if it is definitely not one
      */
