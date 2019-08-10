@@ -1,11 +1,17 @@
 import Exceptions.EngineQuitSignal;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.PrintStream;
 
-import org.junit.jupiter.api.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import static org.junit.jupiter.api.Assertions.*;
-
+@Disabled("Disabled until interface is considered stable") // set the tests public again when re-enabling
 public class UCITest {
 
     private static final InputStream systemin = System.in;
@@ -37,7 +43,7 @@ public class UCITest {
     }
 
     @Test
-    public void testEngineStartup() {
+    private void testEngineStartup() {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         PrintStream printOutStream = new PrintStream(byteArrayOutputStream);
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(ENGINE_STARTUP_INPUT.getBytes());
@@ -55,7 +61,7 @@ public class UCITest {
     }
 
     @Test
-    public void testEngineOneEmptyTurnWithDebug() {
+    private void testEngineOneEmptyTurnWithDebug() {
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         PrintStream printOutStream = new PrintStream(byteArrayOutputStream);
