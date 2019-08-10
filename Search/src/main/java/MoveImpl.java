@@ -1,7 +1,5 @@
 public class MoveImpl implements Move {
-    private int from;
-    private int to;
-    private char aChar;
+    private short bitwiseMove;
 
     private Board board;
     private boolean blacksTurn;
@@ -23,9 +21,35 @@ public class MoveImpl implements Move {
     }
 
     public MoveImpl(int from, int to,char c,Board board,boolean blacksTurn,int enpassant,int eval){
-        this.from=from;
-        this.to=to;
-        this.aChar=c;
+        String binaryFrom= Integer.toBinaryString(63 & from);
+        binaryFrom=String.format("%6s",binaryFrom);
+        binaryFrom = binaryFrom.replaceAll(" ","0");
+        String binaryTo = Integer.toBinaryString(63 & to);
+        binaryTo=String.format("%6s",binaryTo);
+        binaryTo = binaryTo.replaceAll(" ","0");
+        String binaryChar;
+        switch (c){
+            case ' ':
+                binaryChar="0000";
+                break;
+            case 'Q':
+                binaryChar="1000";
+                break;
+            case 'R':
+                binaryChar="0100";
+                break;
+            case 'K':
+                binaryChar="0010";
+                break;
+            case 'B':
+                binaryChar="0001";
+                break;
+            default:
+                throw new IllegalArgumentException("wrong char in Move Constructor");
+        }
+
+        bitwiseMove=(short)Integer.parseInt(binaryFrom+binaryTo+binaryChar,2);
+
         this.board=board;
         this.blacksTurn=blacksTurn;
 
@@ -53,22 +77,47 @@ public class MoveImpl implements Move {
 
     @Override
     public int getFrom() {
-        return from;
+        String shortBinary=Integer.toBinaryString(0xFFFF & bitwiseMove);
+        shortBinary= String.format("%16s",shortBinary);
+        shortBinary = shortBinary.replaceAll(" ","0");
+        String binaryFrom= shortBinary.substring(0,6);
+        return Integer.parseInt(binaryFrom,2);
     }
 
     @Override
     public int getTo() {
-        return to;
+        String shortBinary=Integer.toBinaryString(0xFFFF & bitwiseMove);
+        shortBinary= String.format("%16s",shortBinary);
+        shortBinary = shortBinary.replaceAll(" ","0");
+        String binaryTo= shortBinary.substring(6,12);
+        return Integer.parseInt(binaryTo,2);
     }
 
     @Override
     public char getChar() {
-        return aChar;
+        String shortBinary=Integer.toBinaryString(0xFFFF & bitwiseMove);
+        shortBinary= String.format("%16s",shortBinary);
+        shortBinary = shortBinary.replaceAll(" ","0");
+        String binaryChar= shortBinary.substring(12,16);
+        switch (binaryChar){
+            case "0000":
+                return ' ';
+            case "1000":
+                return'Q';
+            case "0100":
+                return'R';
+            case "0010":
+                return'K';
+            case "0001":
+                return'B';
+            default:
+                throw new RuntimeException("Move.getChar(): wrong char encoding");
+        }
     }
 
     @Override
     public void setEnpassant(int field) {
-        this.enpassant=enpassant;
+        this.enpassant=field;
     }
 
     @Override
