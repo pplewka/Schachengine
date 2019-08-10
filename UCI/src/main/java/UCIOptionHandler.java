@@ -153,7 +153,7 @@ public class UCIOptionHandler {
                 if (isValidID(ID, ucioptions)) {
                     if (isValidValue(ID, displaynameAndValueSplitted, ucioptions)) {
                         if (displaynameAndValueSplitted.length == 1) {
-                            results.add(new OptionValuePair(ID, "*~#buttons don't have values#~*"));
+                            results.add(new OptionValuePair(ID, "<empty>"));
                         } else if (displaynameAndValueSplitted.length == 2) {
                             results.add(new OptionValuePair(ID, displaynameAndValueSplitted[1].trim()));
                         } else {
