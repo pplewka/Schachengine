@@ -157,20 +157,64 @@ public class MoveGenerationImpl implements MoveGeneration{
         return pawnMoves;
     }
 
-    private boolean pawnOnFirstPosition(int field,boolean blacksTurn){
-        if(blacksTurn){
-            return field>=38&&field<=45;
-        }else{
-            return field>=98&&field<=105;
+    @Override
+    public ArrayList<Move> generateKnightMoves(Move parent, int field, ArrayList<Move> moves) {
+        //changing site to move
+        boolean blacksTurn=!parent.blacksTurn();
+        ArrayList<Move> knightMoves = new ArrayList<>();
+
+        int [] nextMoves= new int[8];
+        nextMoves[0]=field+10;
+        nextMoves[1]=field-10;
+        nextMoves[2]=field+14;
+        nextMoves[3]=field-14;
+        nextMoves[4]=field+25;
+        nextMoves[5]=field-25;
+        nextMoves[6]=field+23;
+        nextMoves[7]=field-23;
+
+        for(int nextField:nextMoves){
+            addIfValid(parent.getBoard(),field,nextField,blacksTurn,knightMoves);
         }
+
+        moves.addAll(knightMoves);
+
+        return knightMoves;
     }
 
-    private boolean pawnOnLastPosition(int field,boolean blacksTurn){
-        if(blacksTurn){
-            return field>=110&&field<=117;
-        }else{
-            return field>=26&&field<=33;
+    @Override
+    public ArrayList<Move> generateKingMoves(Move parent, int field, ArrayList<Move> moves) {
+        //changing site to move
+        boolean blacksTurn=!parent.blacksTurn();
+        ArrayList<Move> kingMoves= new ArrayList<>();
+        Board parentBoard= parent.getBoard();
+
+        int [] nextMoves= new int[8];
+        nextMoves[0]=field+12;
+        nextMoves[1]=field-12;
+        nextMoves[2]=field+1;
+        nextMoves[3]=field-1;
+        nextMoves[4]=field+13;
+        nextMoves[5]=field-13;
+        nextMoves[6]=field+11;
+        nextMoves[7]=field-11;
+
+        for(int nextField:nextMoves){
+            addIfValid(parentBoard,field,nextField,blacksTurn,kingMoves);
         }
+
+        //changing the bool
+        if(kingMoves.size()>0) {
+            if (!parentBoard.isbKingMoved()) {
+                kingMoves.forEach(move -> move.getBoard().setbKingMoved(true));
+            } else if (!parentBoard.iswKingMoved()) {
+                kingMoves.forEach(move -> move.getBoard().setwKingMoved(true));
+            }
+        }
+
+        moves.addAll(kingMoves);
+
+        return kingMoves;
     }
 
     @Override
@@ -232,31 +276,6 @@ public class MoveGenerationImpl implements MoveGeneration{
     }
 
     @Override
-    public ArrayList<Move> generateKnightMoves(Move parent, int field, ArrayList<Move> moves) {
-        //changing site to move
-        boolean blacksTurn=!parent.blacksTurn();
-        ArrayList<Move> knightMoves = new ArrayList<>();
-
-        int [] nextMoves= new int[8];
-        nextMoves[0]=field+10;
-        nextMoves[1]=field-10;
-        nextMoves[2]=field+14;
-        nextMoves[3]=field-14;
-        nextMoves[4]=field+25;
-        nextMoves[5]=field-25;
-        nextMoves[6]=field+23;
-        nextMoves[7]=field-23;
-
-        for(int nextField:nextMoves){
-            addIfValid(parent.getBoard(),field,nextField,blacksTurn,knightMoves);
-        }
-
-        moves.addAll(knightMoves);
-
-        return knightMoves;
-    }
-
-    @Override
     public ArrayList<Move> generateQueenMoves(Move parent, int field, ArrayList<Move> moves) {
         Board board = parent.getBoard();
         boolean blacksTurn = !parent.blacksTurn();
@@ -279,39 +298,56 @@ public class MoveGenerationImpl implements MoveGeneration{
         return queenMoves;
     }
 
-    @Override
-    public ArrayList<Move> generateKingMoves(Move parent, int field, ArrayList<Move> moves) {
-        //changing site to move
-        boolean blacksTurn=!parent.blacksTurn();
-        ArrayList<Move> kingMoves= new ArrayList<>();
-        Board parentBoard= parent.getBoard();
+    /**
+     * method to calculate path moves for rook, bishop and queen
+     * !!does not check for wrong directions!!
+     *
+     * @param board board to calculate on
+     * @param field must be in 144 format. field of the rook to calculate
+     * @param blacksTurn site to check for obstacles or opponents
+     * @param direction rook: -12 is up. +12 is down. +1 is right. -1 is left
+     *                  bishop: -11 is up/right. -13 is up/left. +11 is down/left. +13 is down/right
+     * @param moves ArrayList to append moves to
+     * @return moves generated in this method
+     */
+    private ArrayList<Move> calculatePathMoves(Board board,int field, boolean blacksTurn, int direction ,ArrayList<Move> moves){
+        int temp = field;
+        boolean pathBlocked=false;
+        ArrayList<Move> pathmoves= new ArrayList<>();
+        ArrayList<Integer> possiblePositions= new ArrayList<>();
 
-        int [] nextMoves= new int[8];
-        nextMoves[0]=field+12;
-        nextMoves[1]=field-12;
-        nextMoves[2]=field+1;
-        nextMoves[3]=field-1;
-        nextMoves[4]=field+13;
-        nextMoves[5]=field-13;
-        nextMoves[6]=field+11;
-        nextMoves[7]=field-11;
+        while (!pathBlocked) {
+            temp = temp + direction;
 
-        for(int nextField:nextMoves){
-            addIfValid(parentBoard,field,nextField,blacksTurn,kingMoves);
-        }
 
-        //changing the bool
-        if(kingMoves.size()>0) {
-            if (!parentBoard.isbKingMoved()) {
-                kingMoves.forEach(move -> move.getBoard().setbKingMoved(true));
-            } else if (!parentBoard.iswKingMoved()) {
-                kingMoves.forEach(move -> move.getBoard().setwKingMoved(true));
+            if (isSpace(temp)) {
+                pathBlocked = true;
+
+            } else {
+                byte real=translateToReal((byte)temp);
+                if (board.fieldIsOccupied(real)) {
+                    if (board.fieldHasOpponent(real, blacksTurn)) {
+                        pathBlocked = true;
+                        possiblePositions.add(temp);
+                    } else {
+                        pathBlocked = true;
+                    }
+
+                } else {
+                    possiblePositions.add(temp);
+                }
             }
         }
 
-        moves.addAll(kingMoves);
 
-        return kingMoves;
+        for(int i:possiblePositions){
+            Move tempMove=addIfValid(board,field,i,blacksTurn,moves);
+            if(tempMove!=null){
+                pathmoves.add(tempMove);
+            }
+        }
+
+        return pathmoves;
     }
 
     @Override
@@ -419,6 +455,12 @@ public class MoveGenerationImpl implements MoveGeneration{
         return castlingMoves;
     }
 
+    /**
+     * Method to check if fields of a castling are attacked
+     * @param rookPosition must be in 144 format. position of a Rook to castle with. must be 26, 110, 33 or 117
+     * @param board to check on
+     * @return true if the specified castling is attacked
+     */
     private boolean castlingAttacked(int rookPosition,Board board){
         switch(rookPosition){
             case 26:
@@ -444,58 +486,6 @@ public class MoveGenerationImpl implements MoveGeneration{
             default:
                 throw new IllegalArgumentException("castlingAttacked: wrong position");
         }
-    }
-
-    /**
-     * method to calculate path moves for rook and
-     * !!does not check for wrong directions!!
-     *
-     * @param board board to calculate on
-     * @param field field of the rook to calculate
-     * @param blacksTurn site to check for obstacles or opponents
-     * @param direction rook: -12 is up. +12 is down. +1 is right. -1 is left
-     *                  bishop: -11 is up/right. -13 is up/left. +11 is down/left. +13 is down/right
-     * @param moves ArrayList to append moves
-     * @return all moves generated in this method
-     */
-    private ArrayList<Move> calculatePathMoves(Board board,int field, boolean blacksTurn, int direction ,ArrayList<Move> moves){
-        int temp = field;
-        boolean pathBlocked=false;
-        ArrayList<Move> pathmoves= new ArrayList<>();
-        ArrayList<Integer> possiblePositions= new ArrayList<>();
-
-        while (!pathBlocked) {
-            temp = temp + direction;
-
-
-            if (isSpace(temp)) {
-                pathBlocked = true;
-
-            } else {
-                byte real=translateToReal((byte)temp);
-                if (board.fieldIsOccupied(real)) {
-                    if (board.fieldHasOpponent(real, blacksTurn)) {
-                        pathBlocked = true;
-                        possiblePositions.add(temp);
-                    } else {
-                        pathBlocked = true;
-                    }
-
-                } else {
-                    possiblePositions.add(temp);
-                }
-            }
-        }
-
-
-        for(int i:possiblePositions){
-            Move tempMove=addIfValid(board,field,i,blacksTurn,moves);
-            if(tempMove!=null){
-                pathmoves.add(tempMove);
-            }
-        }
-
-        return pathmoves;
     }
 
     @Override
@@ -626,6 +616,19 @@ public class MoveGenerationImpl implements MoveGeneration{
     }
 
 
+    //Utils
+
+    /**
+     * @param capture whether the pawn on from is captureing
+     * @param board board to check on if the move is valid
+     * @param from must be in 144 format. position where the pawn is
+     * @param to must be in 144 format. position where the pawn will be
+     * @param c char to specify to which piece the pawn will promote or '<space>' if dont
+     * @param blacksTurn
+     * @param enpassant enpassant field. if not present -1, must be in 144 format
+     * @param moves ArrayList to add the move on if is valid
+     * @return a valid Move or null
+     */
     private Move addIfValidPawn(boolean capture,Board board,int from,int to,char c,boolean blacksTurn,int enpassant,ArrayList<Move> moves){
         if (validPawnMove(capture,board,from,to,blacksTurn)) {
             Move temp=makeMove(from, to, c, board,blacksTurn,enpassant);
@@ -662,6 +665,17 @@ public class MoveGenerationImpl implements MoveGeneration{
         return null;
     }
 
+    /**
+     * checks if -to is on Board -king not in check -field is free or has a opponent
+     * does not check if individual pieces move right or if from has an valid piece
+     *
+     * @param capture whether the pawn on from is captureing
+     * @param board board to check on if the move is valid
+     * @param from must be in 144 format. position where the pawn is
+     * @param to must be in 144 format. position where the pawn will be
+     *
+     * @return true if valid, else false
+     */
     private boolean validPawnMove(boolean capture,Board board,int from,int to,boolean blacksTurn){
 
         if(onBoard_AND_kingNotInCheck(board,from,to,blacksTurn)){
@@ -680,12 +694,12 @@ public class MoveGenerationImpl implements MoveGeneration{
     }
 
     /**
-     * @param board board to apply the move to
-     * @param from from field
-     * @param to to field
+     * @param board board to check on
+     * @param from must be in 144 format. field where the piece is
+     * @param to must be in 144 format. field where the piece will be
      * @param blacksTurn site to move
      * @param moves the collection to add the move
-     * @return if the move is valid, the equivalent Move object. else null
+     * @return a valid Move or null
      */
     private Move addIfValid(Board board,int from,int to,boolean blacksTurn,ArrayList<Move> moves){
         if (validMove(board,from,to,blacksTurn)) {
@@ -700,13 +714,14 @@ public class MoveGenerationImpl implements MoveGeneration{
     }
 
     /**
-     * checks for
-     * -on Board
-     * -king in check
-     * -field free or opponent
+     * checks if -to is on Board -king not in check -field is free or has a opponent
+     * does not check if individual pieces move right or if from has an valid piece
      *
-     * does not check if individual pieces move right
-     * or if from has an valid piece
+     * @param board board to check on if the move is valid
+     * @param from must be in 144 format. position where the piece is
+     * @param to must be in 144 format. position where the piece will be
+     *
+     * @return true if valid, else false
      */
     private boolean validMove(Board board,int from,int to,boolean blacksTurn){
 
@@ -720,6 +735,34 @@ public class MoveGenerationImpl implements MoveGeneration{
         }
     }
 
+    /**
+     *Method to create a new Move
+     * will copy the board and apply the from, to values to it before handing it over
+     *
+     * @param board board before the move
+     * @param from must be in 144 format. position where the piece is
+     * @param to must be in 144 format. position where the piece will be
+     * @param c char to specify to which piece a pawn will promote or'0' for castling or '<space>' if nothing
+     * @param blacksTurn site which corresponds to this move
+     * @param enpassant enpassant field. if not present -1, must be in 144 format
+     *
+     * @return a Move corresponding to the parameters
+     */
+    private Move makeMove(int from, int to,char c,Board board,boolean blacksTurn,int enpassant){
+        Board temp = board.copy();
+        int rFrom=translateToReal((byte)from);
+        int rTo=translateToReal((byte)to);
+        temp.applyMove(rFrom,rTo);
+        return new MoveImpl(rFrom,rTo,c,temp,blacksTurn,enpassant);
+    }
+
+    /**
+     * @param board the board to check on
+     * @param from must be in 144 format. position where the piece is
+     * @param to must be in 144 format. position where the piece will be
+     * @param blacksTurn site to check for
+     * @return true if king is not in check and to is on board
+     */
     private boolean onBoard_AND_kingNotInCheck(Board board,int from,int to,boolean blacksTurn){
         if(!isSpace(to)){
             Board tempboard= board.copy();
@@ -731,23 +774,47 @@ public class MoveGenerationImpl implements MoveGeneration{
     }
 
     /**
-     *Method to create a new Move
-     * will copy the board and apply the from, to values to it before handing it over
-     *
-     * @param board board before the move
+     * @param field field to check whether it is in Space
+     * @return true if the field is in space
      */
-    private Move makeMove(int from, int to,char c,Board board,boolean blacksTurn,int enpassant){
-        Board temp = board.copy();
-        int rFrom=translateToReal((byte)from);
-        int rTo=translateToReal((byte)to);
-        temp.applyMove(rFrom,rTo);
-        return new MoveImpl(rFrom,rTo,c,temp,blacksTurn,enpassant);
-    }
-
     private boolean isSpace(int field){
         return space.contains((short) field);
     }
 
+    /**
+     * @param field pawn position. must be in 144 format
+     * @param blacksTurn site the pawn corresponds to
+     * @return true if the specified pawn is on first position
+     */
+    private boolean pawnOnFirstPosition(int field,boolean blacksTurn){
+        if(blacksTurn){
+            return field>=38&&field<=45;
+        }else{
+            return field>=98&&field<=105;
+        }
+    }
+
+    /**
+     * @param field pawn position. must be in 144 format
+     * @param blacksTurn site the pawn corresponds to
+     * @return true if the specified pawn is on last position
+     */
+    private boolean pawnOnLastPosition(int field,boolean blacksTurn){
+        if(blacksTurn){
+            return field>=110&&field<=117;
+        }else{
+            return field>=26&&field<=33;
+        }
+    }
+
+    /**
+     * Method to translate 144 format into the Board's 64 format
+     * @param calculated field in 144 format
+     *
+     * @return corresponding field in board's 64 format
+     * @throws RuntimeException if calculated is not translatable. means if calculated is in Space
+     *  look for realTranslationTable to see which values are translatable
+     */
     private byte translateToReal(byte calculated){
         int index = Arrays.binarySearch(realTranslationTable,calculated);
         if(index<0){
@@ -757,6 +824,14 @@ public class MoveGenerationImpl implements MoveGeneration{
         }
     }
 
+    /**
+     * Method to translate Board's 64 format into the 144 format of the MoveGeneration
+     * @param field field in 64 format
+     *
+     * @return corresponding field in MoveGeneration's 144 format
+     * @throws IndexOutOfBoundsException if field is not translatable. should never happen
+     *  look for realTranslationTable to see which values are translatable
+     */
     private byte translateTo144(byte field){
         try{
             return realTranslationTable[field];
