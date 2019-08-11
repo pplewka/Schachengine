@@ -34,6 +34,9 @@ public class MoveGenerationImpl implements MoveGeneration {
         return moveGen;
     }
 
+    /**
+     * @throws MoveGenerationException if a field on board is Piece.SPACE
+     */
     @Override
     public ArrayList<Move> generateAllMoves(Move parent) {
         ArrayList<Move> moves = new ArrayList<>();
@@ -80,7 +83,7 @@ public class MoveGenerationImpl implements MoveGeneration {
 
                         case Piece.SPACE:
                             //should never happen
-                            throw new IndexOutOfBoundsException("generateAllMoves reached space");
+                            throw new MoveGenerationException("generateAllMoves: reached space");
                     }
                 }
             }
@@ -400,6 +403,8 @@ public class MoveGenerationImpl implements MoveGeneration {
      * @param rookPosition must be in 144 format. position of a Rook to castle with. must be 26, 110, 33 or 117
      * @param board        to check on
      * @return true if the specified castling is attacked
+     *
+     * @throws MoveGenerationException if rookPosition is invalid
      */
     private boolean castlingAttacked(int rookPosition, Board board) {
         switch (rookPosition) {
@@ -424,7 +429,7 @@ public class MoveGenerationImpl implements MoveGeneration {
                         || fieldUnderAttack(board, 116, false);
 
             default:
-                throw new IllegalArgumentException("castlingAttacked: wrong position");
+                throw new MoveGenerationException("castlingAttacked: wrong position");
         }
     }
 
@@ -523,6 +528,8 @@ public class MoveGenerationImpl implements MoveGeneration {
      * @param enpassant  enpassant field. if not present -1, must be in 144 format
      * @param moves      ArrayList to add the move on if is valid
      * @return a valid Move or null
+     *
+     * @throws MoveGenerationException if c is invalid
      */
     private Move addIfValidPawn(boolean capture, Board board, int from, int to, char c, boolean blacksTurn, int enpassant, ArrayList<Move> moves) {
         if (validPawnMove(capture, board, from, to, blacksTurn)) {
@@ -537,7 +544,7 @@ public class MoveGenerationImpl implements MoveGeneration {
                 int rto = translateToReal((byte) to);
                 Map<Character, Byte> switchMap = Map.of('Q', queen, 'K', knight, 'R', rook, 'B', bishop);
                 if (!switchMap.containsKey(c)) {
-                    throw new IllegalArgumentException("invalid byte in Move");
+                    throw new MoveGenerationException("addIfValidPawn: invalid char in Move");
                 }
                 tempBoard.setField(switchMap.get(c), rto);
             }
@@ -687,13 +694,13 @@ public class MoveGenerationImpl implements MoveGeneration {
      *
      * @param calculated field in 144 format
      * @return corresponding field in board's 64 format
-     * @throws RuntimeException if calculated is not translatable. means if calculated is in Space
+     * @throws MoveGenerationException if calculated is not translatable. means if calculated is in Space
      *                          look for realTranslationTable to see which values are translatable
      */
     private byte translateToReal(byte calculated) {
         int index = Arrays.binarySearch(realTranslationTable, calculated);
         if (index < 0) {
-            throw new RuntimeException("wrong parameter: translateToReal");
+            throw new MoveGenerationException("translateToReal: wrong parameter");
         } else {
             return (byte) index;
         }
@@ -704,14 +711,14 @@ public class MoveGenerationImpl implements MoveGeneration {
      *
      * @param field field in 64 format
      * @return corresponding field in MoveGeneration's 144 format
-     * @throws IndexOutOfBoundsException if field is not translatable. should never happen
+     * @throws MoveGenerationException if field is not translatable. should never happen
      *                                   look for realTranslationTable to see which values are translatable
      */
     private byte translateTo144(byte field) {
         try {
             return realTranslationTable[field];
         } catch (IndexOutOfBoundsException e) {
-            throw new IndexOutOfBoundsException("wrong parameter: translateTo144");
+            throw new MoveGenerationException("translateTo144: wrong parameter");
         }
     }
 }
