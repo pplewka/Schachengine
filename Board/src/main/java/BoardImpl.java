@@ -102,10 +102,11 @@ public class BoardImpl implements Board{
 
     /**
      *does not check if fields are attacked
+     * @throws BoardException if rookPosition is invalid
      */
     @Override
-    public boolean castlingDone(int rockPosition) {
-        switch (rockPosition) {
+    public boolean castlingDone(int rookPosition) {
+        switch (rookPosition) {
             case 0:
                 return ((bLeftRockMoved)||(bKingMoved)||(pathHasPiece(0,4)));
             case 7:
@@ -116,7 +117,7 @@ public class BoardImpl implements Board{
                 return ((wRightRockMoved)||(wKingMoved)||(pathHasPiece(60,63)));
             default:
                 //should never happen
-                throw new IllegalArgumentException("castlingPossible default value");
+                throw new BoardException("castlingDone: invalid rook Position");
         }
     }
 

@@ -45,7 +45,7 @@ public interface Board{
 
     /**
      * Method to set a Piece type on a field
-     * @param c Piece to seton field
+     * @param c Piece to set on field
      * @param field position to set
      */
     public void setField(byte c, int field);
