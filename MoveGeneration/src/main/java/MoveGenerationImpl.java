@@ -104,17 +104,28 @@ public class MoveGenerationImpl implements MoveGeneration {
         int turn = blacksTurn ? 1 : -1;
         int tempmove;
 
-        for (int i : new int[]{12, 11, 13}) {
+        for (int i : new int[]{11, 13}) {
             tempmove = field + (turn * i);
             if (pawnOnLastPosition(tempmove, blacksTurn)) {
                 //todo add correct letters
                 //cant use addIfValid because pawns cant go on fields with opponents
                 for (char c : new char[]{'Q', 'R', 'K', 'B'}) {
-                    addIfValidPawn(false, board, field, tempmove, c, blacksTurn, -1, pawnMoves);
+                    addIfValidPawn(true, board, field, tempmove, c, blacksTurn, -1, pawnMoves);
                 }
             } else {
-                addIfValidPawn(false, board, field, tempmove, ' ', blacksTurn, -1, pawnMoves);
+                addIfValidPawn(true, board, field, tempmove, ' ', blacksTurn, -1, pawnMoves);
             }
+        }
+
+        tempmove = field + (turn * 12);
+        if (pawnOnLastPosition(tempmove, blacksTurn)) {
+            //todo add correct letters
+            //cant use addIfValid because pawns cant go on fields with opponents
+            for (char c : new char[]{'Q', 'R', 'K', 'B'}) {
+                addIfValidPawn(false, board, field, tempmove, c, blacksTurn, -1, pawnMoves);
+            }
+        } else {
+            addIfValidPawn(false, board, field, tempmove, ' ', blacksTurn, -1, pawnMoves);
         }
 
         if (pawnOnFirstPosition(field, blacksTurn)) {
@@ -142,9 +153,7 @@ public class MoveGenerationImpl implements MoveGeneration {
         int[] nextMoves = new int[]{10, -10, 14, -14, 25, -25, 23, -23};
         for (int i = 0; i < nextMoves.length; i++) {
             nextMoves[i] += field;
-        }
-        for (int nextField : nextMoves) {
-            addIfValid(parent.getBoard(), field, nextField, blacksTurn, knightMoves);
+            addIfValid(parent.getBoard(), field, nextMoves[i], blacksTurn, knightMoves);
         }
 
         moves.addAll(knightMoves);
@@ -162,10 +171,7 @@ public class MoveGenerationImpl implements MoveGeneration {
         int[] nextMoves = new int[]{12, -12, 1, -1, 13, -13, 11, -11};
         for (int i = 0; i < nextMoves.length; i++) {
             nextMoves[i] += field;
-        }
-
-        for (int nextField : nextMoves) {
-            addIfValid(parentBoard, field, nextField, blacksTurn, kingMoves);
+            addIfValid(parentBoard, field, nextMoves[i], blacksTurn, kingMoves);
         }
 
         //changing the bool
@@ -288,13 +294,11 @@ public class MoveGenerationImpl implements MoveGeneration {
             }
         }
 
-
         for (int i : possiblePositions) {
-            Move tempMove = addIfValid(board, field, i, blacksTurn, moves);
-            if (tempMove != null) {
-                pathmoves.add(tempMove);
-            }
+            addIfValid(board, field, i, blacksTurn, pathmoves);
         }
+
+        moves.addAll(pathmoves);
 
         return pathmoves;
     }
@@ -451,26 +455,29 @@ public class MoveGenerationImpl implements MoveGeneration {
         int[][] directionsPawnsKingsKnights = new int[][]{
                 {blacksTurn ? field + 11 : field - 11, blacksTurn ? field + 13 : field - 13},
                 {field + 12, field - 12, field + 1, field - 1, field + 13, field - 13, field + 11, field - 11},
-                {field + 10, field - 10, field + 14, field - 14, field + 25, field - 25, field + 23, field - 23}
-        };
+                {field + 10, field - 10, field + 14, field - 14, field + 25, field - 25, field + 23, field - 23}};
+
         int[] pieces = new int[]{pawn, king, knight};
+
         for (int n = 0; n < directionsPawnsKingsKnights.length; n++) {
             int[] pieceMoves = directionsPawnsKingsKnights[n];
             int piece = pieces[n];
+
             for (int j : pieceMoves) {
                 if (!isSpace(j)) {
                     int i = translateToReal((byte) j);
                     if (board.fieldHasOpponent(i, blacksTurn)) {
-                        byte temp = board.getPiece(i);
-                        if (temp == pawn) {
+                        if (board.getPiece(i) == piece) {
                             return true;
                         }
                     }
                 }
             }
         }
+
         int[][] directionsRookBishop = new int[][]{{12, -12, 1, -1}, {13, -13, 11, -11}};
         pieces = new int[]{rook, bishop};
+
         for (int i = 0; i < directionsRookBishop.length; i++) {
             int[] Directions = directionsRookBishop[i];
             for (int direction : Directions) {
