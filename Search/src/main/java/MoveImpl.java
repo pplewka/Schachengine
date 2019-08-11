@@ -48,7 +48,7 @@ public class MoveImpl implements Move {
                 binaryChar="1111";
                 break;
             default:
-                throw new IllegalArgumentException("wrong char in Move Constructor");
+                throw new MoveException("Constructor: wrong char in Move Constructor");
         }
 
         bitwiseMove=(short)Integer.parseInt(binaryFrom+binaryTo+binaryChar,2);
@@ -116,7 +116,7 @@ public class MoveImpl implements Move {
             case "1111":
                 return '0';
             default:
-                throw new RuntimeException("Move.getChar(): wrong char encoding");
+                throw new MoveException("getChar: wrong char encoding");
         }
     }
 
