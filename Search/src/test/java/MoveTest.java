@@ -7,7 +7,7 @@ public class MoveTest {
         Move tempMove;
         for(int from=0;from<64;from++){
             for(int to=0;to<64;to++){
-                for(int c=0;c<5;c++){
+                for(int c=0;c<6;c++){
                     switch (c){
                         case 0:
                             tempMove= new MoveImpl(from,to,' ',null,false);
@@ -38,6 +38,12 @@ public class MoveTest {
                             assertEquals(from,tempMove.getFrom());
                             assertEquals(to,tempMove.getTo());
                             assertEquals('B',tempMove.getChar());
+                            break;
+                        case 5:
+                            tempMove= new MoveImpl(from,to,'0',null,false);
+                            assertEquals(from,tempMove.getFrom());
+                            assertEquals(to,tempMove.getTo());
+                            assertEquals('0',tempMove.getChar());
                             break;
                         default:
                             fail();

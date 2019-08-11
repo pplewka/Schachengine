@@ -44,6 +44,9 @@ public class MoveImpl implements Move {
             case 'B':
                 binaryChar="0001";
                 break;
+            case '0':
+                binaryChar="1111";
+                break;
             default:
                 throw new IllegalArgumentException("wrong char in Move Constructor");
         }
@@ -110,6 +113,8 @@ public class MoveImpl implements Move {
                 return'K';
             case "0001":
                 return'B';
+            case "1111":
+                return '0';
             default:
                 throw new RuntimeException("Move.getChar(): wrong char encoding");
         }
