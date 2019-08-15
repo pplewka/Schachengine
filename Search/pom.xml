@@ -6,7 +6,7 @@
     <dependencies>
         <dependency>
             <groupId>Projektarbeit</groupId>
-            <artifactId>Board</artifactId>
+            <artifactId>Move</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>

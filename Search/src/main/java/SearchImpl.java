@@ -1,11 +1,12 @@
-import java.util.Collection;
+import java.util.Queue;
+import java.util.concurrent.PriorityBlockingQueue;
 
 public class SearchImpl implements Search {
     private Move root;
     private int depth;
     private Move bestMove;
     private Move ponder;
-    private Collection lookUpTable;
+    private PriorityBlockingQueue<Move> lookUpTable;
 
     private static Search sr;
     private SearchImpl(){}
@@ -35,5 +36,10 @@ public class SearchImpl implements Search {
     @Override
     public Move getPonderMove() {
         return ponder;
+    }
+
+    @Override
+    public Queue<Move> getLookUpTable(){
+        return lookUpTable;
     }
 }
