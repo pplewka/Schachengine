@@ -22,5 +22,5 @@ public interface UCIListener {
     /**
      * Gets called, when the "go" command was entered
      */
-    void receivedGo();
+    void receivedGo(String options);
 }

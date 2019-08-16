@@ -10,7 +10,7 @@ import java.util.Properties;
  * Central class of the UCI module
  * threadsafe singleton
  */
-public class UCI {
+public class UCI implements Runnable {
 
     private static final String OPTIONS_CONF_FILE = "ucioptions.properties";
 
@@ -52,7 +52,7 @@ public class UCI {
      *
      * @return the debug mode
      */
-    public static boolean getDebug() {
+    public static synchronized boolean getDebug() {
         return debug;
     }
 
@@ -62,7 +62,7 @@ public class UCI {
      *
      * @param debug_mode the debug mode
      */
-    public static void setDebug(boolean debug_mode) {
+    public static synchronized void setDebug(boolean debug_mode) {
         if (debug == debug_mode) {
             return;
         }
@@ -91,14 +91,14 @@ public class UCI {
         UCI uci = UCI.getInstance();
         var options = uci.initialize();
         for (OptionValuePair optionValuePair : options) {
-            InfoHandler.sendMessage(optionValuePair.option + " value " + optionValuePair.value);
+            InfoHandler.sendDebugMessage(optionValuePair.option + " value " + optionValuePair.value);
         }
         InfoHandler.sendMessage("Hello\nWorld!");
         InfoHandler.getInstance().storeInfo("nodes", 5L);
         InfoHandler.getInstance().storeInfo(InfoHandler.CPULOAD, 10.0);
         InfoHandler.getInstance().flushInfoBuffer();
         for (String argument : args) {
-            InfoHandler.sendMessage(argument);
+            InfoHandler.sendDebugMessage(argument);
         }
         InfoHandler.getInstance().flushInfoBuffer();
         uci.awaitCommandsForever();
@@ -130,7 +130,7 @@ public class UCI {
         String input = UCIBridge.getInstance().receiveString();
         if (input.startsWith(UCICommands.GO)) {
             for (UCIListener listener : listeners) {
-                listener.receivedGo();
+                listener.receivedGo(input);
             }
         } else if (input.startsWith(UCICommands.STOP)) {
             for (UCIListener listener : listeners) {
@@ -144,6 +144,8 @@ public class UCI {
             for (UCIListener listener : listeners) {
                 listener.receivedPosition(input);
             }
+        } else {
+            UCIBridge.getInstance().sendUnknownCommandMessage(input);
         }
     }
 
@@ -179,5 +181,13 @@ public class UCI {
             InfoHandler.getInstance().flushInfoBuffer();
         }
 
+    }
+
+    public void run() {
+        try {
+            awaitCommandsForever();
+        } catch (EngineQuitSignal engineQuitSignal) {
+            System.exit(0);
+        }
     }
 }

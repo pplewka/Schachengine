@@ -19,7 +19,7 @@ public class DebugUCIListener implements UCIListener {
     }
 
     @Override
-    public void receivedGo() {
-        InfoHandler.sendMessage("received go command");
+    public void receivedGo(String options) {
+        InfoHandler.sendMessage("received go command <" + options + ">");
     }
 }

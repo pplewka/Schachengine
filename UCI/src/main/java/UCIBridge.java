@@ -142,6 +142,9 @@ public class UCIBridge {
         sendUCIOk();
         var result = receiveOptions(ucioptions);
         sendReadyOk();
+        for (OptionValuePair optionValuePair : result) {
+            InfoHandler.sendDebugMessage(optionValuePair.option + " value " + optionValuePair.value);
+        }
         return result;
     }
 
@@ -171,8 +174,8 @@ public class UCIBridge {
      * Handles all incoming options
      *
      * @param ucioptions options for uci
-     * @throws EngineQuitSignal if the engine received the quit input from the GUI
      * @return a List of the options with values. if options are unset by the GUI, then they will be set with default
+     * @throws EngineQuitSignal if the engine received the quit input from the GUI
      */
     private ArrayList<OptionValuePair> receiveOptions(Properties ucioptions) throws EngineQuitSignal {
         return UCIOptionHandler.receiveOptions(ucioptions);

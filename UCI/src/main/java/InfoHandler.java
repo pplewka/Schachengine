@@ -110,6 +110,12 @@ public class InfoHandler {
         getInstance().flushInfoBuffer();
     }
 
+    public synchronized static void sendDebugMessage(String msg) {
+        if (UCI.getDebug()) {
+            sendMessage(msg);
+        }
+    }
+
     /**
      * Stores a info
      *
