@@ -22,8 +22,11 @@ public interface Move {
     public void setEval(int eval);
     public int getEval();
 
+    public byte getDepth();
+    public void setDepth(byte newDepth);
+
     /**
      *!Has to be synchronised!
      */
-    public void setMaxMinIfBiggerSmaller(int newValue);
+    public boolean setMaxMinIfBiggerSmaller(int newValue);
 }

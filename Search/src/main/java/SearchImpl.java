@@ -1,3 +1,4 @@
+import java.util.Comparator;
 import java.util.Queue;
 import java.util.concurrent.PriorityBlockingQueue;
 
@@ -9,7 +10,15 @@ public class SearchImpl implements Search {
     private PriorityBlockingQueue<Move> lookUpTable;
 
     private static Search sr;
-    private SearchImpl(){}
+    private SearchImpl(){
+        this.depth=0;
+        this.lookUpTable = new PriorityBlockingQueue<Move>(400, new Comparator<Move>() {
+            @Override
+            public int compare(Move o1, Move o2) {
+                return o1.getDepth() - o2.getDepth();
+            }
+        });
+    }
 
     public static Search getSearch(){
         if(sr==null){
@@ -31,6 +40,11 @@ public class SearchImpl implements Search {
     @Override
     public Move getBestMove() {
         return bestMove;
+    }
+
+    @Override
+    public void setBestMove(Move newBestMove) {
+        bestMove= newBestMove;
     }
 
     @Override

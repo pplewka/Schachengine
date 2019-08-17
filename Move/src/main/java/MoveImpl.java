@@ -6,6 +6,7 @@ public class MoveImpl implements Move {
 
     private int enpassant;
 
+    private byte depth;
     private int eval;
     private int maxMin;
 
@@ -176,11 +177,29 @@ public class MoveImpl implements Move {
     }
 
     @Override
-    public synchronized void setMaxMinIfBiggerSmaller(int newValue) {
-        //todo
-        /*
-        if(changed){
-        parent.setMaxIfBiggerSmaller(newValue);
-         */
+    public byte getDepth() {
+        return depth;
+    }
+
+    @Override
+    public void setDepth(byte newDepth) {
+        depth= newDepth;
+    }
+
+    @Override
+    public synchronized boolean setMaxMinIfBiggerSmaller(int newValue) {
+        if(blacksTurn){
+            if(newValue > maxMin){
+                maxMin = newValue;
+                return true;
+            }
+        }else{
+            if(newValue < maxMin){
+                maxMin = newValue;
+                return true;
+            }
+        }
+
+        return false;
     }
 }

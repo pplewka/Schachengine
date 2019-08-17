@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Controller implements UCIListener {
-
+    private static Object lock = new Object();
     private final int numberCores;
     private final int numberWorkerThreads;
     private final List<OptionValuePair> options;
@@ -36,7 +36,7 @@ public class Controller implements UCIListener {
         // create worker threads
         WorkerThreads = new ArrayList<>(numberWorkerThreads);
         for (int i = 0; i < numberWorkerThreads; i++) {
-            WorkerThreads.add(new SearchThread());
+            WorkerThreads.add(new SearchThread(lock));
             WorkerThreads.get(i).setName("SearchThread #" + i);
         }
 
@@ -134,5 +134,16 @@ public class Controller implements UCIListener {
     @Override
     public void receivedGo(String options) {
 
+    }
+
+    private void startSearching(){
+        SearchThread.setSearching(true);
+        synchronized (lock){
+            lock.notifyAll();
+        }
+    }
+
+    private void stopSearching(){
+        SearchThread.setSearching(false);
     }
 }
