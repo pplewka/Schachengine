@@ -354,7 +354,6 @@ public class MoveGenerationImpl implements MoveGeneration {
                 temp.setbKingMoved(true);
                 temp.setbLeftRockMoved(true);
 
-                //todo add right notation
                 castlingMoves.add(new MoveImpl(0, 0, '0', temp, true));
             }
 
@@ -365,8 +364,7 @@ public class MoveGenerationImpl implements MoveGeneration {
                 temp.setbKingMoved(true);
                 temp.setbRightRockMoved(true);
 
-                //todo add right notation
-                castlingMoves.add(new MoveImpl(0, 0, '0', temp, true));
+                castlingMoves.add(new MoveImpl(0, 0, ' ', temp, true));
             }
         } else {
             if ((!board.castlingDone(56)) && (!castlingAttacked(110, board))) {
@@ -376,7 +374,6 @@ public class MoveGenerationImpl implements MoveGeneration {
                 temp.setwKingMoved(true);
                 temp.setwLeftRockMoved(true);
 
-                //todo add right notation
                 castlingMoves.add(new MoveImpl(0, 0, '0', temp, false));
             }
 
@@ -387,8 +384,7 @@ public class MoveGenerationImpl implements MoveGeneration {
                 temp.setwKingMoved(true);
                 temp.setwRightRockMoved(true);
 
-                //todo add right notation
-                castlingMoves.add(new MoveImpl(0, 0, '0', temp, false));
+                castlingMoves.add(new MoveImpl(0, 0, ' ', temp, false));
             }
         }
 

@@ -13,6 +13,122 @@ public class MoveImpl implements Move {
     private Move [] children;
     private Move parent;
 
+    public MoveImpl(String fenString) {
+        fenString = fenString.trim();
+        String[] splittedFen = fenString.split(" ");
+        Board fenBoard = new BoardImpl(splittedFen[0]);
+
+        //site to move
+        switch (splittedFen[1]) {
+            case "w":
+                this.blacksTurn = true;
+
+                break;
+            case "b":
+                this.blacksTurn = false;
+
+                break;
+            default:
+                throw new MoveException("malformed Fen String");
+        }
+
+        //castling rights
+        if (splittedFen.length > 2) {
+            for (int i = 0; i < splittedFen[2].length(); i++) {
+                char castlingIndicator = splittedFen[2].charAt(i);
+                switch (castlingIndicator) {
+                    case 'K':
+                        fenBoard.setwRightRockMoved(false);
+                        fenBoard.setwKingMoved(false);
+
+                        break;
+                    case 'k':
+                        fenBoard.setbRightRockMoved(false);
+                        fenBoard.setbKingMoved(false);
+
+                        break;
+                    case 'Q':
+                        fenBoard.setwLeftRockMoved(false);
+                        fenBoard.setwKingMoved(false);
+
+                        break;
+                    case 'q':
+                        fenBoard.setbLeftRockMoved(false);
+                        fenBoard.setbKingMoved(false);
+
+                        break;
+                    case '-':
+                        break;
+                    default:
+                        throw new MoveException("malformed Fen String");
+                }
+            }
+        }
+
+        //enpassant field
+        if (splittedFen.length > 3) {
+            char column = splittedFen[3].charAt(0);
+            byte multiplier;
+            byte addition;
+
+            if (column != '-') {
+                switch (column) {
+                    case 'a':
+                        addition = 0;
+                        break;
+                    case 'b':
+                        addition = 1;
+                        break;
+                    case 'c':
+                        addition = 2;
+                        break;
+                    case 'd':
+                        addition = 3;
+                        break;
+                    case 'e':
+                        addition = 4;
+                        break;
+                    case 'f':
+                        addition = 5;
+                        break;
+                    case 'g':
+                        addition = 6;
+                        break;
+                    case 'h':
+                        addition = 7;
+                        break;
+                    default:
+                        throw new MoveException("malformed Fen String");
+                }
+
+                char row = splittedFen[3].charAt(1);
+                switch (row) {
+                    case '3':
+                        multiplier = 2;
+                        break;
+                    case '6':
+                        multiplier = 5;
+                        break;
+                    default:
+                        throw new MoveException("malformed Fen String");
+                }
+
+                this.setEnpassant(multiplier * 8 + addition);
+            }
+        }
+
+        //todo set halfMove time and full move time
+        /*
+        if(splittedFen.length>4){
+            setHalfmoveTime(Integer.parseInt(splittedFen[4]));
+        }
+
+        if(splittedFen.length>5){
+            setFullmoveTime(Integer.parseInt(splittedFen[4]));
+        }
+        */
+    }
+
     public MoveImpl(int from, int to,char c,Board board,boolean blacksTurn){
         this(from,to,c,board,blacksTurn,-1,0);
     }

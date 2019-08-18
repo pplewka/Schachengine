@@ -8,6 +8,110 @@ public class BoardImpl implements Board{
     private boolean bLeftRockMoved;
     private boolean bRightRockMoved;
 
+    public BoardImpl(String fenPrefix) {
+        this.board = new byte[64];
+        byte boardIndex = 0;
+        int i = 0;
+        for (; i < fenPrefix.length() ; i++) {
+            char curChar = fenPrefix.charAt(i);
+
+            try {
+                if (Character.isDigit(curChar)) {
+                    byte charDigit = Byte.parseByte(curChar + "");
+                    for (int j = 0; j < charDigit; j++) {
+                        board[boardIndex] = Piece.EMPTY;
+                        boardIndex++;
+                    }
+                } else {
+                    switch (curChar) {
+                        case 'P':
+                            board[boardIndex] = Piece.WPAWN;
+                            boardIndex++;
+
+                            break;
+                        case 'p':
+                            board[boardIndex] = Piece.BPAWN;
+                            boardIndex++;
+
+                            break;
+                        case 'K':
+                            board[boardIndex] = Piece.WKING;
+                            boardIndex++;
+
+                            break;
+                        case 'k':
+                            board[boardIndex] = Piece.BKING;
+                            boardIndex++;
+
+                            break;
+                        case 'Q':
+                            board[boardIndex] = Piece.WQUEEN;
+                            boardIndex++;
+
+                            break;
+                        case 'q':
+                            board[boardIndex] = Piece.BQUEEN;
+                            boardIndex++;
+
+                            break;
+                        case 'R':
+                            board[boardIndex] = Piece.WROOK;
+                            boardIndex++;
+
+                            break;
+                        case 'r':
+                            board[boardIndex] = Piece.BROOK;
+                            boardIndex++;
+
+                            break;
+                        case 'N':
+                            board[boardIndex] = Piece.WKNIGHT;
+                            boardIndex++;
+
+                            break;
+                        case 'n':
+                            board[boardIndex] = Piece.BKNIGHT;
+                            boardIndex++;
+
+                            break;
+                        case 'B':
+                            board[boardIndex] = Piece.WBISHOP;
+                            boardIndex++;
+
+                            break;
+                        case 'b':
+                            board[boardIndex] = Piece.BBISHOP;
+                            boardIndex++;
+
+                            break;
+                        case '/':
+                            if ((i + 1) % 8 != 0) {
+                                throw new BoardException("malformed fen string prefix");
+                            }
+
+                            break;
+                        default:
+                            throw new BoardException("malformed fen string prefix");
+                    }
+                }
+            }catch (IndexOutOfBoundsException e){
+                throw new BoardException("malformed fen string prefix");
+            }
+        }
+
+        if(i!=fenPrefix.length() || boardIndex != 64){
+            throw new BoardException("malformed fen string prefix");
+        }
+
+
+        wKingMoved = true;
+        bKingMoved = true;
+        wLeftRockMoved = true;
+        wRightRockMoved = true;
+        bLeftRockMoved = true;
+        bRightRockMoved = true;
+    }
+
     public BoardImpl(){
         this.board= new byte[64];
 
