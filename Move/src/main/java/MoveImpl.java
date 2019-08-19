@@ -67,53 +67,14 @@ public class MoveImpl implements Move {
 
         //enpassant field
         if (splittedFen.length > 3) {
-            char column = splittedFen[3].charAt(0);
-            byte multiplier;
-            byte addition;
 
-            if (column != '-') {
-                switch (column) {
-                    case 'a':
-                        addition = 0;
-                        break;
-                    case 'b':
-                        addition = 1;
-                        break;
-                    case 'c':
-                        addition = 2;
-                        break;
-                    case 'd':
-                        addition = 3;
-                        break;
-                    case 'e':
-                        addition = 4;
-                        break;
-                    case 'f':
-                        addition = 5;
-                        break;
-                    case 'g':
-                        addition = 6;
-                        break;
-                    case 'h':
-                        addition = 7;
-                        break;
-                    default:
-                        throw new MoveException("malformed Fen String");
+            if (splittedFen[3].charAt(0) != '-') {
+                char row =splittedFen[3].charAt(1);
+                if(row !='3' && row != '6'){
+                    throw new MoveException("malformed fen String");
                 }
 
-                char row = splittedFen[3].charAt(1);
-                switch (row) {
-                    case '3':
-                        multiplier = 2;
-                        break;
-                    case '6':
-                        multiplier = 5;
-                        break;
-                    default:
-                        throw new MoveException("malformed Fen String");
-                }
-
-                this.setEnpassant(multiplier * 8 + addition);
+                setEnpassant(algebraicTo64(splittedFen[3]));
             }
         }
 
@@ -182,8 +143,188 @@ public class MoveImpl implements Move {
         this.parent=null;
     }
 
+    @Override
+    public void moves(String moves){
+        moves = moves.trim();
+        String [] splittedMoves = moves.split(" ");
+
+        for(int i=0;i< splittedMoves.length;i++ ){
+            blacksTurn = !blacksTurn;
+
+            byte king = blacksTurn? Piece.BKING: Piece.WKING;
+            int kingFirstPosition = blacksTurn? 4 : 60;
+            byte pawn = blacksTurn? Piece.BPAWN: Piece.WPAWN;
+            byte rook = blacksTurn? Piece.BROOK: Piece.WROOK;
 
 
+            String move = splittedMoves[i];
+
+            String from = move.substring(0,2);
+            String to = move.substring(2,4);
+            int from64 = algebraicTo64(from);
+            int to64 = algebraicTo64(to);
+            boolean setEnpassant= false;
+
+            //promotion
+            if(move.length()>4){
+                char promotion = move.charAt(5);
+
+                switch (promotion){
+                    case 'n':
+                        board.setField(blacksTurn? Piece.BKNIGHT : Piece.WKNIGHT,to64);
+                        board.setField(Piece.EMPTY, from64);
+
+                        break;
+                    case 'q':
+                        board.setField(blacksTurn? Piece.BQUEEN : Piece.WQUEEN,to64);
+                        board.setField(Piece.EMPTY, from64);
+
+                        break;
+                    case 'r':
+                        board.setField(blacksTurn? Piece.BROOK : Piece.WROOK,to64);
+                        board.setField(Piece.EMPTY, from64);
+
+                        break;
+                    case 'b':
+                        board.setField(blacksTurn? Piece.BBISHOP : Piece.WBISHOP,to64);
+                        board.setField(Piece.EMPTY, from64);
+
+                        break;
+                    default:
+                        throw new MoveException("malformed move: promotion char");
+                }
+            }else{
+                //king Moves
+                if(board.getPiece(from64)==king){
+                    //first king move
+                    if(from64 == kingFirstPosition){
+                        //castling
+                        switch (to64){
+                            case 2:
+                                board.setField(Piece.EMPTY,4);
+                                board.setField(Piece.EMPTY,0);
+                                board.setField(Piece.BKING,2);
+                                board.setField(Piece.BROOK,3);
+
+                                board.setbKingMoved(true);
+                                board.setbLeftRockMoved(true);
+
+                                break;
+                            case 6:
+                                board.setField(Piece.EMPTY,4);
+                                board.setField(Piece.EMPTY,7);
+                                board.setField(Piece.BKING,6);
+                                board.setField(Piece.BROOK,5);
+
+                                board.setbKingMoved(true);
+                                board.setbRightRockMoved(true);
+
+                                break;
+                            case 58:
+                                board.setField(Piece.EMPTY,60);
+                                board.setField(Piece.EMPTY,56);
+                                board.setField(Piece.WKING,58);
+                                board.setField(Piece.WROOK,59);
+
+                                board.setwKingMoved(true);
+                                board.setwLeftRockMoved(true);
+
+                                break;
+                            case 62:
+                                board.setField(Piece.EMPTY,60);
+                                board.setField(Piece.EMPTY,63);
+                                board.setField(Piece.WKING,62);
+                                board.setField(Piece.WROOK,61);
+
+                                board.setwKingMoved(true);
+                                board.setwRightRockMoved(true);
+
+                                break;
+                            //no castling
+                            default:
+                                board.applyMove(from64,to64);
+
+                                if(blacksTurn){
+                                    board.setbKingMoved(true);
+                                }else{
+                                    board.setwKingMoved(true);
+                                }
+                        }
+                    }else{
+                        board.applyMove(from64,to64);
+                    }
+                }else{
+                    if(board.getPiece(from64)==rook){
+                        board.applyMove(from64,to64);
+
+                        //first rook move
+                        switch (from64){
+                            case 0:
+                                board.setbLeftRockMoved(true);
+                                break;
+                            case 7:
+                                board.setbRightRockMoved(true);
+                                break;
+                            case 56:
+                                board.setwLeftRockMoved(true);
+                                break;
+                            case 63:
+                                board.setwRightRockMoved(true);
+                                break;
+                            default:
+                                //not first move
+                        }
+                    }else{
+                        if(board.getPiece(from64)==pawn){
+                            board.applyMove(from64,to64);
+
+                            if(blacksTurn){
+                                //enpassant
+                                if (from.charAt(1) == '5') {
+                                    if(to64 == from64 + 9 || to64 == from64 + 7){
+                                        if(board.getPiece(to64)==Piece.EMPTY){
+                                            board.setField(Piece.EMPTY, to64 - 8);
+                                        }
+                                    }
+                                }else{
+                                    //first pawn move, long move
+                                    if(from.charAt(1) == '2'){
+                                        if(to64 == from64 +16){
+                                            enpassant = to64 - 8;
+                                            setEnpassant= true;
+                                        }
+                                    }
+                                }
+                            }else{
+                                //enpassant
+                                if (from.charAt(1) == '4') {
+                                    if(to64 == from64 - 9 || to64 == from64 -7){
+                                        if(board.getPiece(to64)==Piece.EMPTY){
+                                            board.setField(Piece.EMPTY, to64 + 8);
+                                        }
+                                    }
+                                }else{
+                                    //first pawn move, long move
+                                    if(from.charAt(1) == '7'){
+                                        if(to64 == from64 -16){
+                                            enpassant = to64 + 8;
+                                            setEnpassant= true;
+                                        }
+                                    }
+                                }
+                            }
+                        }else{
+                            board.applyMove(from64,to64);
+                        }
+                    }
+                }
+            }
+
+            if(!setEnpassant){
+                enpassant = -1;
+            }
+        }
+    }
 
     @Override
     public void setChildren(Move [] children) {
@@ -317,5 +458,22 @@ public class MoveImpl implements Move {
         }
 
         return false;
+    }
+
+    public int algebraicTo64(String field){
+        int multiplier;
+        int addition;
+
+        int column =(int) field.charAt(0);
+        addition = column - 97;
+
+        int row =(int) field.charAt(1);
+        multiplier = row - 49;
+
+        if (addition < 0 || addition > 7 || multiplier < 0 || multiplier > 7) {
+            throw new MoveException("algebraicTo64: malformed field");
+        }
+
+        return multiplier * 8 + addition;
     }
 }

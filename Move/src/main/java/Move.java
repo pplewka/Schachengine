@@ -26,6 +26,12 @@ public interface Move {
     public void setDepth(byte newDepth);
 
     /**
+     * method to make moves given by the uci "position moves" command
+     * @param moves String of moves in algebraic notation separated with space
+     */
+    public void moves(String moves);
+
+    /**
      *!Has to be synchronised!
      */
     public boolean setMaxMinIfBiggerSmaller(int newValue);
