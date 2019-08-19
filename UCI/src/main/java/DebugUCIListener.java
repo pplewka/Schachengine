@@ -14,12 +14,12 @@ public class DebugUCIListener implements UCIListener {
     }
 
     @Override
-    public void receivedPosition(String position) {
-        InfoHandler.sendMessage("received new position <" + position + ">");
+    public void receivedPosition(Board board) {
+        InfoHandler.sendMessage("received new position <\n" + board.toString() + "\n>");
     }
 
     @Override
     public void receivedGo(String options) {
-        InfoHandler.sendMessage("received go command <" + options + ">");
+        InfoHandler.sendMessage("received go command <\n" + options + "\n>");
     }
 }

@@ -77,6 +77,7 @@ public class MoveImpl implements Move {
                 setEnpassant(algebraicTo64(splittedFen[3]));
             }
         }
+        board = fenBoard;
 
         //todo set halfMove time and full move time
         /*

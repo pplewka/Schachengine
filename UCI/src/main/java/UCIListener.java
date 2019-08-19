@@ -15,9 +15,9 @@ public interface UCIListener {
 
     /**
      * Gets called, when the "position" command was entered
-     * @param position the complete entered command (with "position" as first token)
+     * @param board
      */
-    void receivedPosition(String position);
+    void receivedPosition(Board board);
 
     /**
      * Gets called, when the "go" command was entered

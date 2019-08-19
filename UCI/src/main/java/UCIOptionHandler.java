@@ -150,6 +150,7 @@ public class UCIOptionHandler {
         ArrayList<OptionValuePair> results = new ArrayList<>();
         while (!command.equals(UCICommands.IS_READY)) {
             if (!isValidSetOption(command)) {
+                InfoHandler.sendDebugMessage("Found in UCIOptionHandler.recieveOptions");
                 UCIBridge.getInstance().sendUnknownCommandMessage(command);
             } else {
                 String displaynameAndValue = command.replaceFirst(UCICommands.SET_OPTION + " name", "");

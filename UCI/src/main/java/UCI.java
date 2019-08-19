@@ -1,10 +1,8 @@
 import Exceptions.EngineQuitSignal;
 
+import javax.swing.*;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * Central class of the UCI module
@@ -142,11 +140,28 @@ public class UCI implements Runnable {
             }
         } else if (input.startsWith(UCICommands.POSITION)) {
             for (UCIListener listener : listeners) {
-                listener.receivedPosition(input);
+                Board board = parsePosition(input);
+                listener.receivedPosition(board);
             }
         } else {
             UCIBridge.getInstance().sendUnknownCommandMessage(input);
         }
+    }
+
+    private Board parsePosition(String input) {
+        String original_input = input;
+        if (input.contains("startpos")) {
+            input = input.replaceFirst("startpos", "fen " + Board.START_FEN);
+        }
+        input = input.replaceFirst("position fen ", "");
+        String[] fenandmoves = input.split("moves");
+        Move move = new MoveImpl(fenandmoves[0]);
+        if (fenandmoves.length == 2) {
+            move.moves(fenandmoves[1]);
+        } else if (fenandmoves.length > 2) {
+            throw new InputMismatchException("input: " + original_input + "has too many \"moves\"");
+        }
+        return move.getBoard();
     }
 
     /**
@@ -175,6 +190,10 @@ public class UCI implements Runnable {
      * @throws EngineQuitSignal if quit command was send from GUI
      */
     public void awaitCommandsForever() throws EngineQuitSignal {
+        InfoHandler.sendDebugMessage("Sending implicit ucinewgame");
+        for (UCIListener listener : listeners) {
+            listener.receivedNewGame();
+        }
 
         while (true) {
             awaitNextCommand();

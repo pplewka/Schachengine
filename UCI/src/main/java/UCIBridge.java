@@ -89,18 +89,18 @@ public class UCIBridge {
         input = removeUnnecessaryWS(input);
         if (input.equals(UCICommands.IS_READY) && handleIsReadyCommand) {
             sendReadyOk();
-            return receiveString();
+            return receiveString(true);
         }
         if (input.equals(UCICommands.QUIT)) {
             throw new EngineQuitSignal(QUIT_MSG);
         }
         if (input.equals(UCICommands.DEBUG_OFF)) {
             UCI.setDebug(false);
-            return receiveString();
+            return receiveString(handleIsReadyCommand);
         }
         if (input.equals(UCICommands.DEBUG_ON)) {
             UCI.setDebug(true);
-            return receiveString();
+            return receiveString(handleIsReadyCommand);
         }
         return input;
     }
@@ -141,6 +141,7 @@ public class UCIBridge {
         sendAvailableOptions(ucioptions);
         sendUCIOk();
         var result = receiveOptions(ucioptions);
+        InfoHandler.sendDebugMessage("Received all options");
         sendReadyOk();
         for (OptionValuePair optionValuePair : result) {
             InfoHandler.sendDebugMessage(optionValuePair.option + " value " + optionValuePair.value);
