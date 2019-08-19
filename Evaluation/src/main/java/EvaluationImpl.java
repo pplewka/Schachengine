@@ -7,9 +7,9 @@ public class EvaluationImpl implements Evaluation {
         [4]    = Pawn              = 1
         [5, 7] = Knight and Bishop = 3
         [8]    = Queen             = 9
-        King has a theoretical value of infinite and does not need to be in the calculation for the material value
+        [9]    = King              = a much higher value than the others...
      */
-    private int [] pieceValues = {0, 0, 0, 0, 1, 3, 5, 3, 9, 0};
+    private int [] pieceValues = {0, 0, 0, 0, 1, 3, 5, 3, 9, 100};
 
 
     private EvaluationImpl(){
@@ -46,30 +46,26 @@ public class EvaluationImpl implements Evaluation {
      * Calculate the material value of a board for a specific site.
      * @param board the board that will be valued
      * @param blacksTurn indicates which site of the board should be calculated
-     * @return the value of a site in centipawns (100 centipawns = 1 pawn). The value returned is the average of the
-     *         point values from all pieces of a site.
+     * @return the combination of all piece values of a site in centipawns (100 centipawns = 1 pawn).
      */
     @Override
     public int material(Board board, boolean blacksTurn) {
-
+        // TODO checking for certain piece combination bonus/penalty
+        // TODO unit tests of course
         int turnModifier = blacksTurn ? -1 : 1;
 
         byte [] boardByte = board.getBoard();
 
         int materialValue = 0;
-        int pieceCnt      = 0;
+        for (byte b : boardByte) {
+            int field = b * turnModifier;
 
-        for(int i = 0; i < boardByte.length; i++) {
-            int field = boardByte[i]*turnModifier;
-
-            if(field > 1) { // if neither empty or "SPACE"
-                materialValue += pieceValues[field] * 100 ;
-                pieceCnt++;
+            if (field > 1) { // if neither empty or "SPACE"
+                materialValue += pieceValues[field] * 100;
             }
-
         }
 
-        return (materialValue/pieceCnt);
+        return materialValue;
     }
 
     @Override
