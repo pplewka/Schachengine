@@ -85,7 +85,7 @@ public class BoardImpl implements Board{
 
                             break;
                         case '/':
-                            if ((i + 1) % 8 != 0) {
+                            if ((boardIndex) % 8 != 0) {
                                 throw new BoardException("malformed fen string prefix");
                             }
 
