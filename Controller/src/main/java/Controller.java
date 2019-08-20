@@ -90,11 +90,7 @@ public class Controller implements UCIListener {
                     } else if (command.getType() == Command.CommandEnum.STOP) {
                         stopSearching();
                     } else if(command.getType() == Command.CommandEnum.UCINEWGAME){
-                        /*
-                        Uci new game löscht alle felder in der search klasse und
-                        muss dann einen move in startposition in lookup table setzen
-                         */
-                        //TODO send ucinewgame
+                        SearchImpl.getSearch().clear();
 
                     }else if(command.getType() == Command.CommandEnum.POSITION){
                         //TODO send position
