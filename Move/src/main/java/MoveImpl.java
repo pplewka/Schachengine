@@ -477,4 +477,12 @@ public class MoveImpl implements Move {
 
         return multiplier * 8 + addition;
     }
+
+    @Override
+    public String toString() {
+        return "MoveImpl{" +
+                "bitwiseMove=" + bitwiseMove +
+                " from"+getFrom()+" to"+getTo()+
+                '}';
+    }
 }

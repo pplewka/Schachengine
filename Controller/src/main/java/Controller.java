@@ -89,6 +89,7 @@ public class Controller implements UCIListener {
                         startSearching();
                     } else if (command.getType() == Command.CommandEnum.STOP) {
                         stopSearching();
+                        InfoHandler.sendDebugMessage(SearchImpl.getSearch().getBestMove().toString());
                     } else if(command.getType() == Command.CommandEnum.UCINEWGAME){
                         SearchImpl.getSearch().clear();
 
