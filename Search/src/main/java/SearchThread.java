@@ -36,25 +36,25 @@ public class SearchThread extends Thread {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+
+            search.setIfDeeper(currentParent.getDepth()-1);
             ArrayList<Move> currentChildren = moveGen.generateAllMoves(currentParent);
             for (Move child : currentChildren) {
                 child.setEval(eval.material(child.getBoard(), child.blacksTurn()));
 
-
                 //get the eval value to root if it is "good" enough
-                Move preprevious = null;
-                Move previous = child;
-                Move toRootIterator = child.getParent();
+                Move previous = null;
+                Move toRootIterator = child;
                 boolean changed = true;
-                while (toRootIterator != null && changed) {
-                    changed = toRootIterator.setMaxMinIfBiggerSmaller(child.getEval());
-                    preprevious = previous;
+                while (toRootIterator != search.getRoot() && changed) {
                     previous = toRootIterator;
                     toRootIterator = toRootIterator.getParent();
+
+                    changed = toRootIterator.setMaxMinIfBiggerSmaller(child.getEval());
                 }
 
-                if(toRootIterator==null&&changed){
-                    search.setBestMove(preprevious);
+                if (toRootIterator == search.getRoot() && changed) {
+                    search.setBestMove(previous);
                 }
 
                 //for alpha beta pruning just add a child to the

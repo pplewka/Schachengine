@@ -96,6 +96,7 @@ public class MoveGenerationImpl implements MoveGeneration {
 
         for(Move m : moves){
             m.setParent(parent);
+            m.setDepth((byte)(parent.getDepth()+1));
         }
 
         return moves;

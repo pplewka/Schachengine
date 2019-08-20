@@ -72,4 +72,11 @@ public class SearchImpl implements Search {
         lookUpTable.clear();
         lookUpTable.add(new MoveImpl(Board.START_FEN));
     }
+
+    @Override
+    public synchronized void setIfDeeper(int depth){
+        if(depth>this.depth){
+            this.depth= depth;
+        }
+    }
 }

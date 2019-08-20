@@ -8,6 +8,7 @@ public interface Search {
     public Move getPonderMove();
     public BlockingQueue<Move> getLookUpTable();
     public void clear();
+    public void setIfDeeper(int depth);
 
     void setRoot(Move move);
 }
