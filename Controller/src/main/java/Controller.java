@@ -10,14 +10,13 @@ import java.util.concurrent.LinkedBlockingDeque;
 
 public class Controller implements UCIListener {
     private static Object lock = new Object();
+    private static volatile Controller instance;
     private final int numberCores;
     private final int numberWorkerThreads;
     private final List<OptionValuePair> options;
     private final Thread UCIThread;
     private List<SearchThread> WorkerThreads;
     private ConcurrentMap<Long, LinkedBlockingDeque<Command>> CommandQueues;
-
-    private static volatile Controller instance;
 
     /**
      * Constructor
@@ -73,6 +72,15 @@ public class Controller implements UCIListener {
     }
 
     /**
+     * Main method
+     *
+     * @param args command line args
+     */
+    public static void main(String[] args) {
+        getInstance().run();
+    }
+
+    /**
      * Main loop
      */
     private void run() {
@@ -85,9 +93,11 @@ public class Controller implements UCIListener {
                 for (SearchThread workerThread : WorkerThreads) {
                     Command command = takeNextCommand(workerThread.getId());
                     if (command.getType() == Command.CommandEnum.GO) {
+                        InfoHandler.sendDebugMessage("Controller Thread: sending go command to worker thread:" + workerThread.getName());
                         //TODO Parameter wie infinite
                         startSearching();
                     } else if (command.getType() == Command.CommandEnum.STOP) {
+                        InfoHandler.sendDebugMessage("Controller Thread: sending stop command to worker thread:" + workerThread.getName());
                         stopSearching();
                         Move best_move = SearchImpl.getSearch().getBestMove();
                         InfoHandler.sendDebugMessage(best_move.toString());
@@ -95,12 +105,20 @@ public class Controller implements UCIListener {
                             UCI.getInstance().sendBestMove(best_move);
                         }
                     } else if (command.getType() == Command.CommandEnum.UCINEWGAME) {
-                        SearchImpl.getSearch().clear();
-                        SearchImpl.getSearch().setRoot(command.getMove());
-
-                    } else if (command.getType() == Command.CommandEnum.POSITION) {
                         if (workerThread.getId() == WorkerThreads.get(0).getId()) { //only once
+                            InfoHandler.sendDebugMessage("Controller Thread: sending ucinewgame command to worker thread:" + workerThread.getName());
                             SearchImpl.getSearch().clear();
+                            Move move = new MoveImpl(Board.START_FEN);
+                            SearchImpl.getSearch().setRoot(move);
+                            SearchImpl.getSearch().getLookUpTable().add(move);
+                        }
+                    } else if (command.getType() == Command.CommandEnum.POSITION) {
+
+                        if (workerThread.getId() == WorkerThreads.get(0).getId()) { //only once
+                            InfoHandler.sendDebugMessage("Controller Thread: sending ucinewgame command");
+                            SearchImpl.getSearch().clear();
+                            SearchImpl.getSearch().setRoot(command.getMove());
+                            SearchImpl.getSearch().getLookUpTable().add(command.getMove());
                         }
                     }
                 }
@@ -133,15 +151,6 @@ public class Controller implements UCIListener {
             }
         }
         throw new UnknownOptionException("Unknown option: " + option);
-    }
-
-    /**
-     * Main method
-     *
-     * @param args command line args
-     */
-    public static void main(String[] args) {
-        getInstance().run();
     }
 
     /**
