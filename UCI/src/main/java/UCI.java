@@ -15,7 +15,7 @@ public class UCI implements Runnable {
     private static UCI instance;
 
     private static boolean debug = false;
-    
+
     private List<UCIListener> listeners;
 
 
