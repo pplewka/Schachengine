@@ -42,17 +42,19 @@ public class SearchThread extends Thread {
 
 
                 //get the eval value to root if it is "good" enough
+                Move preprevious = null;
                 Move previous = child;
                 Move toRootIterator = child.getParent();
                 boolean changed = true;
                 while (toRootIterator != null && changed) {
                     changed = toRootIterator.setMaxMinIfBiggerSmaller(child.getEval());
+                    preprevious = previous;
                     previous = toRootIterator;
                     toRootIterator = toRootIterator.getParent();
                 }
 
                 if(toRootIterator==null&&changed){
-                    search.setBestMove(previous);
+                    search.setBestMove(preprevious);
                 }
 
                 //for alpha beta pruning just add a child to the

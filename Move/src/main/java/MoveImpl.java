@@ -75,6 +75,8 @@ public class MoveImpl implements Move {
                 }
 
                 setEnpassant(algebraicTo64(splittedFen[3]));
+            }else{
+                enpassant = -1;
             }
         }
         board = fenBoard;
