@@ -62,6 +62,8 @@ public class EvaluationImpl implements Evaluation {
 
             if (field > 1) { // if neither empty or "SPACE"
                 materialValue += pieceValues[field] * 100;
+            } else if (field < -1) {
+                materialValue -= pieceValues[-1*field] * 100;
             }
         }
 
