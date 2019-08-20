@@ -18,4 +18,5 @@ public abstract class UCICommands {
     public static final String STOP = "stop";
     public static final String POSITION = "position";
     public final static String SET_OPTION = "setoption";
+    public static final String BEST_MOVE = "bestmove";
 }

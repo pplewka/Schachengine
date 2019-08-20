@@ -15,9 +15,7 @@ public class UCI implements Runnable {
     private static UCI instance;
 
     private static boolean debug = false;
-
-    private UCIBridge uciBridge;
-
+    
     private List<UCIListener> listeners;
 
 
@@ -181,6 +179,10 @@ public class UCI implements Runnable {
      */
     public synchronized void removeListener(UCIListener listener) {
         listeners.remove(listener);
+    }
+
+    public synchronized void sendBestMove(Move move){
+        UCIBridge.getInstance().sendString(UCICommands.BEST_MOVE+" "+move);
     }
 
     /**
