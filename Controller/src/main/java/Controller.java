@@ -83,19 +83,24 @@ public class Controller implements UCIListener {
         while(true){
             try {
                 for (SearchThread workerThread : WorkerThreads) {
-                    Command command = pollNextCommand(workerThread.getId());
+                    Command command = takeNextCommand(workerThread.getId());
                     if (command.getType() == Command.CommandEnum.GO) {
+                        //TODO Parameter wie infinite
                         startSearching();
                     } else if (command.getType() == Command.CommandEnum.STOP) {
                         stopSearching();
+                    } else if(command.getType() == Command.CommandEnum.UCINEWGAME){
+                        /*
+                        Uci new game löscht alle felder in der search klasse und
+                        muss dann einen move in startposition in lookup table setzen
+                         */
+                        //TODO send ucinewgame
+
+                    }else if(command.getType() == Command.CommandEnum.POSITION){
+                        //TODO send position
                     }
                 }
-            }catch (NullPointerException e){
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException ex) {
-                    ;
-                }
+            }catch (InterruptedException e){
             }
         }
         //wait for uci instructions
@@ -105,8 +110,8 @@ public class Controller implements UCIListener {
         return !CommandQueues.get(thread_id).isEmpty();
     }
 
-    public Command pollNextCommand(Long thread_id) {
-        return CommandQueues.get(thread_id).poll();
+    public Command takeNextCommand(Long thread_id) throws InterruptedException {
+        return CommandQueues.get(thread_id).take();
     }
 
     /**

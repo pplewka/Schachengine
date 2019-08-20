@@ -10,8 +10,9 @@ public class SearchImpl implements Search {
     private PriorityBlockingQueue<Move> lookUpTable;
 
     private static Search sr;
-    private SearchImpl(){
-        this.depth=0;
+
+    private SearchImpl() {
+        this.depth = 0;
         this.lookUpTable = new PriorityBlockingQueue<Move>(400, new Comparator<Move>() {
             @Override
             public int compare(Move o1, Move o2) {
@@ -20,9 +21,9 @@ public class SearchImpl implements Search {
         });
     }
 
-    public static Search getSearch(){
-        if(sr==null){
-            sr= new SearchImpl();
+    public static Search getSearch() {
+        if (sr == null) {
+            sr = new SearchImpl();
         }
         return sr;
     }
@@ -44,7 +45,7 @@ public class SearchImpl implements Search {
 
     @Override
     public void setBestMove(Move newBestMove) {
-        bestMove= newBestMove;
+        bestMove = newBestMove;
     }
 
     @Override
@@ -53,7 +54,17 @@ public class SearchImpl implements Search {
     }
 
     @Override
-    public Queue<Move> getLookUpTable(){
+    public Queue<Move> getLookUpTable() {
         return lookUpTable;
+    }
+
+    @Override
+    public void clear() {
+        root = null;
+        depth = 0;
+        bestMove = null;
+        ponder = null;
+        lookUpTable.clear();
+        lookUpTable.add(new MoveImpl());
     }
 }

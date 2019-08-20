@@ -7,4 +7,5 @@ public interface Search {
     public void setBestMove(Move newBestMove);
     public Move getPonderMove();
     public Queue<Move> getLookUpTable();
+    public void clear();
 }
