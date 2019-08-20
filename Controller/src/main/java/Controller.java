@@ -80,7 +80,7 @@ public class Controller implements UCIListener {
         for (SearchThread workerThread : WorkerThreads) {
             workerThread.start();
         }
-        while(true){
+        while (true) {
             try {
                 for (SearchThread workerThread : WorkerThreads) {
                     Command command = takeNextCommand(workerThread.getId());
@@ -91,17 +91,20 @@ public class Controller implements UCIListener {
                         stopSearching();
                         Move best_move = SearchImpl.getSearch().getBestMove();
                         InfoHandler.sendDebugMessage(best_move.toString());
-                        if(workerThread.getId() == WorkerThreads.get(0).getId()){ // only send for the first thread
+                        if (workerThread.getId() == WorkerThreads.get(0).getId()) { // only send for the first thread
                             UCI.getInstance().sendBestMove(best_move);
                         }
-                    } else if(command.getType() == Command.CommandEnum.UCINEWGAME){
+                    } else if (command.getType() == Command.CommandEnum.UCINEWGAME) {
                         SearchImpl.getSearch().clear();
+                        SearchImpl.getSearch().setRoot(command.getMove());
 
-                    }else if(command.getType() == Command.CommandEnum.POSITION){
-                        //TODO send position
+                    } else if (command.getType() == Command.CommandEnum.POSITION) {
+                        if (workerThread.getId() == WorkerThreads.get(0).getId()) { //only once
+                            SearchImpl.getSearch().clear();
+                        }
                     }
                 }
-            }catch (InterruptedException e){
+            } catch (InterruptedException e) {
             }
         }
         //wait for uci instructions
@@ -169,12 +172,14 @@ public class Controller implements UCIListener {
      * Gets called, when the "position" command was entered
      *
      * @param board
+     * @param move
      */
     @Override
-    public void receivedPosition(Board board) {
+    public void receivedPosition(Board board, Move move) {
         for (Long thread_id : CommandQueues.keySet()) {
             Command c = new Command(Command.CommandEnum.POSITION);
             c.setBoard(board);
+            c.setMove(move);
             CommandQueues.get(thread_id).add(c);
             InfoHandler.sendDebugMessage(c.toString());
         }

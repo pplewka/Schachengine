@@ -39,6 +39,11 @@ public class SearchImpl implements Search {
     }
 
     @Override
+    public void setRoot(Move move){
+        root = move;
+    }
+
+    @Override
     public Move getBestMove() {
         return bestMove;
     }

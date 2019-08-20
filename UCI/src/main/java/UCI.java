@@ -1,6 +1,5 @@
 import Exceptions.EngineQuitSignal;
 
-import javax.swing.*;
 import java.io.IOException;
 import java.util.*;
 
@@ -138,15 +137,16 @@ public class UCI implements Runnable {
             }
         } else if (input.startsWith(UCICommands.POSITION)) {
             for (UCIListener listener : listeners) {
-                Board board = parsePosition(input);
-                listener.receivedPosition(board);
+                Move move = parsePosition(input);
+                Board board = move.getBoard();
+                listener.receivedPosition(board, move);
             }
         } else {
             UCIBridge.getInstance().sendUnknownCommandMessage(input);
         }
     }
 
-    private Board parsePosition(String input) {
+    private Move parsePosition(String input) {
         String original_input = input;
         if (input.contains("startpos")) {
             input = input.replaceFirst("startpos", "fen " + Board.START_FEN);
@@ -159,7 +159,7 @@ public class UCI implements Runnable {
         } else if (fenandmoves.length > 2) {
             throw new InputMismatchException("input: " + original_input + "has too many \"moves\"");
         }
-        return move.getBoard();
+        return move;
     }
 
     /**

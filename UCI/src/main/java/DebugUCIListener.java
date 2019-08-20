@@ -14,8 +14,8 @@ public class DebugUCIListener implements UCIListener {
     }
 
     @Override
-    public void receivedPosition(Board board) {
-        InfoHandler.sendMessage("received new position <\n" + board.toString() + "\n>");
+    public void receivedPosition(Board board, Move move) {
+        InfoHandler.sendMessage("received new position <\n" + board.toString() + "\n"+move.toString()+"\n>");
     }
 
     @Override

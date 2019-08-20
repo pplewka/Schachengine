@@ -310,9 +310,9 @@ public class BoardImpl implements Board {
             if (b < 0) {
                 buffer.append(b);
             } else {
-                buffer.append(" ").append(b);
+                buffer.append("_").append(b);
             }
-            buffer.append(" ");
+            buffer.append("_");
             if (i % 8 == 7 && i != 63) {
                 buffer.append("\n");
             }

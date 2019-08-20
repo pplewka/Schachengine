@@ -20,9 +20,10 @@ public class Command {
             default:
                 type_string = "undefined";
         }
+        String board_string = board == null?"null":"\n"+board+"\n";
         return "Command{" +
                 "type=" + type_string +
-                ", board=" + board +
+                ", board=" + board_string +
                 ", ponder=" + ponder +
                 ", infinite=" + infinite +
                 ", searchmoves=" + Arrays.toString(searchmoves) +
@@ -60,6 +61,15 @@ public class Command {
     private long nodes;
     private long mate;
     private long movetime;
+    private Move move;
+
+    public Move getMove() {
+        return move;
+    }
+
+    public void setMove(Move move) {
+        this.move = move;
+    }
 
     public Command(CommandEnum type) {
         this.type = type;
@@ -75,6 +85,7 @@ public class Command {
         setWinc(-1);
         setWtime(-1);
         setSearchmoves(null);
+        setMove(null);
     }
 
     public CommandEnum getType() {

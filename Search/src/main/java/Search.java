@@ -8,4 +8,6 @@ public interface Search {
     public Move getPonderMove();
     public BlockingQueue<Move> getLookUpTable();
     public void clear();
+
+    void setRoot(Move move);
 }
