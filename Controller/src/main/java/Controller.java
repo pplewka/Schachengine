@@ -158,10 +158,14 @@ public class Controller implements UCIListener {
      */
     @Override
     public void receivedNewGame() {
+        Command c = null;
         for (Long thread_id : CommandQueues.keySet()) {
-            Command c = new Command(Command.CommandEnum.UCINEWGAME);
+            c = new Command(Command.CommandEnum.UCINEWGAME);
             CommandQueues.get(thread_id).add(c);
             InfoHandler.sendDebugMessage("Thread: " + thread_id + " " + c.toString());
+        }
+        if( c != null) {
+            InfoHandler.sendDebugMessage(c.toString());
         }
     }
 
@@ -170,9 +174,12 @@ public class Controller implements UCIListener {
      */
     @Override
     public void receivedStop() {
+        Command c = null;
         for (Long thread_id : CommandQueues.keySet()) {
-            Command c = new Command(Command.CommandEnum.STOP);
+            c = new Command(Command.CommandEnum.STOP);
             CommandQueues.get(thread_id).add(c);
+        }
+        if( c != null) {
             InfoHandler.sendDebugMessage(c.toString());
         }
     }
@@ -185,24 +192,27 @@ public class Controller implements UCIListener {
      */
     @Override
     public void receivedPosition(Board board, Move move) {
+        Command c=null;
         for (Long thread_id : CommandQueues.keySet()) {
-            Command c = new Command(Command.CommandEnum.POSITION);
+            c = new Command(Command.CommandEnum.POSITION);
             c.setBoard(board);
             c.setMove(move);
             CommandQueues.get(thread_id).add(c);
+
+        }
+        if( c != null) {
             InfoHandler.sendDebugMessage(c.toString());
         }
-
     }
-
     /**
      * Gets called, when the "go" command was entered
      */
     @Override
     public void receivedGo(String options) {
         options = options.toLowerCase();
+        Command c = null;
         for (Long thread_id : CommandQueues.keySet()) {
-            Command c = new Command(Command.CommandEnum.GO);
+            c = new Command(Command.CommandEnum.GO);
             String[] splitted = options.split(" ");
             for (int i = 1; i < splitted.length; i++) {
                 String token = splitted[i];
@@ -270,6 +280,8 @@ public class Controller implements UCIListener {
                 }
             }
             CommandQueues.get(thread_id).add(c);
+        }
+        if( c != null) {
             InfoHandler.sendDebugMessage(c.toString());
         }
     }
