@@ -1,5 +1,5 @@
 import java.util.ArrayList;
-import java.util.Queue;
+import java.util.concurrent.BlockingQueue;
 
 public class SearchThread extends Thread {
     private static boolean searching = false;
@@ -13,7 +13,7 @@ public class SearchThread extends Thread {
     @Override
     public void run() {
         Search search = SearchImpl.getSearch();
-        Queue<Move> lookupTable = search.getLookUpTable();
+        BlockingQueue<Move> lookupTable = search.getLookUpTable();
         MoveGeneration moveGen = MoveGenerationImpl.getMoveGeneration();
         Evaluation eval = EvaluationImpl.getEvaluation();
 
@@ -30,7 +30,12 @@ public class SearchThread extends Thread {
             }
 
 
-            Move currentParent = lookupTable.poll();
+            Move currentParent = null;
+            try {
+                currentParent = lookupTable.take();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             ArrayList<Move> currentChildren = moveGen.generateAllMoves(currentParent);
             for (Move child : currentChildren) {
                 child.setEval(eval.material(child.getBoard(), child.blacksTurn()));

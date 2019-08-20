@@ -1,5 +1,5 @@
 import java.util.Comparator;
-import java.util.Queue;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 
 public class SearchImpl implements Search {
@@ -54,7 +54,7 @@ public class SearchImpl implements Search {
     }
 
     @Override
-    public Queue<Move> getLookUpTable() {
+    public BlockingQueue<Move> getLookUpTable() {
         return lookUpTable;
     }
 

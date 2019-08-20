@@ -1,4 +1,4 @@
-import java.util.Queue;
+import java.util.concurrent.BlockingQueue;
 
 public interface Search {
     public int getDepth();
@@ -6,6 +6,6 @@ public interface Search {
     public Move getBestMove();
     public void setBestMove(Move newBestMove);
     public Move getPonderMove();
-    public Queue<Move> getLookUpTable();
+    public BlockingQueue<Move> getLookUpTable();
     public void clear();
 }
