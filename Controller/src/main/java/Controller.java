@@ -89,10 +89,10 @@ public class Controller implements UCIListener {
                         startSearching();
                     } else if (command.getType() == Command.CommandEnum.STOP) {
                         stopSearching();
-                        Move bestmove = SearchImpl.getSearch().getBestMove();
-                        InfoHandler.sendDebugMessage(bestmove.toString());
+                        Move best_move = SearchImpl.getSearch().getBestMove();
+                        InfoHandler.sendDebugMessage(best_move.toString());
                         if(workerThread.getId() == WorkerThreads.get(0).getId()){ // only send for the first thread
-                            UCI.getInstance().sendBestMove(bestmove);
+                            UCI.getInstance().sendBestMove(best_move);
                         }
                     } else if(command.getType() == Command.CommandEnum.UCINEWGAME){
                         SearchImpl.getSearch().clear();
