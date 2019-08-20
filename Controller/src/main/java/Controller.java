@@ -1,13 +1,12 @@
 import Exceptions.EngineQuitSignal;
 import Exceptions.UnknownOptionException;
 
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.LinkedBlockingDeque;
 
 public class Controller implements UCIListener {
     private static Object lock = new Object();
@@ -16,7 +15,7 @@ public class Controller implements UCIListener {
     private final List<OptionValuePair> options;
     private final Thread UCIThread;
     private List<SearchThread> WorkerThreads;
-    private ConcurrentMap<Long, ConcurrentLinkedQueue<Command>> CommandQueues;
+    private ConcurrentMap<Long, LinkedBlockingDeque<Command>> CommandQueues;
 
     private static volatile Controller instance;
 
@@ -40,12 +39,12 @@ public class Controller implements UCIListener {
         }
         InfoHandler.sendDebugMessage("Working with " + numberWorkerThreads + " worker threads");
         // create worker threads
-        CommandQueues = new ConcurrentHashMap<Long, ConcurrentLinkedQueue<Command>>();
+        CommandQueues = new ConcurrentHashMap<Long, LinkedBlockingDeque<Command>>();
         WorkerThreads = new ArrayList<>(numberWorkerThreads);
         for (int i = 0; i < numberWorkerThreads; i++) {
             WorkerThreads.add(new SearchThread(lock));
             WorkerThreads.get(i).setName("SearchThread #" + i);
-            CommandQueues.put(WorkerThreads.get(i).getId(), new ConcurrentLinkedQueue<>());
+            CommandQueues.put(WorkerThreads.get(i).getId(), new LinkedBlockingDeque<>());
         }
 
         //create uci thread
@@ -80,6 +79,24 @@ public class Controller implements UCIListener {
         UCIThread.start();
         for (SearchThread workerThread : WorkerThreads) {
             workerThread.start();
+        }
+        while(true){
+            try {
+                for (SearchThread workerThread : WorkerThreads) {
+                    Command command = pollNextCommand(workerThread.getId());
+                    if (command.getType() == Command.CommandEnum.GO) {
+                        startSearching();
+                    } else if (command.getType() == Command.CommandEnum.STOP) {
+                        stopSearching();
+                    }
+                }
+            }catch (NullPointerException e){
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException ex) {
+                    ;
+                }
+            }
         }
         //wait for uci instructions
     }
