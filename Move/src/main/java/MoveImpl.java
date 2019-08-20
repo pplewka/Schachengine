@@ -22,10 +22,12 @@ public class MoveImpl implements Move {
         switch (splittedFen[1]) {
             case "w":
                 this.blacksTurn = true;
+                this.maxMin = Integer.MAX_VALUE;
 
                 break;
             case "b":
                 this.blacksTurn = false;
+                this.maxMin = Integer.MIN_VALUE;
 
                 break;
             default:
@@ -136,6 +138,11 @@ public class MoveImpl implements Move {
 
         this.board=board;
         this.blacksTurn=blacksTurn;
+        if(blacksTurn){
+            this.maxMin = Integer.MAX_VALUE;
+        }else{
+            this.maxMin = Integer.MIN_VALUE;
+        }
 
         this.enpassant=enpassant;
 
@@ -448,7 +455,7 @@ public class MoveImpl implements Move {
 
     @Override
     public synchronized boolean setMaxMinIfBiggerSmaller(int newValue) {
-        if(blacksTurn){
+        if(!blacksTurn){
             if(newValue > maxMin){
                 maxMin = newValue;
                 return true;

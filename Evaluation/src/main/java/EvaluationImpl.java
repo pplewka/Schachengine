@@ -67,6 +67,10 @@ public class EvaluationImpl implements Evaluation {
             }
         }
 
+        if(!blacksTurn){
+            materialValue= materialValue *(-1);
+        }
+
         return materialValue;
     }
 
