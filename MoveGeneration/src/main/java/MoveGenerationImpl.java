@@ -94,6 +94,10 @@ public class MoveGenerationImpl implements MoveGeneration {
 
         generateEnpassant(parent, moves);
 
+        for(Move m : moves){
+            m.setParent(parent);
+        }
+
         return moves;
     }
 
