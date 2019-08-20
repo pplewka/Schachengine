@@ -70,7 +70,6 @@ public class SearchImpl implements Search {
         bestMove = null;
         ponder = null;
         lookUpTable.clear();
-        lookUpTable.add(new MoveImpl(Board.START_FEN));
     }
 
     @Override
