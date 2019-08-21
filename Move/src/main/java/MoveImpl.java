@@ -147,7 +147,6 @@ public class MoveImpl implements Move {
         this.enpassant=enpassant;
 
         this.eval=eval;
-        this.maxMin=0;
 
         this.children=null;
         this.parent=null;
