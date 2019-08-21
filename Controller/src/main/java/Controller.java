@@ -4,9 +4,9 @@ import Exceptions.UnknownOptionException;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class Controller implements UCIListener {
     private static Object lock = new Object();
@@ -16,7 +16,7 @@ public class Controller implements UCIListener {
     private final List<OptionValuePair> options;
     private final Thread UCIThread;
     private List<SearchThread> WorkerThreads;
-    private ConcurrentMap<Long, LinkedBlockingDeque<Command>> CommandQueues;
+    private LinkedBlockingQueue<Command> commandQueue;
 
     /**
      * Constructor
@@ -38,12 +38,11 @@ public class Controller implements UCIListener {
         }
         InfoHandler.sendDebugMessage("Working with " + numberWorkerThreads + " worker threads");
         // create worker threads
-        CommandQueues = new ConcurrentHashMap<Long, LinkedBlockingDeque<Command>>();
         WorkerThreads = new ArrayList<>(numberWorkerThreads);
+        commandQueue = new LinkedBlockingQueue<>();
         for (int i = 0; i < numberWorkerThreads; i++) {
             WorkerThreads.add(new SearchThread(lock));
             WorkerThreads.get(i).setName("SearchThread #" + i);
-            CommandQueues.put(WorkerThreads.get(i).getId(), new LinkedBlockingDeque<>());
         }
 
         //create uci thread
@@ -90,37 +89,30 @@ public class Controller implements UCIListener {
         }
         while (true) {
             try {
-                for (SearchThread workerThread : WorkerThreads) {
-                    Command command = takeNextCommand(workerThread.getId());
-                    if (command.getType() == Command.CommandEnum.GO) {
-                        InfoHandler.sendDebugMessage("Controller Thread: sending go command to worker thread:" + workerThread.getName());
-                        //TODO Parameter wie infinite
-                        startSearching();
-                    } else if (command.getType() == Command.CommandEnum.STOP) {
-                        InfoHandler.sendDebugMessage("Controller Thread: sending stop command to worker thread:" + workerThread.getName());
-                        stopSearching();
-                        Move best_move = SearchImpl.getSearch().getBestMove();
-                        InfoHandler.sendDebugMessage(best_move.toString());
-                        if (workerThread.getId() == WorkerThreads.get(0).getId()) { // only send for the first thread
-                            UCI.getInstance().sendBestMove(best_move);
-                        }
-                    } else if (command.getType() == Command.CommandEnum.UCINEWGAME) {
-                        if (workerThread.getId() == WorkerThreads.get(0).getId()) { //only once
-                            InfoHandler.sendDebugMessage("Controller Thread: sending ucinewgame command to worker thread:" + workerThread.getName());
-                            SearchImpl.getSearch().clear();
-                            Move move = new MoveImpl(Board.START_FEN);
-                            SearchImpl.getSearch().setRoot(move);
-                            SearchImpl.getSearch().getLookUpTable().add(move);
-                        }
-                    } else if (command.getType() == Command.CommandEnum.POSITION) {
+                Command command = takeNextCommand();
 
-                        if (workerThread.getId() == WorkerThreads.get(0).getId()) { //only once
-                            InfoHandler.sendDebugMessage("Controller Thread: sending ucinewgame command");
-                            SearchImpl.getSearch().clear();
-                            SearchImpl.getSearch().setRoot(command.getMove());
-                            SearchImpl.getSearch().getLookUpTable().add(command.getMove());
-                        }
-                    }
+                if (command.getType() == Command.CommandEnum.GO) {
+                    InfoHandler.sendDebugMessage("Controller Thread: sending go command to worker threads");
+                    //TODO Parameter wie infinite
+                    startSearching();
+                } else if (command.getType() == Command.CommandEnum.STOP) {
+                    InfoHandler.sendDebugMessage("Controller Thread: sending stop command to worker threads");
+                    stopSearching();
+                    Move best_move = SearchImpl.getSearch().getBestMove();
+                    InfoHandler.sendDebugMessage(best_move.toString());
+                    UCI.getInstance().sendBestMove(best_move);
+                } else if (command.getType() == Command.CommandEnum.UCINEWGAME) {
+                    InfoHandler.sendDebugMessage("Controller Thread: sending ucinewgame command to worker threads");
+                    SearchImpl.getSearch().clear();
+                    Move move = new MoveImpl(Board.START_FEN);
+                    SearchImpl.getSearch().setRoot(move);
+                    SearchImpl.getSearch().getLookUpTable().add(move);
+                } else if (command.getType() == Command.CommandEnum.POSITION) {
+
+                    InfoHandler.sendDebugMessage("Controller Thread: sending ucinewgame command to worker threads");
+                    SearchImpl.getSearch().clear();
+                    SearchImpl.getSearch().setRoot(command.getMove());
+                    SearchImpl.getSearch().getLookUpTable().add(command.getMove());
                 }
             } catch (InterruptedException e) {
             }
@@ -128,12 +120,12 @@ public class Controller implements UCIListener {
         //wait for uci instructions
     }
 
-    public boolean hasNewCommand(Long thread_id) {
-        return !CommandQueues.get(thread_id).isEmpty();
+    public boolean hasNewCommand() {
+        return !commandQueue.isEmpty();
     }
 
-    public Command takeNextCommand(Long thread_id) throws InterruptedException {
-        return CommandQueues.get(thread_id).take();
+    public Command takeNextCommand() throws InterruptedException {
+        return commandQueue.take();
     }
 
     /**
@@ -158,15 +150,9 @@ public class Controller implements UCIListener {
      */
     @Override
     public void receivedNewGame() {
-        Command c = null;
-        for (Long thread_id : CommandQueues.keySet()) {
-            c = new Command(Command.CommandEnum.UCINEWGAME);
-            CommandQueues.get(thread_id).add(c);
-            InfoHandler.sendDebugMessage("Thread: " + thread_id + " " + c.toString());
-        }
-        if( c != null) {
-            InfoHandler.sendDebugMessage(c.toString());
-        }
+        Command c = new Command(Command.CommandEnum.UCINEWGAME);
+        commandQueue.add(c);
+        InfoHandler.sendDebugMessage("UCIThread: stored to commandqueue " + c.toString());
     }
 
     /**
@@ -174,14 +160,9 @@ public class Controller implements UCIListener {
      */
     @Override
     public void receivedStop() {
-        Command c = null;
-        for (Long thread_id : CommandQueues.keySet()) {
-            c = new Command(Command.CommandEnum.STOP);
-            CommandQueues.get(thread_id).add(c);
-        }
-        if( c != null) {
-            InfoHandler.sendDebugMessage(c.toString());
-        }
+        Command c = new Command(Command.CommandEnum.STOP);
+        commandQueue.add(c);
+        InfoHandler.sendDebugMessage("UCIThread: stored to commandqueue " + c.toString());
     }
 
     /**
@@ -192,98 +173,89 @@ public class Controller implements UCIListener {
      */
     @Override
     public void receivedPosition(Board board, Move move) {
-        Command c=null;
-        for (Long thread_id : CommandQueues.keySet()) {
-            c = new Command(Command.CommandEnum.POSITION);
-            c.setBoard(board);
-            c.setMove(move);
-            CommandQueues.get(thread_id).add(c);
+        Command c = new Command(Command.CommandEnum.POSITION);
+        c.setBoard(board);
+        c.setMove(move);
+        commandQueue.add(c);
+        InfoHandler.sendDebugMessage("UCIThread: stored to commandqueue " + c.toString());
 
-        }
-        if( c != null) {
-            InfoHandler.sendDebugMessage(c.toString());
-        }
     }
+
     /**
      * Gets called, when the "go" command was entered
      */
     @Override
     public void receivedGo(String options) {
         options = options.toLowerCase();
-        Command c = null;
-        for (Long thread_id : CommandQueues.keySet()) {
-            c = new Command(Command.CommandEnum.GO);
-            String[] splitted = options.split(" ");
-            for (int i = 1; i < splitted.length; i++) {
-                String token = splitted[i];
-                if (token.equals("infinite")) {
-                    c.setInfinite(true);
-                } else if (token.equals("ponder")) {
-                    c.setPonder(true);
-                } else if (token.equals("searchmoves")) {
-                    ArrayList<String> moves = new ArrayList<>(splitted.length);
+        Command c = new Command(Command.CommandEnum.GO);
+        String[] splitted = options.split(" ");
+        for (int i = 1; i < splitted.length; i++) {
+            String token = splitted[i];
+            if (token.equals("infinite")) {
+                c.setInfinite(true);
+            } else if (token.equals("ponder")) {
+                c.setPonder(true);
+            } else if (token.equals("searchmoves")) {
+                ArrayList<String> moves = new ArrayList<>(splitted.length);
 
-                    for (i++; i < splitted.length; i++) {
-                        String[] notMoves = new String[]{"infinite", "ponder", "winc",
-                                "binc", "wtime", "btime", "movestogo",
-                                "nodes", "depth", "mate", "movetime"};
-                        boolean isnotmove = false;
-                        for (String notMove : notMoves) {
-                            if (notMove.equals(splitted[i])) {
-                                isnotmove = true;
-                                break;
-                            }
-                        }
-                        if (isnotmove) {
+                for (i++; i < splitted.length; i++) {
+                    String[] notMoves = new String[]{"infinite", "ponder", "winc",
+                            "binc", "wtime", "btime", "movestogo",
+                            "nodes", "depth", "mate", "movetime"};
+                    boolean isnotmove = false;
+                    for (String notMove : notMoves) {
+                        if (notMove.equals(splitted[i])) {
+                            isnotmove = true;
                             break;
                         }
-                        moves.add(splitted[i]);
                     }
-                    c.setSearchmoves(moves.toArray(new String[]{}));
-                } else {
-                    if (splitted.length - 1 == i) {
-                        throw new InputMismatchException("Invalid line: " + options);
+                    if (isnotmove) {
+                        break;
                     }
-                    long value = Long.parseLong(splitted[i + 1]);
-                    i++;
-                    switch (token) {
-                        case "binc":
-                            c.setBinc(value);
-                            break;
-                        case "wtime":
-                            c.setWtime(value);
-                            break;
-                        case "btime":
-                            c.setBtime(value);
-                            break;
-                        case "winc":
-                            c.setWinc(value);
-                            break;
-                        case "movetime":
-                            c.setMovetime(value);
-                            break;
-                        case "mate":
-                            c.setMate(value);
-                            break;
-                        case "depth":
-                            c.setDepth(value);
-                            break;
-                        case "movestogo":
-                            c.setMovestogo(value);
-                            break;
-                        case "nodes":
-                            c.setNodes(value);
-                            break;
-                        default:
-                            throw new InputMismatchException("Invalid line: " + options + " unknown command");
-                    }
+                    moves.add(splitted[i]);
+                }
+                c.setSearchmoves(moves.toArray(new String[]{}));
+            } else {
+                if (splitted.length - 1 == i) {
+                    throw new InputMismatchException("Invalid line: " + options);
+                }
+                long value = Long.parseLong(splitted[i + 1]);
+                i++;
+                switch (token) {
+                    case "binc":
+                        c.setBinc(value);
+                        break;
+                    case "wtime":
+                        c.setWtime(value);
+                        break;
+                    case "btime":
+                        c.setBtime(value);
+                        break;
+                    case "winc":
+                        c.setWinc(value);
+                        break;
+                    case "movetime":
+                        c.setMovetime(value);
+                        break;
+                    case "mate":
+                        c.setMate(value);
+                        break;
+                    case "depth":
+                        c.setDepth(value);
+                        break;
+                    case "movestogo":
+                        c.setMovestogo(value);
+                        break;
+                    case "nodes":
+                        c.setNodes(value);
+                        break;
+                    default:
+                        throw new InputMismatchException("Invalid line: " + options + " unknown command");
                 }
             }
-            CommandQueues.get(thread_id).add(c);
         }
-        if( c != null) {
-            InfoHandler.sendDebugMessage(c.toString());
-        }
+        commandQueue.add(c);
+        InfoHandler.sendDebugMessage(c.toString());
     }
 
     private void startSearching() {
