@@ -43,5 +43,18 @@ public class MaterialTest {
     public void testOnlyKnightsLeft() {
         Board ex4 = new BoardImpl("8/8/8/2k5/4K3/8/8/8");
         assertEquals(0, sut.material(ex4, false));
+        assertEquals(0, sut.material(ex4, true));
+    }
+
+    @Test
+    public void testImbalanceOnePawnVSTwoKnights() {
+        Board ex5 = new BoardImpl("pk6/8/8/8/8/8/3K4/1NN5");
+        int white = (100 + 1) * 100;
+        int black = (100 + 3 + 3) * 100;
+        int expectedForWhite = white - black; // = -500
+        int expectedForBlack = (black - white) * -1; // = 500 * -1
+
+        assertEquals(expectedForWhite, sut.material(ex5, false));
+        assertEquals(expectedForBlack, sut.material(ex5, true));
     }
 }

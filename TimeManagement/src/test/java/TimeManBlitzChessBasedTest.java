@@ -8,7 +8,7 @@ public class TimeManBlitzChessBasedTest {
     private static final long FIVE_MINUTES = 300000;
 
     @Test
-    public void testConstructObjectWithnotAllowedValues() {
+    public void testInitNotAllowedTotalTimeValues() {
         // nice addition with junit 5...
         assertThrows(TimeManagementException.class,
                 () -> new TimeManBlitzChessBased().init(-1, 0, 0),
@@ -17,7 +17,30 @@ public class TimeManBlitzChessBasedTest {
         assertThrows(TimeManagementException.class,
                 () -> new TimeManBlitzChessBased().init(0, 0, 0),
                 "no TimeManagementException thrown, this shouldn't happen");
+    }
 
+    @Test
+    public void testInitNotAllowedIncValues() {
+        assertThrows(TimeManagementException.class,
+                () -> new TimeManBlitzChessBased().init(1, -1, 0),
+                "no TimeManagementException thrown, this shouldn't happen");
+    }
+
+    @Test
+    public void testInitNotAllowedMovesCntTimeValues() {
+        assertThrows(TimeManagementException.class,
+                () -> new TimeManBlitzChessBased().init(0, 0, -1),
+                "no TimeManagementException thrown, this shouldn't happen");
+    }
+
+    @Test
+    public void testInitNotAllowedMoveTime() {
+        assertThrows(TimeManagementException.class,
+                () -> new TimeManBlitzChessBased().init(-1),
+                    "no TimeManagementException thrown, this shouldn't happen");
+        assertThrows(TimeManagementException.class,
+                () -> new TimeManBlitzChessBased().init(0),
+                "no TimeManagementException thrown, this shouldn't happen");
     }
 
     @Test
@@ -82,6 +105,26 @@ public class TimeManBlitzChessBasedTest {
             Thread.sleep(1400);
         }
         Thread.sleep(13);
+        assertFalse(sut.isEnoughTime());
+    }
+
+    @Test
+    public void testInitMoveTime() {
+        TimeManagement sut = new TimeManBlitzChessBased();
+
+        sut.init(10000);
+
+        assertEquals(10000, sut.getTimeFrame());
+    }
+
+    @Test
+    public void testMoveTimeIsEnoughTime() throws InterruptedException {
+        TimeManagement sut = new TimeManBlitzChessBased();
+
+        sut.init(2000);
+        Thread.sleep(1000);
+        assertTrue(sut.isEnoughTime());
+        Thread.sleep(1000);
         assertFalse(sut.isEnoughTime());
     }
 
