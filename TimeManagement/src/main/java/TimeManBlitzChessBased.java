@@ -35,7 +35,7 @@ public class TimeManBlitzChessBased implements TimeManagement {
 
         // timeFrame calculation
         if(movesCnt < 40) {
-            timeFrame = ((totalTimeLeftInMsec * inc) / 2) / (40 - movesCnt);
+            timeFrame = ((totalTimeLeftInMsec + inc) / 2) / (40 - movesCnt);
         } else {
             timeFrame = totalTimeLeftInMsec / 50; // + increment / 2
         }
