@@ -31,7 +31,7 @@ public class Controller implements UCIListener {
         } else {
             this.numberWorkerThreads = Integer.parseInt(getOptionsValue("workerthreads_count"));
         }
-        InfoHandler.sendDebugMessage("Working with " + numberWorkerThreads + " worker threads");
+        InfoHandler.sendDebugMessage("ControllerThread: Working with " + numberWorkerThreads + " worker threads");
         // create worker threads
         WorkerThreads = new ArrayList<>(numberWorkerThreads);
         commandQueue = new LinkedBlockingQueue<>();
@@ -84,24 +84,24 @@ public class Controller implements UCIListener {
                 Command command = takeNextCommand(); //wait for uci instructions
 
                 if (command.getType() == Command.CommandEnum.GO) {
-                    InfoHandler.sendDebugMessage("Controller Thread: sending go command to worker threads");
+                    InfoHandler.sendDebugMessage("ControllerThread: sending go command to worker threads");
                     //TODO Parameter wie infinite
                     startSearching();
                 } else if (command.getType() == Command.CommandEnum.STOP) {
-                    InfoHandler.sendDebugMessage("Controller Thread: sending stop command to worker threads");
+                    InfoHandler.sendDebugMessage("ControllerThread: sending stop command to worker threads");
                     stopSearching();
                     Move best_move = SearchImpl.getSearch().getBestMove();
                     InfoHandler.sendDebugMessage(best_move.toString());
                     UCI.getInstance().sendBestMove(best_move);
                 } else if (command.getType() == Command.CommandEnum.UCINEWGAME) {
-                    InfoHandler.sendDebugMessage("Controller Thread: sending ucinewgame command to worker threads");
+                    InfoHandler.sendDebugMessage("ControllerThread: sending ucinewgame command to worker threads");
                     SearchImpl.getSearch().clear();
                     Move move = new MoveImpl(Board.START_FEN);
                     SearchImpl.getSearch().setRoot(move);
                     SearchImpl.getSearch().getLookUpTable().add(move);
                 } else if (command.getType() == Command.CommandEnum.POSITION) {
 
-                    InfoHandler.sendDebugMessage("Controller Thread: sending ucinewgame command to worker threads");
+                    InfoHandler.sendDebugMessage("ControllerThread: sending position command to worker threads");
                     SearchImpl.getSearch().clear();
                     SearchImpl.getSearch().setRoot(command.getMove());
                     SearchImpl.getSearch().getLookUpTable().add(command.getMove());
@@ -154,8 +154,9 @@ public class Controller implements UCIListener {
     @Override
     public void receivedNewGame() {
         Command c = new Command(Command.CommandEnum.UCINEWGAME);
+        InfoHandler.sendDebugMessage("UCIThread: storing to commandqueue " + c.toString());
         commandQueue.add(c);
-        InfoHandler.sendDebugMessage("UCIThread: stored to commandqueue " + c.toString());
+
     }
 
     /**
@@ -164,8 +165,9 @@ public class Controller implements UCIListener {
     @Override
     public void receivedStop() {
         Command c = new Command(Command.CommandEnum.STOP);
+        InfoHandler.sendDebugMessage("UCIThread: storing to commandqueue " + c.toString());
         commandQueue.add(c);
-        InfoHandler.sendDebugMessage("UCIThread: stored to commandqueue " + c.toString());
+
     }
 
     /**
@@ -179,8 +181,9 @@ public class Controller implements UCIListener {
         Command c = new Command(Command.CommandEnum.POSITION);
         c.setBoard(board);
         c.setMove(move);
+        InfoHandler.sendDebugMessage("UCIThread: storing to commandqueue " + c.toString());
         commandQueue.add(c);
-        InfoHandler.sendDebugMessage("UCIThread: stored to commandqueue " + c.toString());
+
 
     }
 
@@ -252,8 +255,9 @@ public class Controller implements UCIListener {
                 }
             }
         }
+        InfoHandler.sendDebugMessage("UCIThread: storing to commandqueue " + c.toString());
         commandQueue.add(c);
-        InfoHandler.sendDebugMessage(c.toString());
+
     }
 
     /**

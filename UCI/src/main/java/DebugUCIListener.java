@@ -5,21 +5,22 @@
 public class DebugUCIListener implements UCIListener {
     @Override
     public void receivedNewGame() {
-        InfoHandler.sendMessage("received ucinewgame command");
+        InfoHandler.sendMessage("DebugListener: received ucinewgame command");
     }
 
     @Override
     public void receivedStop() {
-        InfoHandler.sendMessage("received stop command");
+        InfoHandler.sendMessage("DebugListener: received stop command");
     }
 
     @Override
     public void receivedPosition(Board board, Move move) {
-        InfoHandler.sendMessage("received new position <\n" + board.toString() + "\n" + move.toString() + "\n>");
+        InfoHandler.sendMessage("DebugListener: received new position <\n" +
+                board.toString() + "\n" + move.toString() + "\n>");
     }
 
     @Override
     public void receivedGo(String options) {
-        InfoHandler.sendMessage("received go command <" + options + ">");
+        InfoHandler.sendMessage("DebugListener: received go command <" + options + ">");
     }
 }

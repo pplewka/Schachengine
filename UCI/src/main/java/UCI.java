@@ -202,7 +202,7 @@ public class UCI implements Runnable {
      * Informs all listeners, when there is a new command
      */
     public void awaitCommandsForever() {
-        InfoHandler.sendDebugMessage("Sending implicit ucinewgame");
+        InfoHandler.sendDebugMessage("UCIThread: Sending implicit ucinewgame");
         for (UCIListener listener : listeners) {
             listener.receivedNewGame();
         }
