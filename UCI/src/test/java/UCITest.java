@@ -49,8 +49,8 @@ public class UCITest {
         System.setOut(printOutStream);
         System.setIn(byteArrayInputStream);
 
-            UCI.main(new String[]{});
-            fail(); // engine should properly terminate with EngineQuitSignal
+        UCI.main(new String[]{});
+        fail(); // engine should properly terminate with EngineQuitSignal
 
         System.out.flush();
         assertEquals(ENGINE_STARTUP_OUTPUT, byteArrayOutputStream.toString());
@@ -66,9 +66,9 @@ public class UCITest {
         System.setOut(printOutStream);
         System.setIn(byteArrayInputStream);
 
-            UCIBridge.deleteInstance();
-            UCI.main(new String[]{});
-            fail(); // engine should properly terminate with EngineQuitSignal
+        UCIBridge.deleteInstance();
+        UCI.main(new String[]{});
+        fail(); // engine should properly terminate with EngineQuitSignal
 
         System.out.flush();
         assertEquals(ENGINE_ONE_TURN_DEBUG_OUTPUT, byteArrayOutputStream.toString());

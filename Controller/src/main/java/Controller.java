@@ -17,7 +17,6 @@ public class Controller implements UCIListener {
 
     /**
      * Constructor
-     *
      */
     private Controller() {
         //get # of cpu cores

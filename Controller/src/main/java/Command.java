@@ -20,7 +20,7 @@ public class Command {
             default:
                 type_string = "undefined";
         }
-        String board_string = board == null?"null":"\n"+board+"\n";
+        String board_string = board == null ? "null" : "\n" + board + "\n";
         return "Command{" +
                 "type=" + type_string +
                 ", board=" + board_string +

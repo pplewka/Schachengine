@@ -80,7 +80,7 @@ public class UCIBridge {
      *                             valid return value
      * @return the String (trimmed and multiple whitespaces replaced with a single space)
      */
-    public String receiveString(boolean handleIsReadyCommand){
+    public String receiveString(boolean handleIsReadyCommand) {
 
         String input = reader.nextLine();
         input = removeUnnecessaryWS(input);
@@ -131,7 +131,7 @@ public class UCIBridge {
      * @return a ArrayList of the set options.
      * If option is not set (but supports default values) a Pair with default value is added
      */
-    public synchronized ArrayList<OptionValuePair> initialize(Properties ucioptions){
+    public synchronized ArrayList<OptionValuePair> initialize(Properties ucioptions) {
         receiveCommand(UCICommands.UCI);
         sendID(ucioptions);
         sendAvailableOptions(ucioptions);
@@ -157,7 +157,7 @@ public class UCIBridge {
      * @param command The command to wait for
      * @return The command entered, matching the parameter command
      */
-    private String receiveCommand(String command){
+    private String receiveCommand(String command) {
         String input = receiveString();
         while (!input.startsWith(command)) {
             sendUnknownCommandMessage(input + " expected " + command);
