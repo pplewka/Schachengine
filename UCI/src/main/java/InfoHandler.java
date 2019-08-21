@@ -105,7 +105,7 @@ public class InfoHandler {
                 sendMessage(line);
             }
         } else {
-            msg = msg.replace(" ", ". .");
+            msg = msg.replace(" ", " .");
             getInstance().storeInfo(STRING, "\"" + msg + "\"");
         }
         getInstance().flushInfoBuffer();
