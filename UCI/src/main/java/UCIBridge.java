@@ -1,4 +1,3 @@
-import Exceptions.EngineQuitSignal;
 
 import java.util.ArrayList;
 import java.util.Properties;
@@ -65,9 +64,8 @@ public class UCIBridge {
      * Quit will throw a EngineQuitSignal
      *
      * @return the String (trimmed and multiple whitespaces replaced with a single space)
-     * @throws EngineQuitSignal if the "quit" command was received
      */
-    public String receiveString() throws EngineQuitSignal {
+    public String receiveString() {
         return receiveString(true);
     }
 
@@ -81,9 +79,8 @@ public class UCIBridge {
      * @param handleIsReadyCommand handles the isready command internally. if set to false, it won't and isready is a
      *                             valid return value
      * @return the String (trimmed and multiple whitespaces replaced with a single space)
-     * @throws EngineQuitSignal if the "quit" command was received
      */
-    public String receiveString(boolean handleIsReadyCommand) throws EngineQuitSignal {
+    public String receiveString(boolean handleIsReadyCommand){
 
         String input = reader.nextLine();
         input = removeUnnecessaryWS(input);
@@ -92,7 +89,7 @@ public class UCIBridge {
             return receiveString(true);
         }
         if (input.equals(UCICommands.QUIT)) {
-            throw new EngineQuitSignal(QUIT_MSG);
+            System.exit(0);
         }
         if (input.equals(UCICommands.DEBUG_OFF)) {
             UCI.setDebug(false);
@@ -133,9 +130,8 @@ public class UCIBridge {
      * @param ucioptions options for uci
      * @return a ArrayList of the set options.
      * If option is not set (but supports default values) a Pair with default value is added
-     * @throws EngineQuitSignal if the engine received the quit input from the GUI
      */
-    public synchronized ArrayList<OptionValuePair> initialize(Properties ucioptions) throws EngineQuitSignal {
+    public synchronized ArrayList<OptionValuePair> initialize(Properties ucioptions){
         receiveCommand(UCICommands.UCI);
         sendID(ucioptions);
         sendAvailableOptions(ucioptions);
@@ -160,9 +156,8 @@ public class UCIBridge {
      *
      * @param command The command to wait for
      * @return The command entered, matching the parameter command
-     * @throws EngineQuitSignal if the engine received the quit input from the GUI
      */
-    private String receiveCommand(String command) throws EngineQuitSignal {
+    private String receiveCommand(String command){
         String input = receiveString();
         while (!input.startsWith(command)) {
             sendUnknownCommandMessage(input + " expected " + command);
@@ -176,9 +171,8 @@ public class UCIBridge {
      *
      * @param ucioptions options for uci
      * @return a List of the options with values. if options are unset by the GUI, then they will be set with default
-     * @throws EngineQuitSignal if the engine received the quit input from the GUI
      */
-    private ArrayList<OptionValuePair> receiveOptions(Properties ucioptions) throws EngineQuitSignal {
+    private ArrayList<OptionValuePair> receiveOptions(Properties ucioptions) {
         return UCIOptionHandler.receiveOptions(ucioptions);
     }
 

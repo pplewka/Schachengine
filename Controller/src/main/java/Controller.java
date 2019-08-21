@@ -1,11 +1,8 @@
-import Exceptions.EngineQuitSignal;
 import Exceptions.UnknownOptionException;
 
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class Controller implements UCIListener {
@@ -21,9 +18,8 @@ public class Controller implements UCIListener {
     /**
      * Constructor
      *
-     * @throws EngineQuitSignal if engine received the quit command
      */
-    private Controller() throws EngineQuitSignal {
+    private Controller() {
         //get # of cpu cores
         this.numberCores = Runtime.getRuntime().availableProcessors();
         // init uci
@@ -59,11 +55,8 @@ public class Controller implements UCIListener {
         if (instance == null) {
             synchronized (Controller.class) {
                 if (instance == null) {
-                    try {
-                        instance = new Controller();
-                    } catch (EngineQuitSignal e) {
-                        System.exit(0);
-                    }
+                    instance = new Controller();
+
                 }
             }
         }

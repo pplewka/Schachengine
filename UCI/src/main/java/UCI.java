@@ -1,4 +1,3 @@
-import Exceptions.EngineQuitSignal;
 
 import java.io.IOException;
 import java.util.*;
@@ -80,9 +79,8 @@ public class UCI implements Runnable {
      * A test-main
      *
      * @param args all arguments will be printed as info string
-     * @throws EngineQuitSignal if engine receives the quit command
      */
-    public static void main(String[] args) throws EngineQuitSignal {
+    public static void main(String[] args) {
         UCI uci = UCI.getInstance();
         var options = uci.initialize();
         for (OptionValuePair optionValuePair : options) {
@@ -103,9 +101,8 @@ public class UCI implements Runnable {
      * Initialize the UCI engine and GUI. See UCIBridge.initialize for more information
      *
      * @return
-     * @throws EngineQuitSignal if the engine received the quit command from GUI
      */
-    public ArrayList<OptionValuePair> initialize() throws EngineQuitSignal {
+    public ArrayList<OptionValuePair> initialize() {
         Properties options = new Properties();
 
         try {
@@ -118,10 +115,8 @@ public class UCI implements Runnable {
 
     /**
      * Waits for the next command from GUI and informs all attached listeners
-     *
-     * @throws EngineQuitSignal if the GUI sends the quit command
      */
-    public void awaitNextCommand() throws EngineQuitSignal {
+    public void awaitNextCommand() {
         String input = UCIBridge.getInstance().receiveString();
         try {
 
@@ -152,6 +147,12 @@ public class UCI implements Runnable {
         }
     }
 
+    /**
+     * Parses a position command an returns the corresponding move
+     *
+     * @param input the position command
+     * @return the move
+     */
     private Move parsePosition(String input) {
         String original_input = input;
         if (input.contains("startpos")) {
@@ -194,10 +195,8 @@ public class UCI implements Runnable {
     /**
      * Waits forever for all commands from GUI
      * Informs all listeners, when there is a new command
-     *
-     * @throws EngineQuitSignal if quit command was send from GUI
      */
-    public void awaitCommandsForever() throws EngineQuitSignal {
+    public void awaitCommandsForever() {
         InfoHandler.sendDebugMessage("Sending implicit ucinewgame");
         for (UCIListener listener : listeners) {
             listener.receivedNewGame();
@@ -210,11 +209,11 @@ public class UCI implements Runnable {
 
     }
 
+    /**
+     * Run method for the UCI thread
+     */
     public void run() {
-        try {
-            awaitCommandsForever();
-        } catch (EngineQuitSignal engineQuitSignal) {
-            System.exit(0);
-        }
+        awaitCommandsForever();
+
     }
 }

@@ -1,4 +1,3 @@
-import Exceptions.EngineQuitSignal;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -49,12 +48,10 @@ public class UCITest {
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(ENGINE_STARTUP_INPUT.getBytes());
         System.setOut(printOutStream);
         System.setIn(byteArrayInputStream);
-        try {
+
             UCI.main(new String[]{});
             fail(); // engine should properly terminate with EngineQuitSignal
-        } catch (EngineQuitSignal e) {
 
-        }
         System.out.flush();
         assertEquals(ENGINE_STARTUP_OUTPUT, byteArrayOutputStream.toString());
 
@@ -69,13 +66,10 @@ public class UCITest {
         System.setOut(printOutStream);
         System.setIn(byteArrayInputStream);
 
-        try {
             UCIBridge.deleteInstance();
             UCI.main(new String[]{});
             fail(); // engine should properly terminate with EngineQuitSignal
-        } catch (EngineQuitSignal e) {
 
-        }
         System.out.flush();
         assertEquals(ENGINE_ONE_TURN_DEBUG_OUTPUT, byteArrayOutputStream.toString());
     }

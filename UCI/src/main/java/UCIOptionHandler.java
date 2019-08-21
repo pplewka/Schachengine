@@ -1,4 +1,3 @@
-import Exceptions.EngineQuitSignal;
 import Exceptions.FixYourConfigFileException;
 
 import java.util.ArrayList;
@@ -141,9 +140,8 @@ public class UCIOptionHandler {
      *
      * @param ucioptions the ucioptions property
      * @return all options with values, unset options will have the corresponding default value
-     * @throws EngineQuitSignal if the quit command was send
      */
-    public static ArrayList<OptionValuePair> receiveOptions(Properties ucioptions) throws EngineQuitSignal {
+    public static ArrayList<OptionValuePair> receiveOptions(Properties ucioptions){
 
         // receive new options via GUI
         String command = UCIBridge.getInstance().receiveString(false).toLowerCase();
