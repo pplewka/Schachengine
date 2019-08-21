@@ -188,6 +188,11 @@ public class UCI implements Runnable {
         listeners.remove(listener);
     }
 
+    /**
+     * Send the bestmove command to the gui
+     *
+     * @param move the best move
+     */
     public synchronized void sendBestMove(Move move) {
         UCIBridge.getInstance().sendString(UCICommands.BEST_MOVE + " " + move);
     }

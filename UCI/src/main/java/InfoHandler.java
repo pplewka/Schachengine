@@ -111,6 +111,11 @@ public class InfoHandler {
         getInstance().flushInfoBuffer();
     }
 
+    /**
+     * Send a info message, if debug mode is true
+     *
+     * @param msg the message to send
+     */
     public synchronized static void sendDebugMessage(String msg) {
         if (UCI.getDebug()) {
             sendMessage(msg);

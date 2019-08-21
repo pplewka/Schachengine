@@ -9,8 +9,6 @@ import java.util.Scanner;
  */
 public class UCIBridge {
 
-
-    public static final String QUIT_MSG = "GUI sends \"quit\"!";
     private volatile static UCIBridge instance;
 
     private Scanner reader;

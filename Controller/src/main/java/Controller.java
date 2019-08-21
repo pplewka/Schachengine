@@ -81,7 +81,7 @@ public class Controller implements UCIListener {
         }
         while (true) {
             try {
-                Command command = takeNextCommand();
+                Command command = takeNextCommand(); //wait for uci instructions
 
                 if (command.getType() == Command.CommandEnum.GO) {
                     InfoHandler.sendDebugMessage("Controller Thread: sending go command to worker threads");
@@ -109,13 +109,24 @@ public class Controller implements UCIListener {
             } catch (InterruptedException e) {
             }
         }
-        //wait for uci instructions
     }
 
+    /**
+     * Check if there is a new command
+     *
+     * @return true if there is a new command, else  false
+     */
     public boolean hasNewCommand() {
         return !commandQueue.isEmpty();
     }
 
+    /**
+     * Returns the next command.
+     * This blocks the current thread until there is a next command, if none is there
+     *
+     * @return the next command
+     * @throws InterruptedException should never happen
+     */
     public Command takeNextCommand() throws InterruptedException {
         return commandQueue.take();
     }
@@ -245,6 +256,9 @@ public class Controller implements UCIListener {
         InfoHandler.sendDebugMessage(c.toString());
     }
 
+    /**
+     * Tells the worker threads to start searching
+     */
     private void startSearching() {
         SearchThread.setSearching(true);
         synchronized (lock) {
@@ -252,6 +266,9 @@ public class Controller implements UCIListener {
         }
     }
 
+    /**
+     * Tells the worker threads to stop searching
+     */
     private void stopSearching() {
         SearchThread.setSearching(false);
     }
