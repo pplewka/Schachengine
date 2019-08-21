@@ -197,20 +197,15 @@ public class Controller implements UCIListener {
                 c.setPonder(true);
             } else if (token.equals("searchmoves")) {
                 ArrayList<String> moves = new ArrayList<>(splitted.length);
-
+                outerloop:
                 for (i++; i < splitted.length; i++) {
                     String[] notMoves = new String[]{"infinite", "ponder", "winc",
                             "binc", "wtime", "btime", "movestogo",
                             "nodes", "depth", "mate", "movetime"};
-                    boolean isnotmove = false;
                     for (String notMove : notMoves) {
                         if (notMove.equals(splitted[i])) {
-                            isnotmove = true;
-                            break;
+                            break outerloop;
                         }
-                    }
-                    if (isnotmove) {
-                        break;
                     }
                     moves.add(splitted[i]);
                 }
