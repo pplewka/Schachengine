@@ -4,6 +4,12 @@ import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class Controller implements UCIListener {
+    private static final Map<Command.CommandEnum, Set<Command.CommandEnum>> commandsWithAllowedFollowers = Map.of(
+            Command.CommandEnum.GO, Set.of(Command.CommandEnum.STOP),
+            Command.CommandEnum.STOP, Set.of(Command.CommandEnum.UCINEWGAME, Command.CommandEnum.POSITION),
+            Command.CommandEnum.POSITION, Set.of(Command.CommandEnum.POSITION, Command.CommandEnum.GO, Command.CommandEnum.UCINEWGAME),
+            Command.CommandEnum.UCINEWGAME, Set.of(Command.CommandEnum.POSITION, Command.CommandEnum.UCINEWGAME)
+    );
     private static Object lock = new Object();
     private static volatile Controller instance;
     private final int numberCores;
@@ -12,19 +18,16 @@ public class Controller implements UCIListener {
     private final Thread UCIThread;
     private List<SearchThread> WorkerThreads;
     private LinkedBlockingQueue<Command> commandQueue;
-
     private Set<Command.CommandEnum> allowedCommands;
-    private static final Map<Command.CommandEnum, Set<Command.CommandEnum>> commandsWithAllowedFollowers = Map.of(
-            Command.CommandEnum.GO, Set.of(Command.CommandEnum.STOP),
-            Command.CommandEnum.STOP, Set.of(Command.CommandEnum.UCINEWGAME, Command.CommandEnum.POSITION),
-            Command.CommandEnum.POSITION, Set.of(Command.CommandEnum.POSITION, Command.CommandEnum.GO, Command.CommandEnum.UCINEWGAME),
-            Command.CommandEnum.UCINEWGAME, Set.of(Command.CommandEnum.POSITION, Command.CommandEnum.UCINEWGAME)
-    );
+    private int playedMoves;
+    private TimeManagement currentTimeManager;
 
     /**
      * Constructor
      */
     private Controller() {
+        playedMoves = 0;
+        currentTimeManager = new TimeManBlitzChessBased();
         //set allowed next command
         allowedCommands = commandsWithAllowedFollowers.get(Command.CommandEnum.UCINEWGAME);
         //get # of cpu cores
@@ -103,15 +106,18 @@ public class Controller implements UCIListener {
                 }
                 if (command.getType() == Command.CommandEnum.GO) {
                     InfoHandler.sendDebugMessage("ControllerThread: sending go command to worker threads");
-                    //TODO Parameter wie infinite
+                    parseGo(command);
                     startSearching();
                 } else if (command.getType() == Command.CommandEnum.STOP) {
+                    playedMoves++;
                     InfoHandler.sendDebugMessage("ControllerThread: sending stop command to worker threads");
                     stopSearching();
+                    currentTimeManager.reset();
                     Move best_move = SearchImpl.getSearch().getBestMove();
                     InfoHandler.sendDebugMessage(best_move.toString());
                     UCI.getInstance().sendBestMove(best_move);
                 } else if (command.getType() == Command.CommandEnum.UCINEWGAME) {
+                    playedMoves = 0;
                     InfoHandler.sendDebugMessage("ControllerThread: sending ucinewgame command to worker threads");
                     SearchImpl.getSearch().clear();
                     Move move = new MoveImpl(Board.START_FEN);
@@ -127,6 +133,35 @@ public class Controller implements UCIListener {
             } catch (InterruptedException e) {
             }
         }
+    }
+
+    /**
+     * Parses a go command and initialises the currentTimeManager
+     * @param command the command
+     */
+    private void parseGo(Command command) {
+        // needed parameters for tm
+        long totalTimeLeftInMsec;
+        long inc;
+        boolean blacksturn = !SearchImpl.getSearch().getRoot().blacksTurn();
+        inc = blacksturn ? command.getBinc() : command.getWinc();
+        long time = blacksturn ? command.getBtime() : command.getWtime();
+        long movetime = command.getMovetime();
+        if (command.isInfinite()) {
+            totalTimeLeftInMsec = Long.MAX_VALUE;
+        } else if (movetime != -1) {
+            totalTimeLeftInMsec = movetime;
+        } else if (time != -1) {
+            totalTimeLeftInMsec = time;
+        }else{
+            totalTimeLeftInMsec = Long.MAX_VALUE;
+        }
+        if(inc!=-1) {
+            currentTimeManager.init(totalTimeLeftInMsec, inc, playedMoves);
+        }else{
+            currentTimeManager.init(totalTimeLeftInMsec);
+        }
+
     }
 
     /**
