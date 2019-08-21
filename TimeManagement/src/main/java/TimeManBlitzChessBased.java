@@ -5,13 +5,16 @@ import Exceptions.TimeManagementException;
 
 public class TimeManBlitzChessBased implements TimeManagement {
 
-    private static final String ERR_NEG_INPUT_TIME = "given time is a negative value";
+    private static final String ERR_NEG_TIME = "given time is a negative value";
     private static final String ERR_NO_RESET = "The Time Management is currently already in state reset";
     private static final String ERR_NO_INIT =" The Time Management is already initialised for this move";
+    private static final String ERR_NEG_INC = "given increment is negative";
 
 
     private long timeFrame = -1;           // How much time for this current move ?
     private long startTime = -1;           // Start time of current search
+
+    private boolean isMoveTime = false;    //
 
 
     public long getTimeFrame() {
@@ -28,10 +31,14 @@ public class TimeManBlitzChessBased implements TimeManagement {
         if(isInit()) {
             throw new TimeManagementException(ERR_NO_INIT);
         }
-
         if(totalTimeLeftInMsec <= 0) {
-            throw new TimeManagementException(ERR_NEG_INPUT_TIME);
+            throw new TimeManagementException(ERR_NEG_TIME);
         }
+        if(inc < 0) {
+            throw new TimeManagementException(ERR_NEG_INC);
+        }
+
+        isMoveTime = false;
 
         // timeFrame calculation
         if(movesCnt < 40) {
@@ -44,13 +51,15 @@ public class TimeManBlitzChessBased implements TimeManagement {
     }
 
     public void init(long moveTime) {
+        isMoveTime = true;
+
         if(isInit()) {
             throw new TimeManagementException(ERR_NO_INIT);
         }
-
         if(moveTime <= 0) {
-            throw new TimeManagementException(ERR_NEG_INPUT_TIME);
+            throw new TimeManagementException(ERR_NEG_TIME);
         }
+
         timeFrame = moveTime;
 
         startTime = System.currentTimeMillis();
@@ -65,6 +74,8 @@ public class TimeManBlitzChessBased implements TimeManagement {
         if (!isInit()) {
             throw new TimeManagementException(ERR_NO_RESET);
         }
+
+        isMoveTime = false;
         timeFrame = -1;
         startTime = -1;
     }
@@ -73,6 +84,8 @@ public class TimeManBlitzChessBased implements TimeManagement {
     public boolean isEnoughTime() {
         if (!isInit()) {
             return true;
+        } else if (isMoveTime) { // exact movetime
+            return (System.currentTimeMillis() - startTime) < timeFrame;
         }
         // Leave 25% of time as overhead
         return (System.currentTimeMillis() - startTime) < timeFrame * 0.75;
