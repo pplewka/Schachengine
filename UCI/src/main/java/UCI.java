@@ -123,26 +123,32 @@ public class UCI implements Runnable {
      */
     public void awaitNextCommand() throws EngineQuitSignal {
         String input = UCIBridge.getInstance().receiveString();
-        if (input.startsWith(UCICommands.GO)) {
-            for (UCIListener listener : listeners) {
-                listener.receivedGo(input);
+        try {
+
+
+            if (input.startsWith(UCICommands.GO)) {
+                for (UCIListener listener : listeners) {
+                    listener.receivedGo(input);
+                }
+            } else if (input.startsWith(UCICommands.STOP)) {
+                for (UCIListener listener : listeners) {
+                    listener.receivedStop();
+                }
+            } else if (input.startsWith(UCICommands.UCI_NEW_GAME)) {
+                for (UCIListener listener : listeners) {
+                    listener.receivedNewGame();
+                }
+            } else if (input.startsWith(UCICommands.POSITION)) {
+                for (UCIListener listener : listeners) {
+                    Move move = parsePosition(input);
+                    Board board = move.getBoard();
+                    listener.receivedPosition(board, move);
+                }
+            } else {
+                UCIBridge.getInstance().sendUnknownCommandMessage(input);
             }
-        } else if (input.startsWith(UCICommands.STOP)) {
-            for (UCIListener listener : listeners) {
-                listener.receivedStop();
-            }
-        } else if (input.startsWith(UCICommands.UCI_NEW_GAME)) {
-            for (UCIListener listener : listeners) {
-                listener.receivedNewGame();
-            }
-        } else if (input.startsWith(UCICommands.POSITION)) {
-            for (UCIListener listener : listeners) {
-                Move move = parsePosition(input);
-                Board board = move.getBoard();
-                listener.receivedPosition(board, move);
-            }
-        } else {
-            UCIBridge.getInstance().sendUnknownCommandMessage(input);
+        } catch (InputMismatchException e) {
+            UCIBridge.getInstance().sendUnknownCommandMessage(input + " * " + e.getMessage());
         }
     }
 
@@ -181,8 +187,8 @@ public class UCI implements Runnable {
         listeners.remove(listener);
     }
 
-    public synchronized void sendBestMove(Move move){
-        UCIBridge.getInstance().sendString(UCICommands.BEST_MOVE+" "+move);
+    public synchronized void sendBestMove(Move move) {
+        UCIBridge.getInstance().sendString(UCICommands.BEST_MOVE + " " + move);
     }
 
     /**
