@@ -8,7 +8,9 @@ public interface TimeManagement {
      * The first 40 moves will get 50% of the total time ( totalTime / (40 - doneMoves) )
      *  Each move after that will get less and less time
      */
-    public void init();
+    public void init(long totalTimeLeftInMsec, int movesCnt);
+
+    public void init(long moveTime);
 
     /**
      * Stop the timer, reduce the total time left and wait for an new init

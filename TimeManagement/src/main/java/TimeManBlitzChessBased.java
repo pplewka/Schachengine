@@ -9,44 +9,28 @@ public class TimeManBlitzChessBased implements TimeManagement {
     private static final String ERR_NO_RESET = "The Time Management is currently already in state reset";
     private static final String ERR_NO_INIT =" The Time Management is already initialised for this move";
 
-    private int movesCnt; // Current amount of moves
 
-    private long totalTimeLeftInMsec; // How much time is left ?
-    private long timeFrame;           // How much time for this current move ?
-    private long startTime;           // Start time of current search
+    private long timeFrame = -1;           // How much time for this current move ?
+    private long startTime = -1;           // Start time of current search
 
-    public int getMovesCnt() {
-        return movesCnt;
-    }
 
     public long getTimeFrame() {
         return timeFrame;
-    }
-
-    public long getTotalTimeLeftInMsec() {
-        return totalTimeLeftInMsec;
     }
 
     public long getStartTime() {
         return startTime;
     }
 
-    public TimeManBlitzChessBased(long totalTimeInMsec) {
-        if(totalTimeInMsec <= 0) {
-            throw new TimeManagementException(ERR_NEG_INPUT_TIME);
-        }
-        totalTimeLeftInMsec = totalTimeInMsec;
-        movesCnt = 0;
-
-        // -1 == never initialised, for checking if TM is already reset / initialised
-        timeFrame = -1;
-        startTime = -1;
-    }
 
     @Override
-    public void init() {
+    public void init(long totalTimeLeftInMsec, int movesCnt) {
         if(isInit()) {
             throw new TimeManagementException(ERR_NO_INIT);
+        }
+
+        if(totalTimeLeftInMsec <= 0) {
+            throw new TimeManagementException(ERR_NEG_INPUT_TIME);
         }
 
         // timeFrame calculation
@@ -55,6 +39,19 @@ public class TimeManBlitzChessBased implements TimeManagement {
         } else {
             timeFrame = totalTimeLeftInMsec / 50; // + increment / 2
         }
+
+        startTime = System.currentTimeMillis();
+    }
+
+    public void init(long moveTime) {
+        if(isInit()) {
+            throw new TimeManagementException(ERR_NO_INIT);
+        }
+
+        if(moveTime <= 0) {
+            throw new TimeManagementException(ERR_NEG_INPUT_TIME);
+        }
+        timeFrame = moveTime;
 
         startTime = System.currentTimeMillis();
     }
@@ -68,10 +65,8 @@ public class TimeManBlitzChessBased implements TimeManagement {
         if (!isInit()) {
             throw new TimeManagementException(ERR_NO_RESET);
         }
-        totalTimeLeftInMsec = totalTimeLeftInMsec - (startTime - System.currentTimeMillis());
         timeFrame = -1;
         startTime = -1;
-        movesCnt++;
     }
 
     @Override
@@ -92,7 +87,7 @@ public class TimeManBlitzChessBased implements TimeManagement {
     }
 
     public String toString() {
-        return "Time left: " + totalTimeLeftInMsec + "Milliseconds";
+        return "Time Management: Maximum Time allocated for this move :" + timeFrame;
     }
 
 

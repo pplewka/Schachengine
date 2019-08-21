@@ -11,39 +11,38 @@ public class TimeManBlitzChessBasedTest {
     public void testConstructObjectWithnotAllowedValues() {
         // nice addition with junit 5...
         assertThrows(TimeManagementException.class,
-                () -> new TimeManBlitzChessBased(-1),
+                () -> new TimeManBlitzChessBased().init(-1, 0),
                 "no TimeManagementException thrown, this shouldn't happen");
 
         assertThrows(TimeManagementException.class,
-                () -> new TimeManBlitzChessBased(0),
+                () -> new TimeManBlitzChessBased().init(0, 0),
                 "no TimeManagementException thrown, this shouldn't happen");
 
     }
 
     @Test
     public void initTest() {
-        TimeManBlitzChessBased sut = new TimeManBlitzChessBased(FIVE_MINUTES);
-        sut.init();
+        TimeManBlitzChessBased sut = new TimeManBlitzChessBased();
+        sut.init(FIVE_MINUTES, 0);
         assertAll("Not all vars are set correctly",
                 () -> assertEquals((FIVE_MINUTES / 80), sut.getTimeFrame()),
-                () -> assertEquals(sut.getMovesCnt(), 0),
                 () -> assertTrue(sut.getStartTime() != -1),
                 () -> assertTrue(sut.getTimeFrame() != -1));
     }
 
     @Test
     public void initTestFail() {
-        TimeManBlitzChessBased sut = new TimeManBlitzChessBased(10);
-        sut.init();
+        TimeManBlitzChessBased sut = new TimeManBlitzChessBased();
+        sut.init(10, 0);
         assertThrows(TimeManagementException.class,
-                () -> sut.init());
+                () -> sut.init(100,10));
     }
 
     @Test
     public void resetTest() {
-        TimeManBlitzChessBased sut = new TimeManBlitzChessBased(10000);
+        TimeManBlitzChessBased sut = new TimeManBlitzChessBased();
 
-        sut.init();
+        sut.init(10000, 0);
         sut.reset();
 
         assertAll("Incorrect Values set while doing the reset",
@@ -53,31 +52,29 @@ public class TimeManBlitzChessBasedTest {
 
     @Test
     public void resetFailAlreadyResetTest() {
-        TimeManBlitzChessBased sut = new TimeManBlitzChessBased(100000);
-        sut.init();
+        TimeManBlitzChessBased sut = new TimeManBlitzChessBased();
+        sut.init(100000, 0);
         sut.reset();
         assertThrows(TimeManagementException.class, () -> sut.reset());
-        assertEquals(1, sut.getMovesCnt());
     }
 
     @Test
     public void resetFailNeverInitTest() {
-        TimeManBlitzChessBased sut = new TimeManBlitzChessBased(10);
+        TimeManBlitzChessBased sut = new TimeManBlitzChessBased();
         assertThrows(TimeManagementException.class, () -> sut.reset());
-        assertEquals(0, sut.getMovesCnt());
     }
 
     @Test
     public void testIsEnoughTimeNeverInit() {
-        TimeManagement sut = new TimeManBlitzChessBased(1);
+        TimeManagement sut = new TimeManBlitzChessBased();
         assertTrue(sut.isEnoughTime());
     }
 
     @Test
     // Well, this test will be problematic
     public void testIsEnoughTime() throws InterruptedException {
-        TimeManagement sut = new TimeManBlitzChessBased(FIVE_MINUTES);
-        sut.init(); //Time runs from now on
+        TimeManagement sut = new TimeManBlitzChessBased();
+        sut.init(FIVE_MINUTES, 0); //Time runs from now on
 
         // 5 min = 300'000 / 40 = 3750,
         // 3750 * 0.75 = 2812.5
