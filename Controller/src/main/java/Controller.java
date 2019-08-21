@@ -1,8 +1,6 @@
 import Exceptions.UnknownOptionException;
 
-import java.util.ArrayList;
-import java.util.InputMismatchException;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class Controller implements UCIListener {
@@ -15,10 +13,20 @@ public class Controller implements UCIListener {
     private List<SearchThread> WorkerThreads;
     private LinkedBlockingQueue<Command> commandQueue;
 
+    private Set<Command.CommandEnum> allowedCommands;
+    private static final Map<Command.CommandEnum, Set<Command.CommandEnum>> commandsWithAllowedFollowers = Map.of(
+            Command.CommandEnum.GO, Set.of(Command.CommandEnum.STOP),
+            Command.CommandEnum.STOP, Set.of(Command.CommandEnum.UCINEWGAME, Command.CommandEnum.POSITION),
+            Command.CommandEnum.POSITION, Set.of(Command.CommandEnum.POSITION, Command.CommandEnum.GO, Command.CommandEnum.UCINEWGAME),
+            Command.CommandEnum.UCINEWGAME, Set.of(Command.CommandEnum.POSITION, Command.CommandEnum.UCINEWGAME)
+    );
+
     /**
      * Constructor
      */
     private Controller() {
+        //set allowed next command
+        allowedCommands = commandsWithAllowedFollowers.get(Command.CommandEnum.UCINEWGAME);
         //get # of cpu cores
         this.numberCores = Runtime.getRuntime().availableProcessors();
         // init uci
@@ -82,7 +90,17 @@ public class Controller implements UCIListener {
         while (true) {
             try {
                 Command command = takeNextCommand(); //wait for uci instructions
-
+                if (!allowedCommands.contains(command.getType())) {
+                    UCIBridge.getInstance().sendUnknownCommandMessage(Command.typeToString(command.getType()).toLowerCase());
+                    StringBuilder temp = new StringBuilder();
+                    for (Command.CommandEnum allowedCommand : allowedCommands) {
+                        temp.append(" ").append(Command.typeToString(allowedCommand).toLowerCase());
+                    }
+                    InfoHandler.sendDebugMessage("allowed commands are" + temp.toString());
+                    continue;
+                } else {
+                    allowedCommands = commandsWithAllowedFollowers.get(command.getType());
+                }
                 if (command.getType() == Command.CommandEnum.GO) {
                     InfoHandler.sendDebugMessage("ControllerThread: sending go command to worker threads");
                     //TODO Parameter wie infinite

@@ -315,29 +315,38 @@ public class Command {
     }
 
     /**
+     * Converts a CommandEnum type to a String
+     *
+     * @param type the type
+     * @return a String
+     */
+    public static String typeToString(CommandEnum type) {
+        switch (type) {
+            case GO:
+                return "GO";
+
+            case STOP:
+                return "STOP";
+
+            case POSITION:
+                return "POSITION";
+
+            case UCINEWGAME:
+                return "UCINEWGAME";
+            default:
+                return "undefined";
+        }
+    }
+
+    /**
      * toString
      *
      * @return String representation
      */
     @Override
     public String toString() {
-        String type_string;
-        switch (type) {
-            case GO:
-                type_string = "GO";
-                break;
-            case STOP:
-                type_string = "STOP";
-                break;
-            case POSITION:
-                type_string = "POSITION";
-                break;
-            case UCINEWGAME:
-                type_string = "UCINEWGAME";
-                break;
-            default:
-                type_string = "undefined";
-        }
+        String type_string = typeToString(type);
+
         String board_string = board == null ? "null" : "\n" + board + "\n";
         return "Command{" +
                 "type=" + type_string +
