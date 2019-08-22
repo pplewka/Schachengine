@@ -18,12 +18,6 @@
         </dependency>
         <dependency>
             <groupId>Projektarbeit</groupId>
-            <artifactId>UCI</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>Projektarbeit</groupId>
             <artifactId>TimeManagement</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
