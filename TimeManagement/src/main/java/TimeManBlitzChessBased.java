@@ -72,7 +72,6 @@ public class TimeManBlitzChessBased implements TimeManagement {
         }
 
         timeFrame = moveTime;
-
         startTime = System.currentTimeMillis();
     }
 

@@ -12,12 +12,13 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TimeManBlitzChessBasedTest {
 
     private static final long FIVE_MINUTES = 300000;
-    private TimeManagement sut = TimeManBlitzChessBased.getInstance();
+    private TimeManBlitzChessBased sut = (TimeManBlitzChessBased) TimeManBlitzChessBased.getInstance();
 
     @BeforeEach
     public void resetSUT() {
-        if(sut.timeLeft() == Long.MAX_VALUE)
+        if(sut.isInit()) {
             sut.reset();
+        }
     }
 
 
@@ -71,6 +72,7 @@ public class TimeManBlitzChessBasedTest {
         sut.init(10, 0, 0);
         assertThrows(TimeManagementException.class,
                 () -> sut.init(100,10, 0));
+        sut.reset();
     }
 
     @Test
@@ -91,17 +93,11 @@ public class TimeManBlitzChessBasedTest {
     }
 
     @Test
-    public void resetFailNeverInitTest() {
-        assertThrows(TimeManagementException.class, sut::reset);
-    }
-
-    @Test
     public void testIsEnoughTimeNeverInit() {
         assertTrue(sut.isEnoughTime());
     }
 
     @Test
-    // Well, this test will be problematic
     public void testIsEnoughTime() throws InterruptedException {
         sut.init(FIVE_MINUTES, 0, 0); //Time runs from now on
 
@@ -112,6 +108,8 @@ public class TimeManBlitzChessBasedTest {
         }
         Thread.sleep(13);
         assertFalse(sut.isEnoughTime());
+
+        sut.reset();
     }
 
     @Test
@@ -120,6 +118,8 @@ public class TimeManBlitzChessBasedTest {
         sut.init(10000);
 
         assertEquals(10000, sut.getTimeFrame());
+
+        sut.reset();
     }
 
     @Test
@@ -130,6 +130,8 @@ public class TimeManBlitzChessBasedTest {
         assertTrue(sut.isEnoughTime());
         Thread.sleep(1000);
         assertFalse(sut.isEnoughTime());
+
+        sut.reset();
     }
 
 }
