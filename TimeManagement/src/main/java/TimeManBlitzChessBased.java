@@ -16,6 +16,8 @@ public class TimeManBlitzChessBased implements TimeManagement {
 
     private boolean isMoveTime = false;    //
 
+    private static TimeManagement instance = null;
+
 
     public long getTimeFrame() {
         return timeFrame;
@@ -23,6 +25,15 @@ public class TimeManBlitzChessBased implements TimeManagement {
 
     public long getStartTime() {
         return startTime;
+    }
+
+    private TimeManBlitzChessBased(){}
+
+    public static TimeManagement getInstance(){
+        if(instance==null){
+            instance = new TimeManBlitzChessBased();
+        }
+        return instance;
     }
 
 

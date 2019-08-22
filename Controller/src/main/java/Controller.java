@@ -27,7 +27,7 @@ public class Controller implements UCIListener {
      */
     private Controller() {
         playedMoves = 0;
-        currentTimeManager = new TimeManBlitzChessBased();
+        currentTimeManager = TimeManBlitzChessBased.getInstance();
         //set allowed next command
         allowedCommands = commandsWithAllowedFollowers.get(Command.CommandEnum.UCINEWGAME);
         //get # of cpu cores
@@ -47,7 +47,7 @@ public class Controller implements UCIListener {
         WorkerThreads = new ArrayList<>(numberWorkerThreads);
         commandQueue = new LinkedBlockingQueue<>();
         for (int i = 0; i < numberWorkerThreads; i++) {
-            WorkerThreads.add(new SearchThread(lock));
+            WorkerThreads.add(new SearchThread(lock, commandQueue, currentTimeManager));
             WorkerThreads.get(i).setName("SearchThread #" + i);
         }
 
@@ -318,6 +318,7 @@ public class Controller implements UCIListener {
      */
     private void startSearching() {
         SearchThread.setSearching(true);
+        SearchThread.setSentBestmove(false);
         synchronized (lock) {
             lock.notifyAll();
         }
