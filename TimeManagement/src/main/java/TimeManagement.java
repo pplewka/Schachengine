@@ -40,4 +40,9 @@ public interface TimeManagement {
      */
     public long getTimeFrame();
 
+    /**
+     * Get the start time
+     */
+    public long getStartTime();
+
 }
