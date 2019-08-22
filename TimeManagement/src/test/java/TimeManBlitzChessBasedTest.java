@@ -1,25 +1,25 @@
 import Exceptions.TimeManagementException;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
+import java.sql.Time;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 
 public class TimeManBlitzChessBasedTest {
 
     private static final long FIVE_MINUTES = 300000;
-    private TimeManagement sut;
+    private TimeManagement sut = TimeManBlitzChessBased.getInstance();
 
-
-    // Don't look at this, please...? This is just "temporarily"
     @BeforeEach
-    public void resetSingleton() throws SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
-        Field instance = TimeManBlitzChessBased.class.getDeclaredField("instance");
-        instance.setAccessible(true);
-        instance.set(null, null);
-        sut = TimeManBlitzChessBased.getInstance();
+    public void resetSUT() {
+        if(sut.timeLeft() == Long.MAX_VALUE)
+            sut.reset();
     }
+
 
     @Test
     public void testInitNotAllowedTotalTimeValues() {
