@@ -52,6 +52,13 @@ public abstract class Translators {
         }
     }
 
+    /**
+     * Method to translate Algebraic format into the Board's 64 format
+     *
+     * @param field field in Algebraic format
+     * @return corresponding field in board's 64 format
+     * @throws TranslatorException if field is not translatable into a Board index.
+     */
     public static int translateAlgTo64(String field){
         int multiplier;
         int addition;
@@ -69,6 +76,13 @@ public abstract class Translators {
         return multiplier * 8 + addition;
     }
 
+    /**
+     * Method to translate the Board's 64 format into Algebraic format
+     *
+     * @param field field in 64 format
+     * @return corresponding field in algebraic notation
+     * @throws TranslatorException if field is not translatable.
+     */
     public static String translate64ToAlg(int field){
         try {
             return algTable[field];
