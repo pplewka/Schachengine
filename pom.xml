@@ -21,7 +21,7 @@
     <module>TimeManagement</module>
     <module>Controller</module>
     <module>UCI</module>
-      <module>Command</module>
+      <module>Utils</module>
   </modules>
 
   <properties>
