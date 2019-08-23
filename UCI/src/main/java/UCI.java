@@ -208,7 +208,11 @@ public class UCI implements Runnable {
         }
 
         while (true) {
-            awaitNextCommand();
+            try {
+                awaitNextCommand();
+            } catch (Exception e) {
+                InfoHandler.sendMessage("UCIThread ERROR: " + e.getMessage());
+            }
             InfoHandler.getInstance().flushInfoBuffer();
         }
 
