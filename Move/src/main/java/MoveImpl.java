@@ -1,4 +1,6 @@
 public class MoveImpl implements Move {
+    public static final Move DUMMIEMOVE = new MoveImpl(0,0,' ',null,false);
+
     private short bitwiseMove;
 
     private Board board;

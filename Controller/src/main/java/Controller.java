@@ -47,7 +47,7 @@ public class Controller implements UCIListener {
         WorkerThreads = new ArrayList<>(numberWorkerThreads);
         commandQueue = new LinkedBlockingQueue<>();
         for (int i = 0; i < numberWorkerThreads; i++) {
-            WorkerThreads.add(new SearchThread(lock, commandQueue, currentTimeManager));
+            WorkerThreads.add(new SearchThread(lock));
             WorkerThreads.get(i).setName("SearchThread #" + i);
         }
 
@@ -318,7 +318,7 @@ public class Controller implements UCIListener {
      */
     private void startSearching() {
         SearchThread.setSearching(true);
-        SearchThread.setSentBestmove(false);
+        SearchImpl.getSearch().setBestMove(MoveImpl.DUMMIEMOVE);
         synchronized (lock) {
             lock.notifyAll();
         }
