@@ -42,6 +42,11 @@ public class SearchThread extends Thread {
             }
             ArrayList<Move> currentChildren = moveGen.generateAllMoves(currentParent);
             for (Move child : currentChildren) {
+                //if there is no real bestMove set any real move
+                if(search.getBestMove()==MoveImpl.DUMMIEMOVE){
+                    search.setBestMove(child);
+                }
+
                 child.setEval(eval.material(child.getBoard(), child.blacksTurn()));
 
                 //get the eval value to root if it is "good" enough
