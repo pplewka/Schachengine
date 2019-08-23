@@ -54,7 +54,7 @@ public abstract class Translators {
         multiplier = row - 49;
 
         if (addition < 0 || addition > 7 || multiplier < 0 || multiplier > 7) {
-            throw new MoveException("algebraicTo64: malformed field");
+            throw new TranslatorException("translateAlgTo64: malformed field");
         }
 
         return multiplier * 8 + addition;

@@ -22,6 +22,7 @@
     <module>Controller</module>
     <module>UCI</module>
       <module>Utils</module>
+      <module>Command</module>
   </modules>
 
   <properties>
