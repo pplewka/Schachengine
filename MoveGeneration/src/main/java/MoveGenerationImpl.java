@@ -3,21 +3,11 @@ import java.util.*;
 public class MoveGenerationImpl implements MoveGeneration {
     private static MoveGeneration moveGen;
     private static HashSet<Short> space = new HashSet<>();
-    private static byte[] realTranslationTable;
 
     private MoveGenerationImpl() {
     }
 
     static {
-        realTranslationTable = new byte[]{26, 27, 28, 29, 30, 31, 32, 33,
-                38, 39, 40, 41, 42, 43, 44, 45,
-                50, 51, 52, 53, 54, 55, 56, 57,
-                62, 63, 64, 65, 66, 67, 68, 69,
-                74, 75, 76, 77, 78, 79, 80, 81,
-                86, 87, 88, 89, 90, 91, 92, 93,
-                98, 99, 100, 101, 102, 103, 104, 105,
-                110, 111, 112, 113, 114, 115, 116, 117};
-
         short[] shorts = new short[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
                 25, 34, 35, 36, 37, 46, 47, 48, 49, 58, 59, 60, 61, 70, 71, 72, 73, 82, 83, 84, 85, 94,
                 95, 96, 97, 106, 107, 108, 109, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127,
@@ -44,7 +34,7 @@ public class MoveGenerationImpl implements MoveGeneration {
 
         for (byte i = 0; i < 64; i++) {
             byte temp = board.getPiece(i);
-            byte converted = translateTo144(i);
+            byte converted =(byte) Translators.translate64To144(i);
 
             //most fields are Empty
             if (temp != Piece.EMPTY) {
@@ -141,7 +131,7 @@ public class MoveGenerationImpl implements MoveGeneration {
 
             int enpassant = tempmove + (turn * -12);
 
-            if (!board.fieldIsOccupied(translateToReal((byte) enpassant))) {
+            if (!board.fieldIsOccupied(Translators.translate144to64((byte) enpassant))) {
                 //cant use addIfValid because pawns cant go on fields with opponents
                 addIfValidPawn(false, board, field, tempmove, ' ', blacksTurn, enpassant, pawnMoves);
             }
@@ -290,7 +280,7 @@ public class MoveGenerationImpl implements MoveGeneration {
                 pathBlocked = true;
 
             } else {
-                byte real = translateToReal((byte) temp);
+                byte real =(byte) Translators.translate144to64(temp);
                 if (board.fieldIsOccupied(real)) {
                     if (board.fieldHasOpponent(real, blacksTurn)) {
                         possiblePositions.add(temp);
@@ -327,7 +317,7 @@ public class MoveGenerationImpl implements MoveGeneration {
             //check if there are pawns on this fields
             for (int possiblePawn : new int[]{enpassant + (turn * 13), enpassant + (turn * 11)}) {
                 if (!isSpace(possiblePawn)) {
-                    if (board.getPiece(translateToReal((byte) possiblePawn)) == tempPawn) {
+                    if (board.getPiece(Translators.translate144to64((byte) possiblePawn)) == tempPawn) {
                         addIfValid(parent.getBoard(), possiblePawn, enpassant, blacksTurn, enpassantMoves);
                     }
                 }
@@ -337,7 +327,7 @@ public class MoveGenerationImpl implements MoveGeneration {
         //removing pawn
         int toRemove = enpassant + (turn * 12);
         for (Move enpm : enpassantMoves) {
-            enpm.getBoard().setField(Piece.EMPTY, translateToReal((byte) toRemove));
+            enpm.getBoard().setField(Piece.EMPTY, Translators.translate144to64((byte) toRemove));
         }
         moves.addAll(enpassantMoves);
 
@@ -440,7 +430,7 @@ public class MoveGenerationImpl implements MoveGeneration {
 
         for (int i = 0; i < 64; i++) {
             if (board.getPiece(i) == tempKing) {
-                return fieldUnderAttack(board, translateTo144((byte) i), blacksTurn);
+                return fieldUnderAttack(board, Translators.translate64To144((byte) i), blacksTurn);
             }
         }
 
@@ -471,7 +461,7 @@ public class MoveGenerationImpl implements MoveGeneration {
 
             for (int j : pieceMoves) {
                 if (!isSpace(j)) {
-                    int i = translateToReal((byte) j);
+                    int i = Translators.translate144to64((byte) j);
                     if (board.fieldHasOpponent(i, blacksTurn)) {
                         if (board.getPiece(i) == piece) {
                             return true;
@@ -492,7 +482,7 @@ public class MoveGenerationImpl implements MoveGeneration {
                 while (!pathBlocked) {
                     temp1 = temp1 + direction;
                     if (!isSpace(temp1)) {
-                        byte temp = translateToReal((byte) temp1);
+                        byte temp =(byte) Translators.translate144to64(temp1);
 
                         if (board.fieldIsOccupied(temp)) {
                             if (board.fieldHasOpponent(temp, blacksTurn)) {
@@ -542,7 +532,7 @@ public class MoveGenerationImpl implements MoveGeneration {
                 byte knight = blacksTurn ? Piece.BKNIGHT : Piece.WKNIGHT;
                 byte rook = blacksTurn ? Piece.BROOK : Piece.WROOK;
                 byte bishop = blacksTurn ? Piece.BBISHOP : Piece.WBISHOP;
-                int rto = translateToReal((byte) to);
+                int rto = Translators.translate144to64((byte) to);
                 Map<Character, Byte> switchMap = Map.of('Q', queen, 'K', knight, 'R', rook, 'B', bishop);
                 if (!switchMap.containsKey(c)) {
                     throw new MoveGenerationException("addIfValidPawn: invalid char in Move");
@@ -572,9 +562,9 @@ public class MoveGenerationImpl implements MoveGeneration {
             boolean fieldValid;
 
             if (capture) {
-                fieldValid = board.fieldHasOpponent(translateToReal((byte) to), blacksTurn);
+                fieldValid = board.fieldHasOpponent(Translators.translate144to64((byte) to), blacksTurn);
             } else {
-                fieldValid = !board.fieldIsOccupied(translateToReal((byte) to));
+                fieldValid = !board.fieldIsOccupied(Translators.translate144to64((byte) to));
             }
 
             return fieldValid;
@@ -615,8 +605,8 @@ public class MoveGenerationImpl implements MoveGeneration {
     private boolean validMove(Board board, int from, int to, boolean blacksTurn) {
 
         return onBoard_AND_kingNotInCheck(board, from, to, blacksTurn)
-                && (!board.fieldIsOccupied(translateToReal((byte) to))
-                || board.fieldHasOpponent(translateToReal((byte) to), blacksTurn));
+                && (!board.fieldIsOccupied(Translators.translate144to64( to))
+                || board.fieldHasOpponent(Translators.translate144to64( to), blacksTurn));
     }
 
     /**
@@ -633,8 +623,8 @@ public class MoveGenerationImpl implements MoveGeneration {
      */
     private Move makeMove(int from, int to, char c, Board board, boolean blacksTurn, int enpassant) {
         Board temp = board.copy();
-        int rFrom = translateToReal((byte) from);
-        int rTo = translateToReal((byte) to);
+        int rFrom = Translators.translate144to64((byte) from);
+        int rTo = Translators.translate144to64((byte) to);
         temp.applyMove(rFrom, rTo);
         return new MoveImpl(rFrom, rTo, c, temp, blacksTurn, enpassant);
     }
@@ -649,7 +639,7 @@ public class MoveGenerationImpl implements MoveGeneration {
     private boolean onBoard_AND_kingNotInCheck(Board board, int from, int to, boolean blacksTurn) {
         if (!isSpace(to)) {
             Board tempboard = board.copy();
-            tempboard.applyMove(translateToReal((byte) from), translateToReal((byte) to));
+            tempboard.applyMove(Translators.translate144to64((byte) from), Translators.translate144to64((byte) to));
             return !kingInCheck(tempboard, blacksTurn);
         } else {
             return false;
@@ -687,39 +677,6 @@ public class MoveGenerationImpl implements MoveGeneration {
             return field >= 110 && field <= 117;
         } else {
             return field >= 26 && field <= 33;
-        }
-    }
-
-    /**
-     * Method to translate 144 format into the Board's 64 format
-     *
-     * @param calculated field in 144 format
-     * @return corresponding field in board's 64 format
-     * @throws MoveGenerationException if calculated is not translatable. means if calculated is in Space
-     *                          look for realTranslationTable to see which values are translatable
-     */
-    private byte translateToReal(byte calculated) {
-        int index = Arrays.binarySearch(realTranslationTable, calculated);
-        if (index < 0) {
-            throw new MoveGenerationException("translateToReal: wrong parameter");
-        } else {
-            return (byte) index;
-        }
-    }
-
-    /**
-     * Method to translate Board's 64 format into the 144 format of the MoveGeneration
-     *
-     * @param field field in 64 format
-     * @return corresponding field in MoveGeneration's 144 format
-     * @throws MoveGenerationException if field is not translatable. should never happen
-     *                                   look for realTranslationTable to see which values are translatable
-     */
-    private byte translateTo144(byte field) {
-        try {
-            return realTranslationTable[field];
-        } catch (IndexOutOfBoundsException e) {
-            throw new MoveGenerationException("translateTo144: wrong parameter");
         }
     }
 }
