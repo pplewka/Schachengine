@@ -37,7 +37,9 @@ public class SearchThread extends Thread {
                 e.printStackTrace();
             }
 
-            search.setIfDeeper(currentParent.getDepth() - 1);
+            if(search.setIfDeeper(currentParent.getDepth() - 1)){
+                //send Infos
+            }
             ArrayList<Move> currentChildren = moveGen.generateAllMoves(currentParent);
             for (Move child : currentChildren) {
                 child.setEval(eval.material(child.getBoard(), child.blacksTurn()));

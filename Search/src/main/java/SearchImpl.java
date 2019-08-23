@@ -73,9 +73,11 @@ public class SearchImpl implements Search {
     }
 
     @Override
-    public synchronized void setIfDeeper(int depth){
+    public synchronized boolean setIfDeeper(int depth){
         if(depth>this.depth){
             this.depth= depth;
+            return true;
         }
+        return false;
     }
 }
