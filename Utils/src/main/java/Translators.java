@@ -42,4 +42,21 @@ public abstract class Translators {
             throw new TranslatorException("translate64To144: wrong parameter");
         }
     }
+
+    public static int translateAlgTo64(String field){
+        int multiplier;
+        int addition;
+
+        int column =(int) field.charAt(0);
+        addition = column - 97;
+
+        int row =(int) field.charAt(1);
+        multiplier = row - 49;
+
+        if (addition < 0 || addition > 7 || multiplier < 0 || multiplier > 7) {
+            throw new MoveException("algebraicTo64: malformed field");
+        }
+
+        return multiplier * 8 + addition;
+    }
 }

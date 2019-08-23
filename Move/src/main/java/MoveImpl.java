@@ -78,7 +78,7 @@ public class MoveImpl implements Move {
                     throw new MoveException("malformed fen String");
                 }
 
-                setEnpassant(algebraicTo64(splittedFen[3]));
+                setEnpassant(Translators.translateAlgTo64(splittedFen[3]));
             }else{
                 enpassant = -1;
             }
@@ -172,8 +172,8 @@ public class MoveImpl implements Move {
 
             String from = move.substring(0,2);
             String to = move.substring(2,4);
-            int from64 = algebraicTo64(from);
-            int to64 = algebraicTo64(to);
+            int from64 = Translators.translateAlgTo64(from);
+            int to64 = Translators.translateAlgTo64(to);
             boolean setEnpassant= false;
 
             //promotion
@@ -469,23 +469,6 @@ public class MoveImpl implements Move {
         }
 
         return false;
-    }
-
-    public int algebraicTo64(String field){
-        int multiplier;
-        int addition;
-
-        int column =(int) field.charAt(0);
-        addition = column - 97;
-
-        int row =(int) field.charAt(1);
-        multiplier = row - 49;
-
-        if (addition < 0 || addition > 7 || multiplier < 0 || multiplier > 7) {
-            throw new MoveException("algebraicTo64: malformed field");
-        }
-
-        return multiplier * 8 + addition;
     }
 
     @Override
