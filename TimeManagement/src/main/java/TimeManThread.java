@@ -29,7 +29,7 @@ public class TimeManThread extends Thread {
 
     TimeManThread(long moveTime, BlockingQueue<Command> queue) {
         TimeManBlitzChessBased.deleteInstance();
-        UCIBridge.getInstance().sendString("test");
+        InfoHandler.sendMessage("test");
         timeMan = TimeManBlitzChessBased.getInstance();
         this.moveTime = moveTime;
         this.queue = queue;
