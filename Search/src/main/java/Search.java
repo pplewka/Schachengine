@@ -5,7 +5,8 @@ public interface Search {
     public Move getRoot();
     public Move getBestMove();
     public void setBestMove(Move newBestMove);
-    public Move getPonderMove();
+    public Move getPonder();
+    public void setPonder(Move ponder);
     public BlockingQueue<Move> getLookUpTable();
     public void clear();
     public boolean setIfDeeper(int depth);

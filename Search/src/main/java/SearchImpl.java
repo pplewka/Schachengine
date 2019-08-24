@@ -54,11 +54,6 @@ public class SearchImpl implements Search {
     }
 
     @Override
-    public Move getPonderMove() {
-        return ponder;
-    }
-
-    @Override
     public BlockingQueue<Move> getLookUpTable() {
         return lookUpTable;
     }
@@ -79,5 +74,13 @@ public class SearchImpl implements Search {
             return true;
         }
         return false;
+    }
+
+    public Move getPonder() {
+        return ponder;
+    }
+
+    public void setPonder(Move ponder) {
+        this.ponder = ponder;
     }
 }

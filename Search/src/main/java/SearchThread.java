@@ -50,10 +50,12 @@ public class SearchThread extends Thread {
                 child.setEval(eval.material(child.getBoard(), child.blacksTurn()));
 
                 //get the eval value to root if it is "good" enough
+                Move preprevious = null;
                 Move previous = null;
                 Move toRootIterator = child;
                 boolean changed = true;
                 while (toRootIterator != search.getRoot() && changed) {
+                    preprevious = previous;
                     previous = toRootIterator;
                     toRootIterator = toRootIterator.getParent();
 
@@ -62,6 +64,7 @@ public class SearchThread extends Thread {
 
                 if (toRootIterator == search.getRoot() && changed) {
                     search.setBestMove(previous);
+                    search.setPonder(preprevious);
                 }
 
                 //for alpha beta pruning just add a child to the
