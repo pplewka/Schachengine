@@ -53,9 +53,9 @@ public class TimeManBlitzChessBasedTest {
         assertThrows(TimeManagementException.class,
                 () -> sut.init(-1),
                     "no TimeManagementException thrown, this shouldn't happen");
-        assertThrows(TimeManagementException.class,
-                () -> sut.init(0),
-                "no TimeManagementException thrown, this shouldn't happen");
+//        assertThrows(TimeManagementException.class,
+//                () -> sut.init(0),
+//                "no TimeManagementException thrown, this shouldn't happen");
     }
 
     @Test
