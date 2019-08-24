@@ -454,6 +454,10 @@ public class MoveImpl implements Move {
         depth= newDepth;
     }
 
+    public int getMaxMin() {
+        return maxMin;
+    }
+
     @Override
     public synchronized boolean setMaxMinIfBiggerSmaller(int newValue) {
         if(!blacksTurn){
