@@ -26,8 +26,6 @@ public class TimeManagementExactMoveTime extends Thread implements TimeManagemen
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        // TODO send stop
-        System.out.println("should be finished");
         commandQueue.add(new Command(Command.CommandEnum.STOP));
     }
 
