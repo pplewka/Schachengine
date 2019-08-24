@@ -5,10 +5,10 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class TimeManagementExactMoveTime extends Thread implements TimeManagement{
     // TODO either just implement this into the other TimeMan, ignore the old TimeMan or make an special abstract class for this sh-t
 
-    long timeFrame = -1;
-    long startTime = -1;
+    private long timeFrame = -1;
+    private long startTime = -1;
 
-    LinkedBlockingQueue<Command> commandQueue;
+    private LinkedBlockingQueue<Command> commandQueue;
 
     private static final String ERR_NEG_TIME = "given time is a negative value";
     private static final String ERR_NO_RESET = "The Time Management is currently already in state reset";
