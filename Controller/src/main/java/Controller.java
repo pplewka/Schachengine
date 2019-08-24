@@ -20,7 +20,7 @@ public class Controller implements UCIListener {
     private LinkedBlockingQueue<Command> commandQueue;
     private Set<Command.CommandEnum> allowedCommands;
     private int playedMoves;
-    private TimeManagement currentTimeManager;
+    private TimeManThread tm;
 
     /**
      * Constructor
@@ -50,7 +50,6 @@ public class Controller implements UCIListener {
             WorkerThreads.add(new SearchThread(lock));
             WorkerThreads.get(i).setName("SearchThread #" + i);
         }
-        currentTimeManager = new TimeManagementExactMoveTime(commandQueue);
 
         //create uci thread
         UCIThread = new Thread(UCI.getInstance());
@@ -91,6 +90,10 @@ public class Controller implements UCIListener {
         for (SearchThread workerThread : WorkerThreads) {
             workerThread.start();
         }
+//        long b_go = 0;
+//        long e_go = 0;
+//        long b_stop = 0;
+//        long e_stop = 0;
         while (true) {
             try {
                 Command command = takeNextCommand(); //wait for uci instructions
@@ -106,16 +109,25 @@ public class Controller implements UCIListener {
                     allowedCommands = commandsWithAllowedFollowers.get(command.getType());
                 }
                 if (command.getType() == Command.CommandEnum.GO) {
+//                    b_go = System.nanoTime();
                     InfoHandler.sendDebugMessage("ControllerThread: sending go command to worker threads");
                     parseGo(command);
                     startSearching();
+//                    e_go = System.nanoTime();
                 } else if (command.getType() == Command.CommandEnum.STOP) {
+//                    b_stop = System.nanoTime();
                     playedMoves++;
                     InfoHandler.sendDebugMessage("ControllerThread: sending stop command to worker threads");
                     stopSearching();
-                    currentTimeManager.reset();
+                    tm.interrupt();
                     Move best_move = SearchImpl.getSearch().getBestMove();
                     UCI.getInstance().sendBestMove(best_move);
+//                    e_stop = System.nanoTime();
+//                    long go   = (e_go     - b_go)/1000000;
+//                    long stop = (e_stop - b_stop)/1000000;
+//                    long time = (e_stop   - b_go)/1000000;
+//                    InfoHandler.sendDebugMessage("Time go: " + go + " Time end: " + stop);
+//                    InfoHandler.sendDebugMessage("total time: " + time);
                 } else if (command.getType() == Command.CommandEnum.UCINEWGAME) {
                     playedMoves = 0;
                     InfoHandler.sendDebugMessage("ControllerThread: sending ucinewgame command to worker threads");
@@ -156,15 +168,12 @@ public class Controller implements UCIListener {
         }else{
             totalTimeLeftInMsec = Long.MAX_VALUE;
         }
-        if(inc!=-1) {
-            currentTimeManager.init(totalTimeLeftInMsec, inc, playedMoves);
+        if(time !=-1) {
+            tm = new TimeManThread(totalTimeLeftInMsec, inc == -1 ? 0 : inc, playedMoves, commandQueue);
         }else{
-            currentTimeManager.init(totalTimeLeftInMsec);
+            tm = new TimeManThread(totalTimeLeftInMsec, commandQueue);
         }
-        if(currentTimeManager instanceof TimeManagementExactMoveTime) {
-            ((TimeManagementExactMoveTime) currentTimeManager).run();
-        }
-
+        tm.start();
     }
 
     /**

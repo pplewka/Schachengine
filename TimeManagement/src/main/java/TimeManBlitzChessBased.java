@@ -37,6 +37,10 @@ public class TimeManBlitzChessBased implements TimeManagement {
         return instance;
     }
 
+    public static void deleteInstance() {
+        instance = null;
+    }
+
 
     @Override
     public void init(long totalTimeLeftInMsec, long inc, int movesCnt) {
@@ -69,7 +73,7 @@ public class TimeManBlitzChessBased implements TimeManagement {
         if(isInit()) {
             throw new TimeManagementException(ERR_NO_INIT);
         }
-        if(moveTime <= 0) {
+        if(moveTime < 0) {
             throw new TimeManagementException(ERR_NEG_TIME);
         }
 
