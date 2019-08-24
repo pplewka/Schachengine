@@ -115,7 +115,6 @@ public class Controller implements UCIListener {
                     stopSearching();
                     currentTimeManager.reset();
                     Move best_move = SearchImpl.getSearch().getBestMove();
-                    InfoHandler.sendDebugMessage(best_move.toString());
                     UCI.getInstance().sendBestMove(best_move);
                 } else if (command.getType() == Command.CommandEnum.UCINEWGAME) {
                     playedMoves = 0;
