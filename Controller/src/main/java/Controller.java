@@ -27,7 +27,7 @@ public class Controller implements UCIListener {
      */
     private Controller() {
         playedMoves = 0;
-        currentTimeManager = TimeManBlitzChessBased.getInstance();
+//        currentTimeManager = TimeManBlitzChessBased.getInstance();
         //set allowed next command
         allowedCommands = commandsWithAllowedFollowers.get(Command.CommandEnum.UCINEWGAME);
         //get # of cpu cores
@@ -50,6 +50,7 @@ public class Controller implements UCIListener {
             WorkerThreads.add(new SearchThread(lock));
             WorkerThreads.get(i).setName("SearchThread #" + i);
         }
+        currentTimeManager = new TimeManagementExactMoveTime(commandQueue);
 
         //create uci thread
         UCIThread = new Thread(UCI.getInstance());
@@ -160,6 +161,9 @@ public class Controller implements UCIListener {
             currentTimeManager.init(totalTimeLeftInMsec, inc, playedMoves);
         }else{
             currentTimeManager.init(totalTimeLeftInMsec);
+        }
+        if(currentTimeManager instanceof TimeManagementExactMoveTime) {
+            ((TimeManagementExactMoveTime) currentTimeManager).run();
         }
 
     }
