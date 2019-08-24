@@ -190,6 +190,12 @@ public class InfoHandler {
             throw new MismatchedKeyTypeException("NOT ALLOWED KEY USED IN storeInfo(STRING, DOUBLE). " +
                     "ONLY USE KEYS FROM InfoHandler.DOUBLE_KEYS");
         }
-        infoBuffer.append(" ").append(key).append(" ").append(value.intValue());
+        int val;
+        if (key.equals(CPULOAD)) {
+            val = ((Double) (value * 100.)).intValue();
+        } else {
+            val = value.intValue();
+        }
+        infoBuffer.append(" ").append(key).append(" ").append(val);
     }
 }
