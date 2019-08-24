@@ -30,6 +30,10 @@ public class Command {
     private long movetime;
     private Move move;
 
+
+
+    private boolean fromUCI;
+
     /**
      * Constructor
      * Please initialize all necessary parameters with the corresponding set methods after the constructor
@@ -51,6 +55,24 @@ public class Command {
         setWtime(-1);
         setSearchmoves(null);
         setMove(null);
+        setNodes(-1);
+        setFromUCI(false);
+    }
+
+    /**
+     * True if command was send from UCI
+     * @return bool
+     */
+    public boolean isFromUCI() {
+        return fromUCI;
+    }
+
+    /**
+     * Set true if command was send from UCI
+     * @param fromUCI
+     */
+    public void setFromUCI(boolean fromUCI) {
+        this.fromUCI = fromUCI;
     }
 
     /**

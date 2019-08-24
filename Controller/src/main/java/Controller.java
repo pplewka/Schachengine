@@ -10,7 +10,7 @@ public class Controller implements UCIListener {
             Command.CommandEnum.POSITION, Set.of(Command.CommandEnum.POSITION, Command.CommandEnum.GO, Command.CommandEnum.UCINEWGAME),
             Command.CommandEnum.UCINEWGAME, Set.of(Command.CommandEnum.POSITION, Command.CommandEnum.UCINEWGAME)
     );
-    private static Object lock = new Object();
+    private static final Object lock = new Object();
     private static volatile Controller instance;
     private final int numberCores;
     private final int numberWorkerThreads;
@@ -98,12 +98,16 @@ public class Controller implements UCIListener {
             try {
                 Command command = takeNextCommand(); //wait for uci instructions
                 if (!allowedCommands.contains(command.getType())) {
-                    UCIBridge.getInstance().sendUnknownCommandMessage(Command.typeToString(command.getType()).toLowerCase());
-                    StringBuilder temp = new StringBuilder();
-                    for (Command.CommandEnum allowedCommand : allowedCommands) {
-                        temp.append(" ").append(Command.typeToString(allowedCommand).toLowerCase());
+                    if(command.isFromUCI()) {  // ignore if was not send from UCI
+                        UCIBridge.getInstance().sendUnknownCommandMessage(
+                                Command.typeToString(command.getType()).toLowerCase()
+                        );
+                        StringBuilder temp = new StringBuilder();
+                        for (Command.CommandEnum allowedCommand : allowedCommands) {
+                            temp.append(" ").append(Command.typeToString(allowedCommand).toLowerCase());
+                        }
+                        InfoHandler.sendDebugMessage("allowed commands are" + temp.toString());
                     }
-                    InfoHandler.sendDebugMessage("allowed commands are" + temp.toString());
                     continue;
                 } else {
                     allowedCommands = commandsWithAllowedFollowers.get(command.getType());
@@ -230,6 +234,7 @@ public class Controller implements UCIListener {
     @Override
     public void receivedStop() {
         Command c = new Command(Command.CommandEnum.STOP);
+        c.setFromUCI(true);
         InfoHandler.sendDebugMessage("UCIThread: storing to commandqueue " + c.toString());
         commandQueue.add(c);
 
