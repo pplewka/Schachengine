@@ -178,7 +178,7 @@ public class MoveImpl implements Move {
 
             //promotion
             if(move.length()>4){
-                char promotion = move.charAt(5);
+                char promotion = move.charAt(4);
 
                 switch (promotion){
                     case 'n':
