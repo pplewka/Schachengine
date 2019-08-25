@@ -67,12 +67,10 @@ public abstract class Translators {
         addition = column - 97;
 
         int row =(int) field.charAt(1);
-        multiplier = row - 49;
-
+        multiplier = (row - 48) * (-1) + 8;
         if (addition < 0 || addition > 7 || multiplier < 0 || multiplier > 7) {
             throw new TranslatorException("translateAlgTo64: malformed field");
         }
-
         return multiplier * 8 + addition;
     }
 
