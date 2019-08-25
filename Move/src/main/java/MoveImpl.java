@@ -477,9 +477,27 @@ public class MoveImpl implements Move {
 
     @Override
     public String toString() {
-        return "MoveImpl{" +
-                "bitwiseMove=" + bitwiseMove +
-                " from"+getFrom()+" to"+getTo()+
-                '}';
+        int from = getFrom();
+        int to = getTo();
+        char c = getChar();
+        String fromS = Translators.translate64ToAlg(from);
+        String toS = Translators.translate64ToAlg(to);
+        StringBuilder output = new StringBuilder();
+
+        if (c != ' ') {
+            if (c == '0') {
+                output.append("0-0-0");
+            } else {
+                output.append(fromS).append(toS).append(c);
+            }
+        } else {
+            if (from == 0 && to == 0) {
+                output.append("0-0");
+            } else {
+                output.append(fromS).append(toS);
+            }
+        }
+
+        return output.toString();
     }
 }
