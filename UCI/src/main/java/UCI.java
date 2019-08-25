@@ -194,9 +194,7 @@ public class UCI implements Runnable {
      * @param move the best move
      */
     public synchronized void sendBestMove(Move move) {
-        String str = String.format("%s%s", Translators.translate64ToAlg(move.getFrom()),
-                Translators.translate64ToAlg(move.getTo()));
-        UCIBridge.getInstance().sendString(UCICommands.BEST_MOVE + " " + str);
+        UCIBridge.getInstance().sendString(UCICommands.BEST_MOVE + " " + move);
     }
 
     /**
