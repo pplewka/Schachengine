@@ -1,4 +1,3 @@
-import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.concurrent.BlockingQueue;
 
@@ -39,10 +38,6 @@ public class SearchThread extends Thread {
 
             if (search.setIfDeeper(currentParent.getDepth() - 1)) {
                 InfoHandler.getInstance().storeInfo(InfoHandler.DEPTH, search.getDepth());
-                //cpu_load goes up to X00% with X = number of processors. EG. Quad Core -> 400%
-                double cpu_load = ManagementFactory.getOperatingSystemMXBean().getSystemLoadAverage();
-                double num_proc = Runtime.getRuntime().availableProcessors();
-                InfoHandler.getInstance().storeInfo(InfoHandler.CPULOAD, cpu_load / num_proc);
                 InfoHandler.getInstance().storeInfo(InfoHandler.NODES, (long) lookupTable.size());
                 InfoHandler.getInstance().flushInfoBuffer();
                 //send Infos
