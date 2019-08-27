@@ -78,7 +78,6 @@ public class EvaluationImpl implements Evaluation {
 
         while (before != null) {
             if (now.getFrom() == before.getTo() && now.getTo() == before.getFrom()) {
-                System.out.println("repetition!!!!!");
                 if (toEvaluate.blacksTurn()) {
                     score = score - deduction;
                 } else {
