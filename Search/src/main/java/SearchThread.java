@@ -74,7 +74,6 @@ public class SearchThread extends Thread {
 
             //set bestmove if reached root and value changed
             if (parentIterator == search.getRoot() && changed) {
-                System.out.println("found best move: "+bestChild+" of value: "+bestChild.getMaxMin());
                 search.setBestMove(bestChild);
             }
 
