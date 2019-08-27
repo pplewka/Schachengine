@@ -12,8 +12,7 @@ public class EvaluationImpl implements Evaluation {
     private int [] pieceValues = {0, 0, 0, 0, 1, 3, 5, 3, 9, 100};
 
 
-    private EvaluationImpl(){
-    }
+    private EvaluationImpl(){}
 
     public static Evaluation getEvaluation(){
         if(eval==null){
@@ -23,23 +22,14 @@ public class EvaluationImpl implements Evaluation {
     }
 
     @Override
-    public void evaluate(Move parent) {
-        /*
-        pseudocode:
-        int sum;
-        for(Move m:parent.getChildren){
-            if(parent.blacksTurn()){
-                sum-=material(move);
-                sum-=mobility(move);
-            }else{
-                sum+=material(move);
-                sum+=mobility(move);
-            }
-        }
+    public int evaluate(Move toEvaluate) {
+        Board board = toEvaluate.getBoard();
+        boolean blacksTurn = toEvaluate.blacksTurn();
 
-        parent.setMaxMinIfChanged(true,sum);
-         */
+        int globalValue = material(board, blacksTurn);
+        globalValue = globalValue + repetitionScore(toEvaluate);
 
+        return globalValue;
     }
 
     /**
@@ -77,5 +67,33 @@ public class EvaluationImpl implements Evaluation {
         later maybe counts attacked pieces or similar
          */
         return 0;
+    }
+
+    @Override
+    public int repetitionScore(Move toEvaluate) {
+        int deduction = 100;
+        int score = 0;
+        Move now = toEvaluate;
+        Move before = toEvaluate.getParent().getParent();
+
+        while (before != null) {
+            if (now.getFrom() == before.getTo() && now.getTo() == before.getFrom()) {
+                System.out.println("repetition!!!!!");
+                if (toEvaluate.blacksTurn()) {
+                    score = score - deduction;
+                } else {
+                    score = score + deduction;
+                }
+            }
+
+            now = before;
+            if(before.getParent()!=null) {
+                before = before.getParent().getParent();
+            }else{
+                before = null;
+            }
+        }
+
+        return score;
     }
 }

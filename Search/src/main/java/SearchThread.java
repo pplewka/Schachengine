@@ -51,7 +51,7 @@ public class SearchThread extends Thread {
             //generate and evaluate children
             ArrayList<Move> currentChildren = moveGen.generateAllMoves(currentParent);
             for (Move child : currentChildren) {
-                child.setMaxMin(eval.material(child.getBoard(), child.blacksTurn()));
+                child.setMaxMin(eval.evaluate(child));
             }
             currentParent.setChildren(currentChildren.toArray(new Move[0]));
 
@@ -74,6 +74,7 @@ public class SearchThread extends Thread {
 
             //set bestmove if reached root and value changed
             if (parentIterator == search.getRoot() && changed) {
+                System.out.println("found best move: "+bestChild+" of value: "+bestChild.getMaxMin());
                 search.setBestMove(bestChild);
             }
 
@@ -104,9 +105,9 @@ public class SearchThread extends Thread {
                 //parent is checkmate
                 bestChild = new MoveImpl(0,0,' ',null, !parent.blacksTurn());
                 if(parent.blacksTurn()){
-                    bestChild.setMaxMin(Integer.MAX_VALUE);
-                }else{
                     bestChild.setMaxMin(Integer.MIN_VALUE);
+                }else{
+                    bestChild.setMaxMin(Integer.MAX_VALUE);
                 }
         }
 
