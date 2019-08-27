@@ -37,7 +37,7 @@ public class EvaluationImpl implements Evaluation {
             }
         }
 
-        parent.setMaxMinIfBiggerSmaller(true,sum);
+        parent.setMaxMinIfChanged(true,sum);
          */
 
     }
@@ -52,23 +52,18 @@ public class EvaluationImpl implements Evaluation {
     public int material(Board board, boolean blacksTurn) {
         // TODO checking for certain piece combination bonus/penalty
         // TODO unit tests of course
-        int turnModifier = blacksTurn ? -1 : 1;
 
         byte [] boardByte = board.getBoard();
 
         int materialValue = 0;
         for (byte b : boardByte) {
-            int field = b * turnModifier;
+            int field = b * -1;
 
             if (field > 1) { // if neither empty or "SPACE"
                 materialValue += pieceValues[field] * 100;
             } else if (field < -1) {
                 materialValue -= pieceValues[-1*field] * 100;
             }
-        }
-
-        if(!blacksTurn){
-            materialValue= materialValue *(-1);
         }
 
         return materialValue;

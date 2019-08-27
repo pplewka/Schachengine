@@ -105,7 +105,11 @@ public class MoveImpl implements Move {
         this(from,to,c,board,blacksTurn,enpassant,0);
     }
 
-    public MoveImpl(int from, int to,char c,Board board,boolean blacksTurn,int enpassant,int eval){
+    public void setMaxMin(int maxMin) {
+            this.maxMin = maxMin;
+    }
+
+    public MoveImpl(int from, int to, char c, Board board, boolean blacksTurn, int enpassant, int eval){
         String binaryFrom= Integer.toBinaryString(63 & from);
         binaryFrom=String.format("%6s",binaryFrom);
         binaryFrom = binaryFrom.replaceAll(" ","0");
@@ -459,20 +463,13 @@ public class MoveImpl implements Move {
     }
 
     @Override
-    public synchronized boolean setMaxMinIfBiggerSmaller(int newValue) {
-        if(!blacksTurn){
-            if(newValue > maxMin){
-                maxMin = newValue;
-                return true;
-            }
+    public synchronized boolean setMaxMinIfChanged(int newValue) {
+        if(newValue == maxMin){
+            return false;
         }else{
-            if(newValue < maxMin){
-                maxMin = newValue;
-                return true;
-            }
+            maxMin = newValue;
+            return true;
         }
-
-        return false;
     }
 
     @Override

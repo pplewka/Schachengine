@@ -1,11 +1,10 @@
 import java.lang.management.ManagementFactory;
-import java.lang.management.OperatingSystemMXBean;
 import java.util.ArrayList;
 import java.util.concurrent.BlockingQueue;
 
 public class SearchThread extends Thread {
     private static boolean searching = false;
-    private Object lock;
+    private final Object lock;
 
     public SearchThread(Object lock){
         this.lock= lock;
@@ -44,45 +43,74 @@ public class SearchThread extends Thread {
                 double cpu_load = ManagementFactory.getOperatingSystemMXBean().getSystemLoadAverage();
                 double num_proc = Runtime.getRuntime().availableProcessors();
                 InfoHandler.getInstance().storeInfo(InfoHandler.CPULOAD, cpu_load / num_proc);
-                InfoHandler.getInstance().storeInfo(InfoHandler.NODES,(long) lookupTable.size());
+                InfoHandler.getInstance().storeInfo(InfoHandler.NODES, (long) lookupTable.size());
                 InfoHandler.getInstance().flushInfoBuffer();
                 //send Infos
             }
+
+            //generate and evaluate children
             ArrayList<Move> currentChildren = moveGen.generateAllMoves(currentParent);
             for (Move child : currentChildren) {
-                //if there is no real bestMove set any real move
-                if (search.getBestMove() == MoveImpl.DUMMIEMOVE) {
-                    search.setBestMove(child);
-                }
+                child.setMaxMin(eval.material(child.getBoard(), child.blacksTurn()));
+            }
+            currentParent.setChildren(currentChildren.toArray(new Move[0]));
 
-                child.setEval(eval.material(child.getBoard(), child.blacksTurn()));
+            //get the eval value to root if it is "good" enough
+            Move parentIterator = currentParent;
 
-                //get the eval value to root if it is "good" enough
-                Move preprevious = null;
-                Move previous = null;
-                Move toRootIterator = child;
-                boolean changed = true;
-                while (toRootIterator != search.getRoot() && changed) {
-                    preprevious = previous;
-                    previous = toRootIterator;
-                    toRootIterator = toRootIterator.getParent();
+            //minmaxing of the children from the currentParent
+            Move bestChild =getBestChild(parentIterator);
+            int minmax = bestChild.getMaxMin();
+            boolean changed = parentIterator.setMaxMinIfChanged(minmax);
 
-                    changed = toRootIterator.setMaxMinIfBiggerSmaller(child.getEval());
-                }
+            //minmaxing down to root
+            while (parentIterator != search.getRoot() && changed){
+                parentIterator = parentIterator.getParent();
 
-                if (toRootIterator == search.getRoot() && changed) {
-                    search.setBestMove(previous);
-                    search.setPonder(preprevious);
-                }
+                bestChild =getBestChild(parentIterator);
+                minmax = bestChild.getMaxMin();
+                changed = parentIterator.setMaxMinIfChanged(minmax);
+            }
 
-                //for alpha beta pruning just add a child to the
-                // lookupTable if its eval value is better than alpha/beta
+            //set bestmove if reached root and value changed
+            if (parentIterator == search.getRoot() && changed) {
+                search.setBestMove(bestChild);
             }
 
             //add new Moves to the lookUpTable
             lookupTable.addAll(currentChildren);
 
         }
+    }
+
+    private Move getBestChild(Move parent){
+        Move bestChild = null;
+        int minmax = parent.blacksTurn() ? Integer.MAX_VALUE : Integer.MIN_VALUE;
+        for (Move m : parent.getChildren()) {
+            if (parent.blacksTurn()) {
+                if (m.getMaxMin() < minmax) {
+                    minmax = m.getMaxMin();
+                    bestChild = m;
+                }
+            } else {
+                if (m.getMaxMin() > minmax) {
+                    minmax = m.getMaxMin();
+                    bestChild = m;
+                }
+            }
+        }
+
+        if(bestChild == null){
+                //parent is checkmate
+                bestChild = new MoveImpl(0,0,' ',null, !parent.blacksTurn());
+                if(parent.blacksTurn()){
+                    bestChild.setMaxMin(Integer.MAX_VALUE);
+                }else{
+                    bestChild.setMaxMin(Integer.MIN_VALUE);
+                }
+        }
+
+        return bestChild;
     }
 
     public static boolean isSearching() {

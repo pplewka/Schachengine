@@ -130,7 +130,7 @@ public class MoveTest {
         Move parent = move.getParent();
         boolean changed = true;
         while(parent!=null && changed){
-            changed = parent.setMaxMinIfBiggerSmaller(move.getEval());
+            changed = parent.setMaxMinIfChanged(move.getEval());
             parent = parent.getParent();
         }
     }

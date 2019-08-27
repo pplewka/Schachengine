@@ -24,6 +24,7 @@ public interface Move {
 
     public byte getDepth();
     public void setDepth(byte newDepth);
+    public void setMaxMin(int newValue);
 
     /**
      * method to make moves given by the uci "position moves" command
@@ -34,6 +35,6 @@ public interface Move {
     /**
      *!Has to be synchronised!
      */
-    public boolean setMaxMinIfBiggerSmaller(int newValue);
+    public boolean setMaxMinIfChanged(int newValue);
     public int getMaxMin();
 }
