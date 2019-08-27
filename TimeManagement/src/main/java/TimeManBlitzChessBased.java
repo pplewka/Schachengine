@@ -43,7 +43,7 @@ public class TimeManBlitzChessBased implements TimeManagement {
 
 
     @Override
-    public void init(long totalTimeLeftInMsec, long inc, int movesCnt) {
+    public void init(long totalTimeLeftInMsec, long inc, int movesCnt, int threshold) {
         if(isInit()) {
             throw new TimeManagementException(ERR_NO_INIT);
         }
@@ -57,8 +57,8 @@ public class TimeManBlitzChessBased implements TimeManagement {
         isMoveTime = false;
 
         // timeFrame calculation
-        if(movesCnt < 40) {
-            timeFrame = ((totalTimeLeftInMsec + inc) / 2) / (40 - movesCnt);
+        if(movesCnt < threshold) {
+            timeFrame = ((totalTimeLeftInMsec + inc) / 2) / (threshold - movesCnt);
         } else {
             timeFrame = totalTimeLeftInMsec / 50; // + increment / 2
         }

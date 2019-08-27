@@ -14,7 +14,7 @@ public class TimeManThread extends Thread {
     private boolean isTotalTime;
     private long timeFrame;
 
-    TimeManThread(long totalTimeLeft, long inc, int movesCnt, BlockingQueue<Command> queue) {
+    TimeManThread(long totalTimeLeft, long inc, int movesCnt, BlockingQueue<Command> queue, int threshold) {
         TimeManBlitzChessBased.deleteInstance();
         timeMan = TimeManBlitzChessBased.getInstance();
         this.totalTimeLeft = totalTimeLeft;
@@ -22,7 +22,7 @@ public class TimeManThread extends Thread {
         this.movesCnt = movesCnt;
         this.queue = queue;
         isTotalTime = true;
-        timeMan.init(totalTimeLeft, inc, movesCnt);
+        timeMan.init(totalTimeLeft, inc, movesCnt, threshold);
         timeFrame = timeMan.getTimeFrame() - 4;
         InfoHandler.sendDebugMessage("TimeMan Thread initialised with calculated time of " + timeMan.getTimeFrame() + " msec");
     }
@@ -47,7 +47,7 @@ public class TimeManThread extends Thread {
         } catch (InterruptedException e) {
             // jo, ne
         }
-        if(!isInterrupted()) {
+        if (!isInterrupted()) {
             queue.add(new Command(Command.CommandEnum.STOP));
         }
         long estimated = (System.nanoTime() - start) / 1000000;

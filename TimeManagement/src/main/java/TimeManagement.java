@@ -11,7 +11,7 @@ public interface TimeManagement {
      * @param inc the increment that will be given to us, optional.
      * @param movesCnt the amount of moves done
      */
-    public void init(long totalTimeLeftInMsec, long inc, int movesCnt);
+    public void init(long totalTimeLeftInMsec, long inc, int movesCnt, int threshold);
 
     /**
      * Allocate the time by taking the moveTime given by the UCI Protocol
