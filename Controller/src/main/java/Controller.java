@@ -1,3 +1,4 @@
+import Exceptions.FixYourConfigFileException;
 import Exceptions.UnknownOptionException;
 
 import java.util.*;
@@ -37,11 +38,8 @@ public class Controller implements UCIListener {
         // listen to uci
         UCI.getInstance().attachListener(this);
         // determine the number of worker threads
-        if (getOptionsValue("workerthreads_method").equals("adaptive")) {
-            this.numberWorkerThreads = numberCores > 1 ? numberCores - 1 : 1;
-        } else {
-            this.numberWorkerThreads = Integer.parseInt(getOptionsValue("workerthreads_count"));
-        }
+        this.numberWorkerThreads = calcWorkerThreadCount();
+
         InfoHandler.sendDebugMessage("ControllerThread: Working with " + numberWorkerThreads + " worker threads");
         // create worker threads
         WorkerThreads = new ArrayList<>(numberWorkerThreads);
@@ -54,6 +52,26 @@ public class Controller implements UCIListener {
         //create uci thread
         UCIThread = new Thread(UCI.getInstance());
         UCIThread.setName("UCIThread");
+    }
+
+    /**
+     * Calculates the number of worker threads based upon uci options
+     *
+     * @return the number of worker threads to spawn
+     */
+    private int calcWorkerThreadCount() {
+        int result;
+        String method = getOptionsValue("workerthreads_method");
+        if (method.equals("adaptive")) {
+            result = numberCores > 1 ? numberCores - 1 : 1;
+        } else if (method.equals("static")) {
+            result = Integer.parseInt(getOptionsValue("workerthreads_count"));
+        } else if (method.equals("overdrive")) {
+            result = numberCores > 1 ? numberCores * 5 : 1;
+        } else {
+            throw new FixYourConfigFileException("unsupported method " + method);
+        }
+        return result;
     }
 
     /**
@@ -98,7 +116,7 @@ public class Controller implements UCIListener {
             try {
                 Command command = takeNextCommand(); //wait for uci instructions
                 if (!allowedCommands.contains(command.getType())) {
-                    if(command.isFromUCI()) {  // ignore if was not send from UCI
+                    if (command.isFromUCI()) {  // ignore if was not send from UCI
                         UCIBridge.getInstance().sendUnknownCommandMessage(
                                 Command.typeToString(command.getType()).toLowerCase()
                         );
@@ -153,6 +171,7 @@ public class Controller implements UCIListener {
 
     /**
      * Parses a go command and initialises the currentTimeManager
+     *
      * @param command the command
      */
     private void parseGo(Command command) {
@@ -169,12 +188,12 @@ public class Controller implements UCIListener {
             totalTimeLeftInMsec = movetime;
         } else if (time != -1) {
             totalTimeLeftInMsec = time;
-        }else{
+        } else {
             totalTimeLeftInMsec = Long.MAX_VALUE;
         }
-        if(time !=-1) {
+        if (time != -1) {
             tm = new TimeManThread(totalTimeLeftInMsec, inc == -1 ? 0 : inc, playedMoves, commandQueue);
-        }else{
+        } else {
             tm = new TimeManThread(totalTimeLeftInMsec, commandQueue);
         }
         tm.start();
