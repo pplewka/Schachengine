@@ -1,5 +1,15 @@
 import java.util.*;
 
+class Pair<T, S> {
+    public final T first;
+    public final S second;
+
+    public Pair(T first, S second) {
+        this.first = first;
+        this.second = second;
+    }
+}
+
 public class MoveGenerationImpl implements MoveGeneration {
     private static MoveGeneration moveGen;
     private static HashSet<Short> space = new HashSet<>();
@@ -31,51 +41,70 @@ public class MoveGenerationImpl implements MoveGeneration {
     public ArrayList<Move> generateAllMoves(Move parent) {
         ArrayList<Move> moves = new ArrayList<>();
         Board board = parent.getBoard();
-
-        for (byte i = 0; i < 64; i++) {
+        ArrayList<Pair<Byte, Integer>> pieces = new ArrayList<>(32);  // maximum of 32 pieces on the board
+        for (int i = 0; i < 64; i++) {
             byte temp = board.getPiece(i);
-            byte converted =(byte) Translators.translate64To144(i);
+            if (temp != Piece.EMPTY) {
+                if (!board.fieldHasOpponent(i, !parent.blacksTurn())) {
+                    pieces.add(new Pair<Byte, Integer>(temp, i));
+                }
+            }
+        }
+        boolean blacksturn = !parent.blacksTurn();
+        Comparator<Pair<Byte, Integer>> comp;
+        if (blacksturn) {
+            comp = (a, b) -> (b.first - a.first);
+        } else {
+            comp = (a, b) -> (a.first - b.first);
+        }
+        pieces.sort(comp);
+
+
+        for (Pair<Byte, Integer> pair : pieces) {
+            byte temp = pair.first;
+            int i = pair.second;
+            byte converted = (byte) Translators.translate64To144(i);
+            //byte temp = board.getPiece(i);
 
             //most fields are Empty
-            if (temp != Piece.EMPTY) {
-                //half of not empty fields are opponents
-                if (!board.fieldHasOpponent(i, !parent.blacksTurn())) {
-                    switch (temp) {
-                        case Piece.BPAWN:
-                        case Piece.WPAWN:
-                            generatePawnMoves(parent, converted, moves);
-                            break;
+            // if (temp != Piece.EMPTY) {
+            //half of not empty fields are opponents
+            switch (temp) {
+                case Piece.BPAWN:
+                case Piece.WPAWN:
+                    generatePawnMoves(parent, converted, moves);
+                    break;
 
-                        case Piece.BROOK:
-                        case Piece.WROOK:
-                            generateRookMoves(parent, converted, moves);
-                            break;
+                case Piece.BROOK:
+                case Piece.WROOK:
+                    generateRookMoves(parent, converted, moves);
+                    break;
 
-                        case Piece.BBISHOP:
-                        case Piece.WBISHOP:
-                            generateBishopMoves(parent, converted, moves);
-                            break;
+                case Piece.BBISHOP:
+                case Piece.WBISHOP:
+                    generateBishopMoves(parent, converted, moves);
+                    break;
 
-                        case Piece.BKNIGHT:
-                        case Piece.WKNIGHT:
-                            generateKnightMoves(parent, converted, moves);
-                            break;
+                case Piece.BKNIGHT:
+                case Piece.WKNIGHT:
+                    generateKnightMoves(parent, converted, moves);
+                    break;
 
-                        case Piece.BQUEEN:
-                        case Piece.WQUEEN:
-                            generateQueenMoves(parent, converted, moves);
-                            break;
+                case Piece.BQUEEN:
+                case Piece.WQUEEN:
+                    generateQueenMoves(parent, converted, moves);
+                    break;
 
-                        case Piece.BKING:
-                        case Piece.WKING:
-                            generateKingMoves(parent, converted, moves);
-                            break;
+                case Piece.BKING:
+                case Piece.WKING:
+                    generateKingMoves(parent, converted, moves);
+                    break;
 
-                        case Piece.SPACE:
-                            //should never happen
-                            throw new MoveGenerationException("generateAllMoves: reached space");
-                    }
-                }
+                case Piece.SPACE:
+                    //should never happen
+                    throw new MoveGenerationException("generateAllMoves: reached space");
+
+                    //   }
             }
         }
 
@@ -84,9 +113,9 @@ public class MoveGenerationImpl implements MoveGeneration {
 
         generateEnpassant(parent, moves);
 
-        for(Move m : moves){
+        for (Move m : moves) {
             m.setParent(parent);
-            m.setDepth((byte)(parent.getDepth()+1));
+            m.setDepth((byte) (parent.getDepth() + 1));
         }
 
         return moves;
@@ -280,7 +309,7 @@ public class MoveGenerationImpl implements MoveGeneration {
                 pathBlocked = true;
 
             } else {
-                byte real =(byte) Translators.translate144to64(temp);
+                byte real = (byte) Translators.translate144to64(temp);
                 if (board.fieldIsOccupied(real)) {
                     if (board.fieldHasOpponent(real, blacksTurn)) {
                         possiblePositions.add(temp);
@@ -394,7 +423,6 @@ public class MoveGenerationImpl implements MoveGeneration {
      * @param rookPosition must be in 144 format. position of a Rook to castle with. must be 26, 110, 33 or 117
      * @param board        to check on
      * @return true if the specified castling is attacked
-     *
      * @throws MoveGenerationException if rookPosition is invalid
      */
     private boolean castlingAttacked(int rookPosition, Board board) {
@@ -482,7 +510,7 @@ public class MoveGenerationImpl implements MoveGeneration {
                 while (!pathBlocked) {
                     temp1 = temp1 + direction;
                     if (!isSpace(temp1)) {
-                        byte temp =(byte) Translators.translate144to64(temp1);
+                        byte temp = (byte) Translators.translate144to64(temp1);
 
                         if (board.fieldIsOccupied(temp)) {
                             if (board.fieldHasOpponent(temp, blacksTurn)) {
@@ -519,7 +547,6 @@ public class MoveGenerationImpl implements MoveGeneration {
      * @param enpassant  enpassant field. if not present -1, must be in 144 format
      * @param moves      ArrayList to add the move on if is valid
      * @return a valid Move or null
-     *
      * @throws MoveGenerationException if c is invalid
      */
     private Move addIfValidPawn(boolean capture, Board board, int from, int to, char c, boolean blacksTurn, int enpassant, ArrayList<Move> moves) {
@@ -605,8 +632,8 @@ public class MoveGenerationImpl implements MoveGeneration {
     private boolean validMove(Board board, int from, int to, boolean blacksTurn) {
 
         return onBoard_AND_kingNotInCheck(board, from, to, blacksTurn)
-                && (!board.fieldIsOccupied(Translators.translate144to64( to))
-                || board.fieldHasOpponent(Translators.translate144to64( to), blacksTurn));
+                && (!board.fieldIsOccupied(Translators.translate144to64(to))
+                || board.fieldHasOpponent(Translators.translate144to64(to), blacksTurn));
     }
 
     /**
