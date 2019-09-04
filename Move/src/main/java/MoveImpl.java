@@ -16,7 +16,7 @@ public class MoveImpl implements Move {
     private int eval;
     private int maxMin;
 
-    private Move [] children;
+    private Move[] children;
     private Move parent;
 
     public MoveImpl(String fenString) {
@@ -77,13 +77,13 @@ public class MoveImpl implements Move {
         if (splittedFen.length > 3) {
 
             if (splittedFen[3].charAt(0) != '-') {
-                char row =splittedFen[3].charAt(1);
-                if(row !='3' && row != '6'){
+                char row = splittedFen[3].charAt(1);
+                if (row != '3' && row != '6') {
                     throw new MoveException("malformed fen String");
                 }
 
                 setEnpassant(Translators.translateAlgTo64(splittedFen[3]));
-            }else{
+            } else {
                 enpassant = -1;
             }
         }
@@ -101,159 +101,155 @@ public class MoveImpl implements Move {
         */
     }
 
-    public MoveImpl(int from, int to,char c,Board board,boolean blacksTurn){
-        this(from,to,c,board,blacksTurn,-1,0);
+    public MoveImpl(int from, int to, char c, Board board, boolean blacksTurn) {
+        this(from, to, c, board, blacksTurn, -1, 0);
     }
 
-    public MoveImpl(int from, int to,char c,Board board,boolean blacksTurn,int enpassant){
-        this(from,to,c,board,blacksTurn,enpassant,0);
+    public MoveImpl(int from, int to, char c, Board board, boolean blacksTurn, int enpassant) {
+        this(from, to, c, board, blacksTurn, enpassant, 0);
     }
 
-    public void setMaxMin(int maxMin) {
-            this.maxMin = maxMin;
-    }
-
-    public MoveImpl(int from, int to, char c, Board board, boolean blacksTurn, int enpassant, int eval){
-        String binaryFrom= Integer.toBinaryString(63 & from);
-        binaryFrom=String.format("%6s",binaryFrom);
-        binaryFrom = binaryFrom.replaceAll(" ","0");
+    public MoveImpl(int from, int to, char c, Board board, boolean blacksTurn, int enpassant, int eval) {
+        String binaryFrom = Integer.toBinaryString(63 & from);
+        binaryFrom = String.format("%6s", binaryFrom);
+        binaryFrom = binaryFrom.replaceAll(" ", "0");
         String binaryTo = Integer.toBinaryString(63 & to);
-        binaryTo=String.format("%6s",binaryTo);
-        binaryTo = binaryTo.replaceAll(" ","0");
+        binaryTo = String.format("%6s", binaryTo);
+        binaryTo = binaryTo.replaceAll(" ", "0");
         String binaryChar;
-        switch (c){
+        switch (c) {
             case ' ':
-                binaryChar="0000";
+                binaryChar = "0000";
                 break;
             case 'Q':
-                binaryChar="1000";
+                binaryChar = "1000";
                 break;
             case 'R':
-                binaryChar="0100";
+                binaryChar = "0100";
                 break;
             case 'K':
-                binaryChar="0010";
+                binaryChar = "0010";
                 break;
             case 'B':
-                binaryChar="0001";
+                binaryChar = "0001";
                 break;
             case '0':
-                binaryChar="1111";
+                binaryChar = "1111";
                 break;
             default:
                 throw new MoveException("Constructor: wrong char in Move Constructor");
         }
 
-        bitwiseMove=(short)Integer.parseInt(binaryFrom+binaryTo+binaryChar,2);
+        bitwiseMove = (short) Integer.parseInt(binaryFrom + binaryTo + binaryChar, 2);
 
-        this.board=board;
-        this.blacksTurn=blacksTurn;
-        if(blacksTurn){
+        this.board = board;
+        this.blacksTurn = blacksTurn;
+        if (blacksTurn) {
             this.maxMin = Integer.MAX_VALUE;
-        }else{
+        } else {
             this.maxMin = Integer.MIN_VALUE;
         }
 
-        this.enpassant=enpassant;
+        this.enpassant = enpassant;
 
-        this.eval=eval;
+        this.eval = eval;
 
-        this.children=null;
-        this.parent=null;
+        this.children = null;
+        this.parent = null;
     }
 
     @Override
-    public void moves(String moves){
+    public void moves(String moves) {
         moves = moves.trim();
-        String [] splittedMoves = moves.split(" ");
+        String[] splittedMoves = moves.split(" ");
 
-        for(int i=0;i< splittedMoves.length;i++ ){
+        for (int i = 0; i < splittedMoves.length; i++) {
             blacksTurn = !blacksTurn;
 
-            byte king = blacksTurn? Piece.BKING: Piece.WKING;
-            int kingFirstPosition = blacksTurn? 4 : 60;
-            byte pawn = blacksTurn? Piece.BPAWN: Piece.WPAWN;
-            byte rook = blacksTurn? Piece.BROOK: Piece.WROOK;
+            byte king = blacksTurn ? Piece.BKING : Piece.WKING;
+            int kingFirstPosition = blacksTurn ? 4 : 60;
+            byte pawn = blacksTurn ? Piece.BPAWN : Piece.WPAWN;
+            byte rook = blacksTurn ? Piece.BROOK : Piece.WROOK;
 
 
             String move = splittedMoves[i];
 
-            String from = move.substring(0,2);
-            String to = move.substring(2,4);
+            String from = move.substring(0, 2);
+            String to = move.substring(2, 4);
             int from64 = Translators.translateAlgTo64(from);
             int to64 = Translators.translateAlgTo64(to);
-            boolean setEnpassant= false;
+            boolean setEnpassant = false;
 
             //promotion
-            if(move.length()>4){
+            if (move.length() > 4) {
                 char promotion = move.charAt(4);
 
-                switch (promotion){
+                switch (promotion) {
                     case 'n':
-                        board.setField(blacksTurn? Piece.BKNIGHT : Piece.WKNIGHT,to64);
+                        board.setField(blacksTurn ? Piece.BKNIGHT : Piece.WKNIGHT, to64);
                         board.setField(Piece.EMPTY, from64);
 
                         break;
                     case 'q':
-                        board.setField(blacksTurn? Piece.BQUEEN : Piece.WQUEEN,to64);
+                        board.setField(blacksTurn ? Piece.BQUEEN : Piece.WQUEEN, to64);
                         board.setField(Piece.EMPTY, from64);
 
                         break;
                     case 'r':
-                        board.setField(blacksTurn? Piece.BROOK : Piece.WROOK,to64);
+                        board.setField(blacksTurn ? Piece.BROOK : Piece.WROOK, to64);
                         board.setField(Piece.EMPTY, from64);
 
                         break;
                     case 'b':
-                        board.setField(blacksTurn? Piece.BBISHOP : Piece.WBISHOP,to64);
+                        board.setField(blacksTurn ? Piece.BBISHOP : Piece.WBISHOP, to64);
                         board.setField(Piece.EMPTY, from64);
 
                         break;
                     default:
                         throw new MoveException("malformed move: promotion char");
                 }
-            }else{
+            } else {
                 //king Moves
-                if(board.getPiece(from64)==king){
+                if (board.getPiece(from64) == king) {
                     //first king move
-                    if(from64 == kingFirstPosition){
+                    if (from64 == kingFirstPosition) {
                         //castling
-                        switch (to64){
+                        switch (to64) {
                             case 2:
-                                board.setField(Piece.EMPTY,4);
-                                board.setField(Piece.EMPTY,0);
-                                board.setField(Piece.BKING,2);
-                                board.setField(Piece.BROOK,3);
+                                board.setField(Piece.EMPTY, 4);
+                                board.setField(Piece.EMPTY, 0);
+                                board.setField(Piece.BKING, 2);
+                                board.setField(Piece.BROOK, 3);
 
                                 board.setbKingMoved(true);
                                 board.setbLeftRockMoved(true);
 
                                 break;
                             case 6:
-                                board.setField(Piece.EMPTY,4);
-                                board.setField(Piece.EMPTY,7);
-                                board.setField(Piece.BKING,6);
-                                board.setField(Piece.BROOK,5);
+                                board.setField(Piece.EMPTY, 4);
+                                board.setField(Piece.EMPTY, 7);
+                                board.setField(Piece.BKING, 6);
+                                board.setField(Piece.BROOK, 5);
 
                                 board.setbKingMoved(true);
                                 board.setbRightRockMoved(true);
 
                                 break;
                             case 58:
-                                board.setField(Piece.EMPTY,60);
-                                board.setField(Piece.EMPTY,56);
-                                board.setField(Piece.WKING,58);
-                                board.setField(Piece.WROOK,59);
+                                board.setField(Piece.EMPTY, 60);
+                                board.setField(Piece.EMPTY, 56);
+                                board.setField(Piece.WKING, 58);
+                                board.setField(Piece.WROOK, 59);
 
                                 board.setwKingMoved(true);
                                 board.setwLeftRockMoved(true);
 
                                 break;
                             case 62:
-                                board.setField(Piece.EMPTY,60);
-                                board.setField(Piece.EMPTY,63);
-                                board.setField(Piece.WKING,62);
-                                board.setField(Piece.WROOK,61);
+                                board.setField(Piece.EMPTY, 60);
+                                board.setField(Piece.EMPTY, 63);
+                                board.setField(Piece.WKING, 62);
+                                board.setField(Piece.WROOK, 61);
 
                                 board.setwKingMoved(true);
                                 board.setwRightRockMoved(true);
@@ -261,23 +257,23 @@ public class MoveImpl implements Move {
                                 break;
                             //no castling
                             default:
-                                board.applyMove(from64,to64);
+                                board.applyMove(from64, to64);
 
-                                if(blacksTurn){
+                                if (blacksTurn) {
                                     board.setbKingMoved(true);
-                                }else{
+                                } else {
                                     board.setwKingMoved(true);
                                 }
                         }
-                    }else{
-                        board.applyMove(from64,to64);
+                    } else {
+                        board.applyMove(from64, to64);
                     }
-                }else{
-                    if(board.getPiece(from64)==rook){
-                        board.applyMove(from64,to64);
+                } else {
+                    if (board.getPiece(from64) == rook) {
+                        board.applyMove(from64, to64);
 
                         //first rook move
-                        switch (from64){
+                        switch (from64) {
                             case 0:
                                 board.setbLeftRockMoved(true);
                                 break;
@@ -293,103 +289,103 @@ public class MoveImpl implements Move {
                             default:
                                 //not first move
                         }
-                    }else{
-                        if(board.getPiece(from64)==pawn){
-                            board.applyMove(from64,to64);
+                    } else {
+                        if (board.getPiece(from64) == pawn) {
+                            board.applyMove(from64, to64);
 
-                            if(blacksTurn){
+                            if (blacksTurn) {
                                 //enpassant
                                 if (from.charAt(1) == '5') {
-                                    if(to64 == from64 + 9 || to64 == from64 + 7){
-                                        if(board.getPiece(to64)==Piece.EMPTY){
+                                    if (to64 == from64 + 9 || to64 == from64 + 7) {
+                                        if (board.getPiece(to64) == Piece.EMPTY) {
                                             board.setField(Piece.EMPTY, to64 - 8);
                                         }
                                     }
-                                }else{
+                                } else {
                                     //first pawn move, long move
-                                    if(from.charAt(1) == '2'){
-                                        if(to64 == from64 +16){
+                                    if (from.charAt(1) == '2') {
+                                        if (to64 == from64 + 16) {
                                             enpassant = to64 - 8;
-                                            setEnpassant= true;
+                                            setEnpassant = true;
                                         }
                                     }
                                 }
-                            }else{
+                            } else {
                                 //enpassant
                                 if (from.charAt(1) == '4') {
-                                    if(to64 == from64 - 9 || to64 == from64 -7){
-                                        if(board.getPiece(to64)==Piece.EMPTY){
+                                    if (to64 == from64 - 9 || to64 == from64 - 7) {
+                                        if (board.getPiece(to64) == Piece.EMPTY) {
                                             board.setField(Piece.EMPTY, to64 + 8);
                                         }
                                     }
-                                }else{
+                                } else {
                                     //first pawn move, long move
-                                    if(from.charAt(1) == '7'){
-                                        if(to64 == from64 -16){
+                                    if (from.charAt(1) == '7') {
+                                        if (to64 == from64 - 16) {
                                             enpassant = to64 + 8;
-                                            setEnpassant= true;
+                                            setEnpassant = true;
                                         }
                                     }
                                 }
                             }
-                        }else{
-                            board.applyMove(from64,to64);
+                        } else {
+                            board.applyMove(from64, to64);
                         }
                     }
                 }
             }
 
-            if(!setEnpassant){
+            if (!setEnpassant) {
                 enpassant = -1;
             }
         }
     }
 
     @Override
-    public void setChildren(Move [] children) {
-        this.children=children;
-    }
-
-    @Override
-    public Move [] getChildren() {
+    public Move[] getChildren() {
         return children;
     }
 
     @Override
+    public void setChildren(Move[] children) {
+        this.children = children;
+    }
+
+    @Override
     public int getFrom() {
-        String shortBinary=Integer.toBinaryString(0xFFFF & bitwiseMove);
-        shortBinary= String.format("%16s",shortBinary);
-        shortBinary = shortBinary.replaceAll(" ","0");
-        String binaryFrom= shortBinary.substring(0,6);
-        return Integer.parseInt(binaryFrom,2);
+        String shortBinary = Integer.toBinaryString(0xFFFF & bitwiseMove);
+        shortBinary = String.format("%16s", shortBinary);
+        shortBinary = shortBinary.replaceAll(" ", "0");
+        String binaryFrom = shortBinary.substring(0, 6);
+        return Integer.parseInt(binaryFrom, 2);
     }
 
     @Override
     public int getTo() {
-        String shortBinary=Integer.toBinaryString(0xFFFF & bitwiseMove);
-        shortBinary= String.format("%16s",shortBinary);
-        shortBinary = shortBinary.replaceAll(" ","0");
-        String binaryTo= shortBinary.substring(6,12);
-        return Integer.parseInt(binaryTo,2);
+        String shortBinary = Integer.toBinaryString(0xFFFF & bitwiseMove);
+        shortBinary = String.format("%16s", shortBinary);
+        shortBinary = shortBinary.replaceAll(" ", "0");
+        String binaryTo = shortBinary.substring(6, 12);
+        return Integer.parseInt(binaryTo, 2);
     }
 
     @Override
     public char getChar() {
-        String shortBinary=Integer.toBinaryString(0xFFFF & bitwiseMove);
-        shortBinary= String.format("%16s",shortBinary);
-        shortBinary = shortBinary.replaceAll(" ","0");
-        String binaryChar= shortBinary.substring(12,16);
-        switch (binaryChar){
+        String shortBinary = Integer.toBinaryString(0xFFFF & bitwiseMove);
+        shortBinary = String.format("%16s", shortBinary);
+        shortBinary = shortBinary.replaceAll(" ", "0");
+        String binaryChar = shortBinary.substring(12, 16);
+        switch (binaryChar) {
             case "0000":
                 return ' ';
             case "1000":
-                return'Q';
+                return 'Q';
             case "0100":
-                return'R';
+                return 'R';
             case "0010":
-                return'K';
+                return 'K';
             case "0001":
-                return'B';
+                return 'B';
             case "1111":
                 return '0';
             default:
@@ -398,13 +394,8 @@ public class MoveImpl implements Move {
     }
 
     @Override
-    public void setEnpassant(int field) {
-        this.enpassant=field;
-    }
-
-    @Override
     public void resetEnpassant() {
-        enpassant=-1;
+        enpassant = -1;
     }
 
     @Override
@@ -413,8 +404,13 @@ public class MoveImpl implements Move {
     }
 
     @Override
+    public void setEnpassant(int field) {
+        this.enpassant = field;
+    }
+
+    @Override
     public void setBlacksTurn(boolean blacksTurn) {
-        this.blacksTurn=blacksTurn;
+        this.blacksTurn = blacksTurn;
     }
 
     @Override
@@ -429,12 +425,7 @@ public class MoveImpl implements Move {
 
     @Override
     public void setParent(Move parent) {
-        this.parent=parent;
-    }
-
-    @Override
-    public void setBoard(Board board) {
-        this.board=board;
+        this.parent = parent;
     }
 
     @Override
@@ -443,13 +434,18 @@ public class MoveImpl implements Move {
     }
 
     @Override
-    public void setEval(int eval) {
-        this.eval=eval;
+    public void setBoard(Board board) {
+        this.board = board;
     }
 
     @Override
     public int getEval() {
         return eval;
+    }
+
+    @Override
+    public void setEval(int eval) {
+        this.eval = eval;
     }
 
     @Override
@@ -459,18 +455,22 @@ public class MoveImpl implements Move {
 
     @Override
     public void setDepth(byte newDepth) {
-        depth= newDepth;
+        depth = newDepth;
     }
 
     public int getMaxMin() {
         return maxMin;
     }
 
+    public void setMaxMin(int maxMin) {
+        this.maxMin = maxMin;
+    }
+
     @Override
     public synchronized boolean setMaxMinIfChanged(int newValue) {
-        if(newValue == maxMin){
+        if (newValue == maxMin) {
             return false;
-        }else{
+        } else {
             maxMin = newValue;
             return true;
         }
