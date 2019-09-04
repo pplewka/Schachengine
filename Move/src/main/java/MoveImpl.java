@@ -1,5 +1,9 @@
 public class MoveImpl implements Move {
-    public static final Move DUMMIEMOVE = new MoveImpl(0,0,' ',null,false);
+    public static final Move DUMMIEMOVE = new MoveImpl(0, 0, ' ', null, false);
+    private static final String BLACK_CASTLING_LONG = "e8c8";
+    private static final String BLACK_CASTLING_SHORT = "e8g8";
+    private static final String WHITE_CASTLING_LONG = "e1c1";
+    private static final String WHITE_CASTLING_SHORT = "e1g1";
 
     private short bitwiseMove;
 
@@ -480,16 +484,25 @@ public class MoveImpl implements Move {
         String fromS = Translators.translate64ToAlg(from);
         String toS = Translators.translate64ToAlg(to);
         StringBuilder output = new StringBuilder();
+        boolean blacksturn = blacksTurn();
 
         if (c != ' ') {
             if (c == '0') {
-                output.append("0-0-0");
+                if (blacksturn) {
+                    output.append(BLACK_CASTLING_LONG);
+                }else{
+                    output.append(WHITE_CASTLING_LONG);
+                }
             } else {
                 output.append(fromS).append(toS).append(c);
             }
         } else {
             if (from == 0 && to == 0) {
-                output.append("0-0");
+                if(blacksturn){
+                    output.append(BLACK_CASTLING_SHORT);
+                }else{
+                    output.append(WHITE_CASTLING_SHORT);
+                }
             } else {
                 output.append(fromS).append(toS);
             }
