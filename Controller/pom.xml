@@ -58,6 +58,8 @@
                             <mainClass>Controller</mainClass>
                         </manifest>
                     </archive>
+                    <finalName>Baguette</finalName>
+                    <outputDirectory>../target</outputDirectory>
                 </configuration>
                 <executions>
                     <execution>
