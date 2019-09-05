@@ -69,7 +69,8 @@ If at any point Arena asks you to set the executable bit for the engine, simply 
 
 ### Dependencies
 
-Java 11 ([Download](https://www.oracle.com/technetwork/java/javase/downloads/jdk11-downloads-5066655.html)).
+- Java 11 ([Download](https://www.oracle.com/technetwork/java/javase/downloads/jdk11-downloads-5066655.html))
+- Maven for building the project
 
 ### Compilation
 
