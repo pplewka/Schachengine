@@ -58,7 +58,7 @@ public class EvaluationImpl implements Evaluation {
                 if (field == Piece.WKING) {
                     materialValue += evaluateKingProtection(boardByte, i);
                 } else if (field == Piece.WPAWN) {
-                    if (pawnIsBlocked(boardByte, i)) {
+                    if (pawnIsBlocked(boardByte, i, blacksTurn)) {
                         // Half a pawn penalty
                         materialValue -= (pieceValues[Piece.WPAWN] * 100) / 2;
                     }
@@ -78,17 +78,30 @@ public class EvaluationImpl implements Evaluation {
         return materialValue;
     }
 
-    private boolean pawnIsBlocked(byte[] board, int pos) {
-        if (pos >= 56) {
-            return true;
-        }
-        boolean isBlocked =
-                board[pos + 8] != Piece.EMPTY;
-        boolean cannotAttackLeft = pos % 8 == 7 || board[pos + 8 + 1] == Piece.EMPTY;
-        boolean cannotAttackRight = pos % 8 == 0 || board[pos + 8 - 1] == Piece.EMPTY;
-        boolean cannotAttack = cannotAttackLeft && cannotAttackRight;
+    private boolean pawnIsBlocked(byte[] board, int pos, boolean blacksTurn) {
+        if (!blacksTurn) {
+            if (pos >= 56) {
+                return true;
+            }
+            boolean isBlocked =
+                    board[pos + 8] != Piece.EMPTY;
+            boolean cannotAttackLeft = pos % 8 == 7 || board[pos + 8 + 1] == Piece.EMPTY;
+            boolean cannotAttackRight = pos % 8 == 0 || board[pos + 8 - 1] == Piece.EMPTY;
+            boolean cannotAttack = cannotAttackLeft && cannotAttackRight;
 
-        return isBlocked && cannotAttack;
+            return isBlocked && cannotAttack;
+        } else {
+            if (pos <= 7) {
+                return true;
+            }
+            boolean isBlocked =
+                    board[pos - 8] != Piece.EMPTY;
+            boolean cannotAttackLeft = pos % 8 == 7 || board[pos - 8 + 1] == Piece.EMPTY;
+            boolean cannotAttackRight = pos % 8 == 0 || board[pos - 8 - 1] == Piece.EMPTY;
+            boolean cannotAttack = cannotAttackLeft && cannotAttackRight;
+
+            return isBlocked && cannotAttack;
+        }
     }
 
     /**
