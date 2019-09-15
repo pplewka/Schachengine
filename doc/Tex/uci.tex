@@ -1,4 +1,10 @@
 \section{UCI}
 \subsection{Allgemein}
-UCI ist eine standartisierte Schnittstelle zwischen grafischer Oberfläche und 
+UCI ist eine standardisierte Schnittstelle zwischen grafischer Oberfläche und Schachengine.
+Die Kommunikation findet über die Standardein- und Ausgabe (ab sofort stdin und stdout) der beiden Programme ab.
+\newline
+In Baguette ist ein eigener Thread, genannt UCI-Thread, für die Kommunikation zuständig.
+Dessen Kern bilden die beiden Klassen UCIBridge und UCI.
+\subsubsection{UCIBridge}
+UCIBridge bildet die Brücke zur grafischen Oberfläche. Keine andere Klasse hat Zugriff auf stdin und stdout, da Java keine Garantien über Threadsicherheit von stdin und stdout gibt und alle Ausgaben die UCI-Spezifikation erfüllen müssen.
 \pagebreak
