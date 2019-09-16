@@ -1,0 +1,10 @@
+Alessio:
+-alpha/beta pruning
+-Move generation
+
+Matthias:
+-Time management
+-Evaluation
+
+Patrick:
+-UCI
