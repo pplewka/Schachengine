@@ -19,7 +19,7 @@ public class UCI implements Runnable {
      */
     private UCI() {
         listeners = new ArrayList<>();
-
+        attachListener(new DebugUCIListener());
     }
 
     /**
@@ -73,7 +73,6 @@ public class UCI implements Runnable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        attachListener(new DebugUCIListener());
         return UCIBridge.getInstance().initialize(options);
     }
 
