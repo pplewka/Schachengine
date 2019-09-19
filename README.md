@@ -107,6 +107,10 @@ Type: "UCI"
 
 If at any point Arena asks you to set the executable bit for the engine, simply accept.
 
+##Setting options
+Changing options is supported only at startup.
+
+This means in Arena you have to restart the engine after changing an option.
 
 ## Misc
 
