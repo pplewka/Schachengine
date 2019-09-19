@@ -2,7 +2,7 @@
  * Basically a global variable to store the debug mode of the engine
  */
 
-public abstract class DebugHandler {
+public abstract class Debug {
     private static boolean debug = false;
 
     /**

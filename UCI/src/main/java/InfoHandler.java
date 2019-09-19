@@ -126,7 +126,7 @@ public class InfoHandler {
      * @param msg the message to send
      */
     public synchronized static void sendDebugMessage(String msg) {
-        if (DebugHandler.getDebug()) {
+        if (Debug.getDebug()) {
             sendMessage(msg);
         }
     }

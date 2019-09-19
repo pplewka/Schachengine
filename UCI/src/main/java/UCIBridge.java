@@ -91,11 +91,11 @@ public class UCIBridge {
         }
         if (input.equals(UCICommands.DEBUG_OFF)) {
             InfoHandler.sendDebugMessage("UCIBridge: debug set to false");
-            DebugHandler.setDebug(false);
+            Debug.setDebug(false);
             return receiveString(handleIsReadyCommand);
         }
         if (input.equals(UCICommands.DEBUG_ON)) {
-            DebugHandler.setDebug(true);
+            Debug.setDebug(true);
             InfoHandler.sendDebugMessage("UCIBridge: debug set to true");
             return receiveString(handleIsReadyCommand);
         }
