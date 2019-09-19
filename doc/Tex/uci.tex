@@ -1,10 +1,19 @@
-\section{UCI}
-\subsection{Allgemein}
-UCI ist eine standardisierte Schnittstelle zwischen grafischer Oberfläche und Schachengine.
-Die Kommunikation findet über die Standardein- und Ausgabe (ab sofort stdin und stdout) der beiden Programme ab.
+
+\section{UCI}\label{sec:uci}
+\subsection{Allgemein}\label{subsec:allgemein}
+UCI ist eine standardisierte Schnittstelle zwischen grafischer Oberfl\"ache und Schachengine.
+Die Kommunikation findet \"uber die Standardein- und Ausgabe (ab sofort stdin und stdout) der beiden Programme ab.
 \newline
-In Baguette ist ein eigener Thread, genannt UCI-Thread, für die Kommunikation zuständig.
-Dessen Kern bilden die beiden Klassen UCIBridge und UCI.
+In Baguette ist ein eigener Thread, genannt UCI-Thread, f\"ur die Kommunikation zust\"andig.
+Dessen Kern bilden die beiden Klassen UCIBridge und UCI\@.
+
+\subsubsection{UCI}
+Die UCI-Klasse verbindet die UCIBridge mit dem Controller.
+Da zu jedem Zeitpunkt nur ein UCI-Thread existieren soll, ist die UCI-Klasse als threadsicherer Singleton implementiert.
+Der UCI-Thread startet die awaitCommandsForever Methode der UCI-Klasse.
+
 \subsubsection{UCIBridge}
-UCIBridge bildet die Brücke zur grafischen Oberfläche. Keine andere Klasse hat Zugriff auf stdin und stdout, da Java keine Garantien über Threadsicherheit von stdin und stdout gibt und alle Ausgaben die UCI-Spezifikation erfüllen müssen.
+UCIBridge bildet die Verbindung zur grafischen Oberfl\"ache.
+Keine andere Klasse hat Zugriff auf stdin und stdout, da Java keine Garantien \"uber Threadsicherheit von stdin und stdout gibt.
+UCIBridge erreicht dies, indem es als threadsicherer Singleton implementiert ist.
 \pagebreak
