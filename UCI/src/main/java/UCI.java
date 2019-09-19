@@ -1,4 +1,3 @@
-
 import java.io.IOException;
 import java.util.*;
 
@@ -11,8 +10,6 @@ public class UCI implements Runnable {
     private static final String OPTIONS_CONF_FILE = "ucioptions.properties";
 
     private static UCI instance;
-
-    private static boolean debug = false;
 
     private List<UCIListener> listeners;
 
@@ -39,40 +36,6 @@ public class UCI implements Runnable {
             }
         }
         return instance;
-    }
-
-    /**
-     * Gets debug mode. Engine should determine what it wants to send based on the debugmode
-     *
-     * @return the debug mode
-     */
-    public static synchronized boolean getDebug() {
-        return debug;
-    }
-
-    /**
-     * Sets debug mode. Engine should determine what it wants to send based on the debug_mode
-     * Attaches (or removes) the DebugUCIListener depending on debug_mode
-     *
-     * @param debug_mode the debug mode
-     */
-    public static synchronized void setDebug(boolean debug_mode) {
-        if (debug == debug_mode) {
-            return;
-        }
-        debug = debug_mode;
-        if (debug) {
-            getInstance().attachListener(new DebugUCIListener());
-        } else {
-            List<UCIListener> listeners = getInstance().listeners;
-            List<UCIListener> new_listeners = new ArrayList<>();
-            for (UCIListener lis : listeners) {
-                if (!(lis instanceof DebugUCIListener)) {
-                    new_listeners.add(lis);
-                }
-            }
-            getInstance().listeners = new_listeners;
-        }
     }
 
     /**
@@ -110,6 +73,7 @@ public class UCI implements Runnable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        attachListener(new DebugUCIListener());
         return UCIBridge.getInstance().initialize(options);
     }
 
@@ -140,10 +104,10 @@ public class UCI implements Runnable {
                     listener.receivedPosition(board, move);
                 }
             } else {
-                UCIBridge.getInstance().sendUnknownCommandMessage(input);
+                InfoHandler.sendUnknownCommandMessage(input);
             }
         } catch (InputMismatchException e) {
-            UCIBridge.getInstance().sendUnknownCommandMessage(input + " * " + e.getMessage());
+            InfoHandler.sendUnknownCommandMessage(input + " * " + e.getMessage());
         }
     }
 

@@ -117,7 +117,7 @@ public class Controller implements UCIListener {
                 Command command = takeNextCommand(); //wait for uci instructions
                 if (!allowedCommands.contains(command.getType())) {
                     if (command.isFromUCI()) {  // ignore if was not send from UCI
-                        UCIBridge.getInstance().sendUnknownCommandMessage(
+                        InfoHandler.sendUnknownCommandMessage(
                                 Command.typeToString(command.getType()).toLowerCase()
                         );
                         StringBuilder temp = new StringBuilder();

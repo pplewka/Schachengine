@@ -1,26 +1,26 @@
 /**
- * This UCIListener will be attached, once the "debug on" command was entered
+ * This UCIListener will always be attached and sends debug infos if it baguette is in debug mode
  * It will send messages for every received command
  */
 public class DebugUCIListener implements UCIListener {
     @Override
     public void receivedNewGame() {
-        InfoHandler.sendMessage("DebugListener: received ucinewgame command");
+        InfoHandler.sendDebugMessage("DebugListener: received ucinewgame command");
     }
 
     @Override
     public void receivedStop() {
-        InfoHandler.sendMessage("DebugListener: received stop command");
+        InfoHandler.sendDebugMessage("DebugListener: received stop command");
     }
 
     @Override
     public void receivedPosition(Board board, Move move) {
-        InfoHandler.sendMessage("DebugListener: received new position <\n" +
+        InfoHandler.sendDebugMessage("DebugListener: received new position <\n" +
                 board.toString() + "\n" + move.toString() + "\n>");
     }
 
     @Override
     public void receivedGo(String options) {
-        InfoHandler.sendMessage("DebugListener: received go command <" + options + ">");
+        InfoHandler.sendDebugMessage("DebugListener: received go command <" + options + ">");
     }
 }

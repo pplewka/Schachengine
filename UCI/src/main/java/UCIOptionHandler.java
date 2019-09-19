@@ -148,7 +148,7 @@ public class UCIOptionHandler {
         ArrayList<OptionValuePair> results = new ArrayList<>();
         while (!command.equals(UCICommands.IS_READY)) {
             if (!isValidSetOption(command)) {
-                UCIBridge.getInstance().sendUnknownCommandMessage(command);
+                InfoHandler.sendUnknownCommandMessage(command);
             } else {
                 String displaynameAndValue = command.replaceFirst(UCICommands.SET_OPTION + " name", "");
                 String[] displaynameAndValueSplitted = displaynameAndValue.split("value");
@@ -160,13 +160,13 @@ public class UCIOptionHandler {
                         } else if (displaynameAndValueSplitted.length == 2) {
                             results.add(new OptionValuePair(ID, displaynameAndValueSplitted[1].trim()));
                         } else {
-                            UCIBridge.getInstance().sendUnknownCommandMessage(command);
+                            InfoHandler.sendUnknownCommandMessage(command);
                         }
                     } else {
-                        UCIBridge.getInstance().sendUnknownCommandMessage(command + " (value invalid)");
+                        InfoHandler.sendUnknownCommandMessage(command + " (value invalid)");
                     }
                 } else {
-                    UCIBridge.getInstance().sendUnknownCommandMessage(command + " (name invalid)");
+                    InfoHandler.sendUnknownCommandMessage(command + " (name invalid)");
                 }
             }
 

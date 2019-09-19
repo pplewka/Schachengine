@@ -1,7 +1,7 @@
-
 import Exceptions.MismatchedKeyTypeException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Set;
 
 /**
  * InfoHandler bundles all informations (see the UCI "info" command ) and sends them via UCIBridge to the GUI
@@ -61,16 +61,25 @@ public class InfoHandler {
     }
 
     /**
-     * Empties the info buffer to System.out
-     * Only prints, if stored string != "" && != "info"
+     * Sends a message to the GUI, because a entered command was unknown
+     *
+     * @param command the unknown command
      */
-    public synchronized void flushInfoBuffer() {
-        String out = infoBuffer.toString();
-        if (!(out.equals(UCICommands.INFO) || out.equals(""))) {
-            UCIBridge.getInstance().sendString(infoBuffer.toString().trim());
+    public static synchronized void sendUnknownCommandMessage(String command) {
+        sendMessage(UCICommands.UNKNOWN_CMD + " " + command);
+    }
+
+    /**
+     * Sends a debug message containing all values for all options
+     *
+     * @param options all options
+     */
+    static void sendOptionInfos(ArrayList<OptionValuePair> options) {
+        sendDebugMessage("********************Options********************");
+        for (OptionValuePair optionValuePair : options) {
+            sendDebugMessage(optionValuePair.option + " value " + optionValuePair.value);
         }
-        infoBuffer = new StringBuffer();
-        infoBuffer.append(UCICommands.INFO);
+        sendDebugMessage("**********************END**********************");
     }
 
     /**
@@ -117,9 +126,22 @@ public class InfoHandler {
      * @param msg the message to send
      */
     public synchronized static void sendDebugMessage(String msg) {
-        if (UCI.getDebug()) {
+        if (DebugHandler.getDebug()) {
             sendMessage(msg);
         }
+    }
+
+    /**
+     * Empties the info buffer to System.out
+     * Only prints, if stored string != "" && != "info"
+     */
+    public synchronized void flushInfoBuffer() {
+        String out = infoBuffer.toString();
+        if (!(out.equals(UCICommands.INFO) || out.equals(""))) {
+            UCIBridge.getInstance().sendString(infoBuffer.toString().trim());
+        }
+        infoBuffer = new StringBuffer();
+        infoBuffer.append(UCICommands.INFO);
     }
 
     /**

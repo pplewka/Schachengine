@@ -1,4 +1,3 @@
-
 import java.util.ArrayList;
 import java.util.Properties;
 import java.util.Scanner;
@@ -9,7 +8,7 @@ import java.util.Scanner;
  */
 public class UCIBridge {
 
-    private volatile static UCIBridge instance;
+    volatile static UCIBridge instance;
 
     private Scanner reader;
 
@@ -87,14 +86,17 @@ public class UCIBridge {
             return receiveString(true);
         }
         if (input.equals(UCICommands.QUIT)) {
+            InfoHandler.sendDebugMessage("UCIBridge: received quit. Killing program now!");
             System.exit(0);
         }
         if (input.equals(UCICommands.DEBUG_OFF)) {
-            UCI.setDebug(false);
+            InfoHandler.sendDebugMessage("UCIBridge: debug set to false");
+            DebugHandler.setDebug(false);
             return receiveString(handleIsReadyCommand);
         }
         if (input.equals(UCICommands.DEBUG_ON)) {
-            UCI.setDebug(true);
+            DebugHandler.setDebug(true);
+            InfoHandler.sendDebugMessage("UCIBridge: debug set to true");
             return receiveString(handleIsReadyCommand);
         }
         return input;
@@ -118,8 +120,8 @@ public class UCIBridge {
      * @param ucioptions
      */
     private synchronized void sendID(Properties ucioptions) {
-        sendString(UCICommands.ID_NAME + " " + ucioptions.getProperty("id.name"));
-        sendString(UCICommands.ID_AUTHOR + " " + ucioptions.getProperty("id.author"));
+        sendString(String.format("%s %s", UCICommands.ID_NAME, ucioptions.getProperty("id.name")));
+        sendString(String.format("%s %s", UCICommands.ID_AUTHOR, ucioptions.getProperty("id.author")));
     }
 
     /**
@@ -137,9 +139,7 @@ public class UCIBridge {
         var result = receiveOptions(ucioptions);
         InfoHandler.sendDebugMessage("Received all options");
         sendReadyOk();
-        for (OptionValuePair optionValuePair : result) {
-            InfoHandler.sendDebugMessage(optionValuePair.option + " value " + optionValuePair.value);
-        }
+        InfoHandler.sendOptionInfos(result);
         return result;
     }
 
@@ -158,7 +158,7 @@ public class UCIBridge {
     private String receiveCommand(String command) {
         String input = receiveString();
         while (!input.startsWith(command)) {
-            sendUnknownCommandMessage(input + " expected " + command);
+            InfoHandler.sendUnknownCommandMessage(input + " expected " + command);
             input = receiveString();
         }
         return input;
@@ -196,15 +196,6 @@ public class UCIBridge {
      */
     private void sendAvailableOptions(Properties ucioptions) {
         UCIOptionHandler.sendAvailableOptions(ucioptions);
-
     }
 
-    /**
-     * Sends a message to the GUI, because a entered command was unknown
-     *
-     * @param command the unknown command
-     */
-    public synchronized void sendUnknownCommandMessage(String command) {
-        InfoHandler.sendMessage(UCICommands.UNKNOWN_CMD + " " + command);
-    }
 }
