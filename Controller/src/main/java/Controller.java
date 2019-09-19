@@ -243,6 +243,7 @@ public class Controller implements UCIListener {
     @Override
     public void receivedNewGame() {
         Command c = new Command(Command.CommandEnum.UCINEWGAME);
+        c.setFromUCI(true);
         InfoHandler.sendDebugMessage("UCIThread: storing to commandqueue " + c.toString());
         commandQueue.add(c);
 
@@ -269,6 +270,7 @@ public class Controller implements UCIListener {
     @Override
     public void receivedPosition(Board board, Move move) {
         Command c = new Command(Command.CommandEnum.POSITION);
+        c.setFromUCI(true);
         c.setBoard(board);
         c.setMove(move);
         InfoHandler.sendDebugMessage("UCIThread: storing to commandqueue " + c.toString());
@@ -284,6 +286,7 @@ public class Controller implements UCIListener {
     public void receivedGo(String options) {
         options = options.toLowerCase();
         Command c = new Command(Command.CommandEnum.GO);
+        c.setFromUCI(true);
         String[] splitted = options.split(" ");
         for (int i = 1; i < splitted.length; i++) {
             String token = splitted[i];
