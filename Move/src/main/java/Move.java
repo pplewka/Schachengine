@@ -1,3 +1,5 @@
+import java.util.concurrent.BlockingQueue;
+
 public interface Move {
     public void setChildren(Move[] children);
     public Move [] getChildren();
@@ -25,6 +27,14 @@ public interface Move {
     public byte getDepth();
     public void setDepth(byte newDepth);
     public void setMaxMin(int newValue);
+
+    boolean isAdded();
+
+    void setAdded(boolean added);
+
+    boolean hasChildren();
+
+    void addIfNotAllready(BlockingQueue<Move> lookupTable);
 
     /**
      * method to make moves given by the uci "position moves" command

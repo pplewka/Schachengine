@@ -1,3 +1,5 @@
+import java.util.concurrent.BlockingQueue;
+
 public class MoveImpl implements Move {
     public static final Move DUMMIEMOVE = new MoveImpl(0, 0, ' ', null, false);
     private static final String BLACK_CASTLING_LONG = "e8c8";
@@ -18,6 +20,40 @@ public class MoveImpl implements Move {
 
     private Move[] children;
     private Move parent;
+    private boolean added;
+
+    @Override
+    public boolean isAdded() {
+        return added;
+    }
+
+    @Override
+    public void setAdded(boolean added) {
+        this.added = added;
+    }
+
+    @Override
+    public boolean hasChildren(){
+        if(children == null){
+            return false;
+        }else{
+            for(Move child: children){
+                if(child != null){
+                    return true;
+                }
+            }
+
+            return false;
+        }
+    }
+
+    @Override
+    public synchronized void addIfNotAllready(BlockingQueue<Move> lookupTable){
+        if(!added){
+            lookupTable.add(this);
+            added = true;
+        }
+    }
 
     public MoveImpl(String fenString) {
         fenString = fenString.trim();
@@ -99,6 +135,9 @@ public class MoveImpl implements Move {
             setFullmoveTime(Integer.parseInt(splittedFen[4]));
         }
         */
+
+        this.depth = 0;
+        added = false;
     }
 
     public MoveImpl(int from, int to, char c, Board board, boolean blacksTurn) {
@@ -156,6 +195,9 @@ public class MoveImpl implements Move {
 
         this.children = null;
         this.parent = null;
+        this.depth = 0;
+        this.added = false;
+
     }
 
     @Override
