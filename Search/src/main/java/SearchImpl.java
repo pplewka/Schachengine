@@ -76,6 +76,28 @@ public class SearchImpl implements Search {
         return false;
     }
 
+    @Override
+    public int getFullGeneratedDepth(){
+        return getFullGeneratedDepth(root);
+    }
+
+    private int getFullGeneratedDepth(Move parent){
+        if(parent.getChildren() == null){
+            return 0;
+        }else {
+            int minDepth = Integer.MAX_VALUE;
+
+            for(Move child : parent.getChildren()){
+                int curDepth =getFullGeneratedDepth(child);
+                if(curDepth < minDepth){
+                    minDepth = curDepth;
+                }
+            }
+
+            return minDepth +1;
+        }
+    }
+
     public Move getPonder() {
         return ponder;
     }

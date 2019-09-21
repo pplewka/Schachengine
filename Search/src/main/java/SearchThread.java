@@ -36,88 +36,27 @@ public class SearchThread extends Thread {
                 e.printStackTrace();
             }
 
-            //if reached new depth change it and send infos
-            if (search.setIfDeeper(currentParent.getDepth() - 1)) {
-                InfoHandler.getInstance().storeInfo(InfoHandler.DEPTH, search.getDepth());
-                InfoHandler.getInstance().storeInfo(InfoHandler.NODES, (long) lookupTable.size());
-                InfoHandler.getInstance().flushInfoBuffer();
-                //send Infos
-            }
-
             //generate and evaluate children
             ArrayList<Move> currentChildren = moveGen.generateAllMoves(currentParent);
             for (Move child : currentChildren) {
                 child.setMaxMin(eval.evaluate(child));
             }
             currentParent.setChildren(currentChildren.toArray(new Move[0]));
+
+
+            int fullGeneratedDepth =search.getFullGeneratedDepth();
+
+            //if reached new full generated depth change value in search, search for new bestMove and send infos
+            if (search.setIfDeeper(fullGeneratedDepth)) {
+                alphaBetaSearch(search.getRoot(), fullGeneratedDepth, Integer.MIN_VALUE, Integer.MAX_VALUE);
+
+                InfoHandler.getInstance().storeInfo(InfoHandler.DEPTH, search.getDepth());
+                InfoHandler.getInstance().storeInfo(InfoHandler.NODES, (long) lookupTable.size());
+                InfoHandler.getInstance().flushInfoBuffer();
+                //send Infos
+            }
         }
     }
-/*
-    private Move getBestChild(Move parent) {
-        Move bestChild = null;
-        int minmax = parent.blacksTurn() ? Integer.MAX_VALUE : Integer.MIN_VALUE;
-        Move[] children = parent.getChildren();
-        if (children != null) {
-            for (Move m : parent.getChildren()) {
-                if (parent.blacksTurn()) {
-                    if (m.getMaxMin() < minmax) {
-                        minmax = m.getMaxMin();
-                        bestChild = m;
-                    }
-                } else {
-                    if (m.getMaxMin() > minmax) {
-                        minmax = m.getMaxMin();
-                        bestChild = m;
-                    }
-                }
-            }
-        }else{
-            return parent;
-        }
-
-        if (bestChild == null) {
-            //parent is checkmate
-            bestChild = new MoveImpl(0, 0, ' ', null, !parent.blacksTurn());
-            if (parent.blacksTurn()) {
-                bestChild.setMaxMin(Integer.MIN_VALUE);
-            } else {
-                bestChild.setMaxMin(Integer.MAX_VALUE);
-            }
-        }
-
-        return bestChild;
-    }
-
-    private Move getWorstChild(Move parent){
-        Move bestChild = null;
-        int minmax = !parent.blacksTurn() ? Integer.MAX_VALUE : Integer.MIN_VALUE;
-        for (Move m : parent.getChildren()) {
-            if (!parent.blacksTurn()) {
-                if (m.getMaxMin() < minmax) {
-                    minmax = m.getMaxMin();
-                    bestChild = m;
-                }
-            } else {
-                if (m.getMaxMin() > minmax) {
-                    minmax = m.getMaxMin();
-                    bestChild = m;
-                }
-            }
-        }
-
-        if(bestChild == null){
-            //parent is checkmate
-            bestChild = new MoveImpl(0,0,' ',null, !parent.blacksTurn());
-            if(!parent.blacksTurn()){
-                bestChild.setMaxMin(Integer.MIN_VALUE);
-            }else{
-                bestChild.setMaxMin(Integer.MAX_VALUE);
-            }
-        }
-
-        return bestChild;
-    }
-    */
 
     public static boolean isSearching() {
         return searching;
@@ -135,6 +74,7 @@ public class SearchThread extends Thread {
         int curValue;
         int bestValue;
         boolean hopeful = true;
+        ArrayList<Move> exploredChildren = new ArrayList<>();
 
         if (parent.blacksTurn()) {
             bestValue = Integer.MAX_VALUE;
@@ -142,59 +82,55 @@ public class SearchThread extends Thread {
             bestValue = Integer.MIN_VALUE;
         }
 
-        if (parent.getDepth() == maxDepth && children == null) {
-            parent.addIfNotAllready(search.getLookUpTable());
+        if (parent.getDepth() == maxDepth) {
 
             return parent.getMaxMin();
-        } else if(!parent.hasChildren()){
-
-            //at this point worst value
-            return bestValue;
-        }else {
+        } else {
             for (int i = 0; i < children.length && hopeful; i++) {
-                if (children[i] != null) {
-                    curValue = alphaBetaSearch(children[i], maxDepth, alpha, beta);
-                    //boolean add = false;
+                exploredChildren.add(children[i]);
+                curValue = alphaBetaSearch(children[i], maxDepth, alpha, beta);
+                //boolean add = false;
 
-                    if (parent.blacksTurn()) {
-                        if (curValue < bestValue) {
-                            bestValue = curValue;
-                            beta = curValue;
-                            bestMove = children[i];
+                if (parent.blacksTurn()) {
+                    if (curValue < bestValue) {
+                        bestValue = curValue;
+                        beta = curValue;
+                        bestMove = children[i];
 
-                            //add = true;
-                        }
-                    } else {
-                        if (curValue > bestValue) {
-                            bestValue = curValue;
-                            alpha = curValue;
-                            bestMove = children[i];
-
-                            //add = true;
-                        }
+                        //add = true;
                     }
+                } else {
+                    if (curValue > bestValue) {
+                        bestValue = curValue;
+                        alpha = curValue;
+                        bestMove = children[i];
 
-                /*/add to table if node is leaf and not cut away
-                if(add && children[i].getChildren() == null){
-                        search.getLookUpTable().add(children[i]);
-                }*/
+                        //add = true;
+                    }
                 }
 
                 //alpha beta cutoff
                 if (beta <= alpha) {
                     hopeful = false;
-                    for (; i < children.length; i++) {
-                        children[i] = null;
-                    }
                 }
             }
 
             parent.setMaxMin(bestValue);
+            parent.setChildren(exploredChildren.toArray(new Move[0]));
 
             //set bestMove
             if (parent == search.getRoot() && bestMove != null) {
                 search.setBestMove(bestMove);
             }
+
+            if(parent.getDepth() == maxDepth -1){
+                exploredChildren.forEach(child->{
+                    if(child.getDepth() == maxDepth ){
+                        child.addIfNotAllready(search.getLookUpTable());
+                    }
+                });
+            }
+
 
             return bestValue;
         }
