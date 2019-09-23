@@ -112,7 +112,7 @@ public class MoveGenerationImpl implements MoveGeneration {
         generateCastling(parent, moves);
 
         generateEnpassant(parent, moves);
-        if (!blacksturn) {
+        if (blacksturn) {
             moves.sort(Collections.reverseOrder(new EvaluationBasedSorting()));
         } else {
             moves.sort(new EvaluationBasedSorting());
