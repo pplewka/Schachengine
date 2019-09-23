@@ -112,6 +112,7 @@ public class MoveGenerationImpl implements MoveGeneration {
         generateCastling(parent, moves);
 
         generateEnpassant(parent, moves);
+        moves.sort(new EvaluationBasedSorting());
 
         for (Move m : moves) {
             m.setParent(parent);

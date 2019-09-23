@@ -33,6 +33,13 @@ public class EvaluationImpl implements Evaluation {
         return globalValue;
     }
 
+    public int evaluateNoRep(Move toEvaluate){
+        Board board = toEvaluate.getBoard();
+        boolean blacksTurn = toEvaluate.blacksTurn();
+
+        return material(board, blacksTurn);
+    }
+
     /**
      * Calculate the material value of a board for a specific site.
      *
