@@ -171,7 +171,7 @@ public class EvaluationImpl implements Evaluation {
         Board board = toEvaluate.getBoard();
         boolean blacksTurn = toEvaluate.blacksTurn();
 
-        return material(board, blacksTurn);
+        return material(board, blacksTurn) + PieceSquareTablesValues(board.getBoard(), !toEvaluate.blacksTurn());
     }
 
     /**
