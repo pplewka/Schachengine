@@ -157,7 +157,7 @@ public class UCIBridge {
      */
     private String receiveCommand(String command) {
         String input = receiveString();
-        while (!input.startsWith(command)) {
+        while (!input.equals(command)) {
             InfoHandler.sendUnknownCommandMessage(input + " expected " + command);
             input = receiveString();
         }
