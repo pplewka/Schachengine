@@ -155,7 +155,7 @@ public class EvaluationImpl implements Evaluation {
 
             }
         }
-        return value * 100; //TODO Maybe?
+        return value;
     }
 
     @Override
@@ -165,7 +165,8 @@ public class EvaluationImpl implements Evaluation {
 
         int globalValue = material(board, blacksTurn);
 
-        globalValue += PieceSquareTablesValues(board.getBoard(), toEvaluate.blacksTurn());
+        // TODO Seems like it plays better when PST values are halved (subjectively). Needs further checking...
+        globalValue += PieceSquareTablesValues(board.getBoard(), toEvaluate.blacksTurn()) / 2;
 
         globalValue = globalValue + repetitionScore(toEvaluate);
 
