@@ -1,12 +1,22 @@
-
+\def \citeuci[#1]{\cite[l. #1]{uci}}
 \section{UCI}\label{sec:uci}
 \subsection{Allgemein}\label{subsec:allgemein}
 UCI ist eine standardisierte Schnittstelle zwischen grafischer Oberfl\"ache und Schachengine.
-Die Kommunikation findet \"uber die Standardein- und Ausgabe (ab sofort stdin und stdout) der beiden Programme ab.\cite[l. 9]{uci}
+Die Kommunikation findet \"uber die Standardein- und Ausgabe (ab sofort stdin und stdout) der beiden Programme ab.\citeuci[9]
 \newline
-In Baguette ist ein eigener Thread, genannt UCI-Thread, f\"ur die Kommunikation zust\"andig.
-Dessen Kern bilden die beiden Klassen UCIBridge und UCI\@.
-
+Die Engine soll zu jedem Zeitpunkt Befehle entgegennehmen und verarbeiten k\"onnen.\citeuci[15]
+Deshalb ist in Baguette ein eigener Thread, genannt UCI-Thread, f\"ur die Kommunikation zust\"andig.
+\newline
+Den Programmablauf kann man in zwei Phasen einteilen:
+\begin{enumerate}
+    \item Phase: Initialisierung
+    \item Phase: Schachspielen
+\end{enumerate}
+\subsubsection{Phase 1 Initialisierung}
+Diese Phase wird nicht im UCI-Thread sondern im Controller-Thread ausgef\"uhrt.
+Zuerst best\"atigen sich Engine und GUI, dass UCI verwendet wird. \citeuci[59 - 66]
+Dann meldet sich die Engine mit ihrem Namen und Authoren an.
+Die Engine gibt der GUI mithilfe des \textit{option} Befehl alle m\"oglichen Optionen an.
 \subsubsection{UCI}
 Die UCI-Klasse verbindet die UCIBridge mit dem Controller.
 Da zu jedem Zeitpunkt nur ein UCI-Thread existieren soll, ist die UCI-Klasse als threadsicherer Singleton implementiert.
