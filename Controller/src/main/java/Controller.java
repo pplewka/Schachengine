@@ -191,7 +191,7 @@ public class Controller implements UCIListener {
         } else {
             totalTimeLeftInMsec = Long.MAX_VALUE;
         }
-        int tm_threshold = Integer.parseInt(getOptionsValue("time"));
+        int tm_threshold = 40;
         if (time != -1) {
             tm = new TimeManThread(totalTimeLeftInMsec, inc == -1 ? 0 : inc, playedMoves, commandQueue, tm_threshold);
         } else {
