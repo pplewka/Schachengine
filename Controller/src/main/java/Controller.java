@@ -156,13 +156,13 @@ public class Controller implements UCIListener {
                     SearchImpl.getSearch().clear();
                     Move move = new MoveImpl(Board.START_FEN);
                     SearchImpl.getSearch().setRoot(move);
-                    SearchImpl.getSearch().getLookUpTable().add(move);
+                    SearchImpl.getSearch().getOutputLookUpTable().add(move);
                 } else if (command.getType() == Command.CommandEnum.POSITION) {
 
                     InfoHandler.sendDebugMessage("ControllerThread: sending position command to worker threads");
                     SearchImpl.getSearch().clear();
                     SearchImpl.getSearch().setRoot(command.getMove());
-                    SearchImpl.getSearch().getLookUpTable().add(command.getMove());
+                    SearchImpl.getSearch().getOutputLookUpTable().add(command.getMove());
                 }
             } catch (InterruptedException e) {
             }

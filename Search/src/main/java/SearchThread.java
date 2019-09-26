@@ -1,7 +1,9 @@
 import java.util.ArrayList;
-import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.PriorityBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 public class SearchThread extends Thread {
+    private  static  final int WAIT_NS = 5; //Wait Time Before Taking Again (in nanoseconds)
     private static boolean searching = false;
     private final Object lock;
 
@@ -13,53 +15,54 @@ public class SearchThread extends Thread {
     @Override
     public void run() {
         Search search = SearchImpl.getSearch();
-        BlockingQueue<Move> lookupTable = search.getLookUpTable();
         MoveGeneration moveGen = MoveGenerationImpl.getMoveGeneration();
         Evaluation eval = EvaluationImpl.getEvaluation();
-        while (!isInterrupted()) {
 
-            while (!searching) {
-                synchronized (lock) {
-                    try {
+        try {
+            while (!isInterrupted()) {
+                while (!searching) {
+                    synchronized (lock) {
                         lock.wait();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
                     }
                 }
+
+
+                //get new Parent. Wait and try again if empty
+                Move currentParent = null;
+                do {
+                    currentParent = search.getOutputLookUpTable().poll(WAIT_NS, TimeUnit.NANOSECONDS);
+                } while (currentParent == null);
+
+                //generate and evaluate children
+                ArrayList<Move> currentChildren = moveGen.generateAllMoves(currentParent);
+                for (Move child : currentChildren) {
+                    child.setMaxMin(eval.evaluate(child));
+                }
+                currentParent.setChildren(currentChildren.toArray(new Move[0]));
+                //if children were set clear entry in checklist
+                search.getOutputChecklist().remove(currentParent);
+
+
+                //new full generated depth is reached, when outputChecklist is empty
+                //if reached new full generated depth change value in search, search for new bestMove and send infos
+                int fullGeneratedDepth = currentParent.getDepth() +1;
+                if (search.getOutputChecklist().isEmpty() && search.setIfDeeper(fullGeneratedDepth)) {
+                    Thread.currentThread().setPriority(MAX_PRIORITY);
+                    //search and add new nodes in inputQueue
+                    alphaBetaSearch(search.getRoot(), fullGeneratedDepth, Integer.MIN_VALUE, Integer.MAX_VALUE);
+
+                    swapTablesAndLists(search);
+                    Thread.currentThread().setPriority(NORM_PRIORITY);
+
+                    InfoHandler.getInstance().storeInfo(InfoHandler.DEPTH, search.getDepth());
+                    InfoHandler.getInstance().storeInfo(InfoHandler.NODES, (long) 0);
+                    InfoHandler.getInstance().flushInfoBuffer();
+                    //send Infos
+                }
             }
-
-            //get new Parent
-            Move currentParent = null;
-            try {
-                currentParent = lookupTable.take();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            //generate and evaluate children
-            ArrayList<Move> currentChildren = moveGen.generateAllMoves(currentParent);
-            for (Move child : currentChildren) {
-                child.setMaxMin(eval.evaluate(child));
-            }
-            currentParent.setChildren(currentChildren.toArray(new Move[0]));
-
-
-            int fullGeneratedDepth =search.getFullGeneratedDepth();
-
-            //if reached new full generated depth change value in search, search for new bestMove and send infos
-            if (search.setIfDeeper(fullGeneratedDepth)) {
-                alphaBetaSearch(search.getRoot(), fullGeneratedDepth, Integer.MIN_VALUE, Integer.MAX_VALUE);
-
-                InfoHandler.getInstance().storeInfo(InfoHandler.DEPTH, search.getDepth());
-                InfoHandler.getInstance().storeInfo(InfoHandler.NODES, (long) lookupTable.size());
-                InfoHandler.getInstance().flushInfoBuffer();
-                //send Infos
-            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
-    }
-
-    public static boolean isSearching() {
-        return searching;
     }
 
     public static void setSearching(boolean searching) {
@@ -85,54 +88,67 @@ public class SearchThread extends Thread {
         if (parent.getDepth() == maxDepth) {
 
             return parent.getMaxMin();
-        } else {
-            for (int i = 0; i < children.length && hopeful; i++) {
-                exploredChildren.add(children[i]);
-                curValue = alphaBetaSearch(children[i], maxDepth, alpha, beta);
-                //boolean add = false;
+        }else {
+            try {
+                for (int i = 0; i < children.length && hopeful; i++) {
+                    exploredChildren.add(children[i]);
+                    curValue = alphaBetaSearch(children[i], maxDepth, alpha, beta);
+                    //boolean add = false;
 
-                if (parent.blacksTurn()) {
-                    if (curValue < bestValue) {
-                        bestValue = curValue;
-                        beta = curValue;
-                        bestMove = children[i];
+                    if (parent.blacksTurn()) {
+                        if (curValue < bestValue) {
+                            bestValue = curValue;
+                            beta = curValue;
+                            bestMove = children[i];
 
-                        //add = true;
+                            //add = true;
+                        }
+                    } else {
+                        if (curValue > bestValue) {
+                            bestValue = curValue;
+                            alpha = curValue;
+                            bestMove = children[i];
+
+                            //add = true;
+                        }
                     }
-                } else {
-                    if (curValue > bestValue) {
-                        bestValue = curValue;
-                        alpha = curValue;
-                        bestMove = children[i];
 
-                        //add = true;
+                    //alpha beta cutoff
+                    if (beta <= alpha) {
+                        hopeful = false;
                     }
                 }
 
-                //alpha beta cutoff
-                if (beta <= alpha) {
-                    hopeful = false;
+                parent.setMaxMin(bestValue);
+                parent.setChildren(exploredChildren.toArray(new Move[0]));
+
+                //set bestMove
+                if (parent == search.getRoot() && bestMove != null) {
+                    search.setBestMove(bestMove);
                 }
-            }
 
-            parent.setMaxMin(bestValue);
-            parent.setChildren(exploredChildren.toArray(new Move[0]));
-
-            //set bestMove
-            if (parent == search.getRoot() && bestMove != null) {
-                search.setBestMove(bestMove);
-            }
-
-            if(parent.getDepth() == maxDepth -1){
-                exploredChildren.forEach(child->{
-                    if(child.getDepth() == maxDepth ){
-                        child.addIfNotAllready(search.getLookUpTable());
+                if (parent.getDepth() == maxDepth - 1) {
+                    for (Move child : exploredChildren) {
+                        if (child.getDepth() == maxDepth) {
+                            child.addIfAlright(search.getInputLookUpTable(), search.getInputChecklist());
+                        }
                     }
-                });
+                }
+            }catch(NullPointerException e){
+                e.printStackTrace();
             }
 
 
             return bestValue;
         }
+    }
+
+    private void swapTablesAndLists(Search search){
+        PriorityBlockingQueue<Move> tempTable = search.getInputLookUpTable();
+        ArrayList<Move> tempList = search.getInputChecklist();
+        search.setInputLookUpTable( search.getOutputLookUpTable());
+        search.setInputChecklist( search.getOutputChecklist());
+        search.setOutputLookUpTable( tempTable);
+        search.setOutputChecklist( tempList);
     }
 }

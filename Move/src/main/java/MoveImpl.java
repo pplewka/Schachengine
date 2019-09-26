@@ -1,4 +1,7 @@
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.PriorityBlockingQueue;
 
 public class MoveImpl implements Move {
     public static final Move DUMMIEMOVE = new MoveImpl(0, 0, ' ', null, false);
@@ -21,6 +24,7 @@ public class MoveImpl implements Move {
     private Move[] children;
     private Move parent;
     private boolean added;
+    private boolean killed;
 
     @Override
     public boolean isAdded() {
@@ -48,9 +52,11 @@ public class MoveImpl implements Move {
     }
 
     @Override
-    public synchronized void addIfNotAllready(BlockingQueue<Move> lookupTable){
-        if(!added){
-            lookupTable.add(this);
+    public synchronized void addIfAlright(PriorityBlockingQueue<Move> tableToAdd, ArrayList<Move> listToAdd){
+        if(!added && !killed){
+            tableToAdd.add(this);
+            listToAdd.add(this);
+
             added = true;
         }
     }
@@ -138,6 +144,7 @@ public class MoveImpl implements Move {
 
         this.depth = 0;
         added = false;
+        killed = false;
     }
 
     public MoveImpl(int from, int to, char c, Board board, boolean blacksTurn) {
@@ -197,7 +204,7 @@ public class MoveImpl implements Move {
         this.parent = null;
         this.depth = 0;
         this.added = false;
-
+        this.killed = false;
     }
 
     @Override
@@ -205,7 +212,7 @@ public class MoveImpl implements Move {
         moves = moves.trim();
         String[] splittedMoves = moves.split(" ");
 
-        for (int i = 0; i < splittedMoves.length; i++) {
+        for (String move : splittedMoves) {
             blacksTurn = !blacksTurn;
 
             byte king = blacksTurn ? Piece.BKING : Piece.WKING;
@@ -213,8 +220,6 @@ public class MoveImpl implements Move {
             byte pawn = blacksTurn ? Piece.BPAWN : Piece.WPAWN;
             byte rook = blacksTurn ? Piece.BROOK : Piece.WROOK;
 
-
-            String move = splittedMoves[i];
 
             String from = move.substring(0, 2);
             String to = move.substring(2, 4);
@@ -391,6 +396,11 @@ public class MoveImpl implements Move {
     @Override
     public void setChildren(Move[] children) {
         this.children = children;
+        if(killed){
+            for (Move child: children) {
+                child.kill();
+            }
+        }
     }
 
     @Override
@@ -551,5 +561,26 @@ public class MoveImpl implements Move {
         }
 
         return output.toString();
+    }
+
+    @Override
+    public boolean isKilled() {
+        return killed;
+    }
+
+    @Override
+    public void setKilled(boolean killed) {
+        this.killed = killed;
+    }
+
+    @Override
+    public void kill(){
+        if(!killed && children != null){
+            for (Move child : children) {
+                child.kill();
+            }
+        }
+
+        this.killed = true;
     }
 }
