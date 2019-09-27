@@ -55,23 +55,12 @@ public class Controller implements UCIListener {
     }
 
     /**
-     * Calculates the number of worker threads based upon uci options
+     * Calculates the number of worker threads
      *
      * @return the number of worker threads to spawn
      */
     private int calcWorkerThreadCount() {
-        int result;
-        String method = getOptionsValue("workerthreads_method");
-        if (method.equals("adaptive")) {
-            result = numberCores > 1 ? numberCores - 1 : 1;
-        } else if (method.equals("static")) {
-            result = Integer.parseInt(getOptionsValue("workerthreads_count"));
-        } else if (method.equals("overdrive")) {
-            result = numberCores > 1 ? numberCores * 5 : 1;
-        } else {
-            throw new FixYourConfigFileException("unsupported method " + method);
-        }
-        return result;
+        return numberCores*2;
     }
 
     /**
@@ -156,13 +145,13 @@ public class Controller implements UCIListener {
                     SearchImpl.getSearch().clear();
                     Move move = new MoveImpl(Board.START_FEN);
                     SearchImpl.getSearch().setRoot(move);
-                    SearchImpl.getSearch().getLookUpTable().add(move);
+                    SearchImpl.getSearch().getOutputLookUpTable().add(move);
                 } else if (command.getType() == Command.CommandEnum.POSITION) {
 
                     InfoHandler.sendDebugMessage("ControllerThread: sending position command to worker threads");
                     SearchImpl.getSearch().clear();
                     SearchImpl.getSearch().setRoot(command.getMove());
-                    SearchImpl.getSearch().getLookUpTable().add(command.getMove());
+                    SearchImpl.getSearch().getOutputLookUpTable().add(command.getMove());
                 }
             } catch (InterruptedException e) {
             }

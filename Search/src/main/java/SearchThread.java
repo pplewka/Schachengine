@@ -1,7 +1,9 @@
 import java.util.ArrayList;
-import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.PriorityBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 public class SearchThread extends Thread {
+    private  static  final int WAIT_NS = 5; //Wait Time Before Taking Again (in nanoseconds)
     private static boolean searching = false;
     private final Object lock;
 
@@ -13,106 +15,140 @@ public class SearchThread extends Thread {
     @Override
     public void run() {
         Search search = SearchImpl.getSearch();
-        BlockingQueue<Move> lookupTable = search.getLookUpTable();
         MoveGeneration moveGen = MoveGenerationImpl.getMoveGeneration();
         Evaluation eval = EvaluationImpl.getEvaluation();
-        while (!isInterrupted()) {
 
-            while (!searching) {
-                synchronized (lock) {
-                    try {
+        try {
+            while (!isInterrupted()) {
+                while (!searching) {
+                    synchronized (lock) {
                         lock.wait();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
                     }
                 }
-            }
 
 
-            Move currentParent = null;
-            try {
-                currentParent = lookupTable.take();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+                //get new Parent. Wait and try again if empty
+                Move currentParent = null;
+                do {
+                    currentParent = search.getOutputLookUpTable().poll(WAIT_NS, TimeUnit.NANOSECONDS);
+                } while (currentParent == null);
 
-            if (search.setIfDeeper(currentParent.getDepth() - 1)) {
-                InfoHandler.getInstance().storeInfo(InfoHandler.DEPTH, search.getDepth());
-                InfoHandler.getInstance().storeInfo(InfoHandler.NODES, (long) lookupTable.size());
-                InfoHandler.getInstance().flushInfoBuffer();
-                //send Infos
-            }
-
-            //generate and evaluate children
-            ArrayList<Move> currentChildren = moveGen.generateAllMoves(currentParent);
-            for (Move child : currentChildren) {
-                child.setMaxMin(eval.evaluate(child));
-            }
-            currentParent.setChildren(currentChildren.toArray(new Move[0]));
-
-            //get the eval value to root if it is "good" enough
-            Move parentIterator = currentParent;
-
-            //minmaxing of the children from the currentParent
-            Move bestChild =getBestChild(parentIterator);
-            int minmax = bestChild.getMaxMin();
-            boolean changed = parentIterator.setMaxMinIfChanged(minmax);
-
-            //minmaxing down to root
-            while (parentIterator != search.getRoot() && changed){
-                parentIterator = parentIterator.getParent();
-
-                bestChild =getBestChild(parentIterator);
-                minmax = bestChild.getMaxMin();
-                changed = parentIterator.setMaxMinIfChanged(minmax);
-            }
-
-            //set bestmove if reached root and value changed
-            if (parentIterator == search.getRoot() && changed) {
-                search.setBestMove(bestChild);
-            }
-
-            //add new Moves to the lookUpTable
-            lookupTable.addAll(currentChildren);
-
-        }
-    }
-
-    private Move getBestChild(Move parent){
-        Move bestChild = null;
-        int minmax = parent.blacksTurn() ? Integer.MAX_VALUE : Integer.MIN_VALUE;
-        for (Move m : parent.getChildren()) {
-            if (parent.blacksTurn()) {
-                if (m.getMaxMin() < minmax) {
-                    minmax = m.getMaxMin();
-                    bestChild = m;
+                //generate and evaluate children
+                ArrayList<Move> currentChildren = moveGen.generateAllMoves(currentParent);
+                for (Move child : currentChildren) {
+                    child.setMaxMin(eval.evaluate(child));
                 }
-            } else {
-                if (m.getMaxMin() > minmax) {
-                    minmax = m.getMaxMin();
-                    bestChild = m;
+                currentParent.setChildren(currentChildren.toArray(new Move[0]));
+                //if children were set clear entry in checklist
+                search.getOutputChecklist().remove(currentParent);
+
+
+                //new full generated depth is reached, when outputChecklist is empty
+                //if reached new full generated depth change value in search, search for new bestMove and send infos
+                int fullGeneratedDepth = currentParent.getDepth() +1;
+                if (search.getOutputChecklist().isEmpty() && search.setIfDeeper(fullGeneratedDepth)) {
+                    Thread.currentThread().setPriority(MAX_PRIORITY);
+                    //search and add new nodes in inputQueue
+                    alphaBetaSearch(search.getRoot(), fullGeneratedDepth, Integer.MIN_VALUE, Integer.MAX_VALUE);
+
+                    swapTablesAndLists(search);
+                    Thread.currentThread().setPriority(NORM_PRIORITY);
+
+                    InfoHandler.getInstance().storeInfo(InfoHandler.DEPTH, search.getDepth());
+                    InfoHandler.getInstance().storeInfo(InfoHandler.NODES, (long) 0);
+                    InfoHandler.getInstance().flushInfoBuffer();
+                    //send Infos
                 }
             }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
-
-        if(bestChild == null){
-                //parent is checkmate
-                bestChild = new MoveImpl(0,0,' ',null, !parent.blacksTurn());
-                if(parent.blacksTurn()){
-                    bestChild.setMaxMin(Integer.MIN_VALUE);
-                }else{
-                    bestChild.setMaxMin(Integer.MAX_VALUE);
-                }
-        }
-
-        return bestChild;
-    }
-
-    public static boolean isSearching() {
-        return searching;
     }
 
     public static void setSearching(boolean searching) {
         SearchThread.searching = searching;
+    }
+
+    public int alphaBetaSearch(Move parent, int maxDepth, int alpha, int beta) {
+        Search search = SearchImpl.getSearch();
+        Move[] children = parent.getChildren();
+
+        Move bestMove = null;
+        int curValue;
+        int bestValue;
+        boolean hopeful = true;
+        ArrayList<Move> exploredChildren = new ArrayList<>();
+
+        if (parent.blacksTurn()) {
+            bestValue = Integer.MAX_VALUE;
+        } else {
+            bestValue = Integer.MIN_VALUE;
+        }
+
+        if (parent.getDepth() == maxDepth) {
+
+            return parent.getMaxMin();
+        }else {
+            try {
+                for (int i = 0; i < children.length && hopeful; i++) {
+                    exploredChildren.add(children[i]);
+                    curValue = alphaBetaSearch(children[i], maxDepth, alpha, beta);
+                    //boolean add = false;
+
+                    if (parent.blacksTurn()) {
+                        if (curValue < bestValue) {
+                            bestValue = curValue;
+                            beta = curValue;
+                            bestMove = children[i];
+
+                            //add = true;
+                        }
+                    } else {
+                        if (curValue > bestValue) {
+                            bestValue = curValue;
+                            alpha = curValue;
+                            bestMove = children[i];
+
+                            //add = true;
+                        }
+                    }
+
+                    //alpha beta cutoff
+                    if (beta <= alpha) {
+                        hopeful = false;
+                    }
+                }
+
+                parent.setMaxMin(bestValue);
+                parent.setChildren(exploredChildren.toArray(new Move[0]));
+
+                //set bestMove
+                if (parent == search.getRoot() && bestMove != null) {
+                    search.setBestMove(bestMove);
+                }
+
+                if (parent.getDepth() == maxDepth - 1) {
+                    for (Move child : exploredChildren) {
+                        if (child.getDepth() == maxDepth) {
+                            child.addIfAlright(search.getInputLookUpTable(), search.getInputChecklist());
+                        }
+                    }
+                }
+            }catch(NullPointerException e){
+                e.printStackTrace();
+            }
+
+
+            return bestValue;
+        }
+    }
+
+    private void swapTablesAndLists(Search search){
+        PriorityBlockingQueue<Move> tempTable = search.getInputLookUpTable();
+        ArrayList<Move> tempList = search.getInputChecklist();
+        search.setInputLookUpTable( search.getOutputLookUpTable());
+        search.setInputChecklist( search.getOutputChecklist());
+        search.setOutputLookUpTable( tempTable);
+        search.setOutputChecklist( tempList);
     }
 }

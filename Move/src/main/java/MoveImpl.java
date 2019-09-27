@@ -1,3 +1,8 @@
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.PriorityBlockingQueue;
+
 public class MoveImpl implements Move {
     public static final Move DUMMIEMOVE = new MoveImpl(0, 0, ' ', null, false);
     private static final String BLACK_CASTLING_LONG = "e8c8";
@@ -18,6 +23,43 @@ public class MoveImpl implements Move {
 
     private Move[] children;
     private Move parent;
+    private boolean added;
+    private boolean killed;
+
+    @Override
+    public boolean isAdded() {
+        return added;
+    }
+
+    @Override
+    public void setAdded(boolean added) {
+        this.added = added;
+    }
+
+    @Override
+    public boolean hasChildren(){
+        if(children == null){
+            return false;
+        }else{
+            for(Move child: children){
+                if(child != null){
+                    return true;
+                }
+            }
+
+            return false;
+        }
+    }
+
+    @Override
+    public synchronized void addIfAlright(PriorityBlockingQueue<Move> tableToAdd, ArrayList<Move> listToAdd){
+        if(!added && !killed){
+            tableToAdd.add(this);
+            listToAdd.add(this);
+
+            added = true;
+        }
+    }
 
     public MoveImpl(String fenString) {
         fenString = fenString.trim();
@@ -99,6 +141,10 @@ public class MoveImpl implements Move {
             setFullmoveTime(Integer.parseInt(splittedFen[4]));
         }
         */
+
+        this.depth = 0;
+        added = false;
+        killed = false;
     }
 
     public MoveImpl(int from, int to, char c, Board board, boolean blacksTurn) {
@@ -156,6 +202,9 @@ public class MoveImpl implements Move {
 
         this.children = null;
         this.parent = null;
+        this.depth = 0;
+        this.added = false;
+        this.killed = false;
     }
 
     @Override
@@ -163,7 +212,7 @@ public class MoveImpl implements Move {
         moves = moves.trim();
         String[] splittedMoves = moves.split(" ");
 
-        for (int i = 0; i < splittedMoves.length; i++) {
+        for (String move : splittedMoves) {
             blacksTurn = !blacksTurn;
 
             byte king = blacksTurn ? Piece.BKING : Piece.WKING;
@@ -171,8 +220,6 @@ public class MoveImpl implements Move {
             byte pawn = blacksTurn ? Piece.BPAWN : Piece.WPAWN;
             byte rook = blacksTurn ? Piece.BROOK : Piece.WROOK;
 
-
-            String move = splittedMoves[i];
 
             String from = move.substring(0, 2);
             String to = move.substring(2, 4);
@@ -349,6 +396,11 @@ public class MoveImpl implements Move {
     @Override
     public void setChildren(Move[] children) {
         this.children = children;
+        if(killed){
+            for (Move child: children) {
+                child.kill();
+            }
+        }
     }
 
     @Override
@@ -509,5 +561,26 @@ public class MoveImpl implements Move {
         }
 
         return output.toString();
+    }
+
+    @Override
+    public boolean isKilled() {
+        return killed;
+    }
+
+    @Override
+    public void setKilled(boolean killed) {
+        this.killed = killed;
+    }
+
+    @Override
+    public void kill(){
+        if(!killed && children != null){
+            for (Move child : children) {
+                child.kill();
+            }
+        }
+
+        this.killed = true;
     }
 }
