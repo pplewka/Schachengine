@@ -267,7 +267,7 @@ public class EvaluationImpl implements Evaluation {
             int field = boardByte[i] * -1;
 
             if (field > 1) { // if neither empty or "SPACE"
-                materialValue += pieceValues[field] * getPSTScoreForPiece(boardByte, i, blacksTurn) * 100;
+                materialValue += pieceValues[field] * 100 + getPSTScoreForPiece(boardByte, i, blacksTurn);
 
                 if (field == Piece.WKING) {
                     materialValue += evaluateKingProtection(boardByte, i);
