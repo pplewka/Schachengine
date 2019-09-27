@@ -12,11 +12,39 @@ Den Programmablauf kann man in zwei Phasen einteilen:
     \item Phase: Initialisierung
     \item Phase: Schachspielen
 \end{enumerate}
+\subsubsection{Unabh\"angige Befehle}
+Unabh\"angig von den Phasen sind nur die Befehle \textit{quit}, \textit{debug on}, \textit{debug off} und \textit{isready}.
+\newline\textit{quit} beendet Baguette ordnungsgem\"ass.
+Das Beenden auf andere Art (zum Beispiel Signale) kann zu korrupten Logs f\"uhren.
+\newline \textit{debug [on off]} schaltet den Debugmodus ein bzw.\  aus.
+Im Debugmodus werden interne Meldungen zur Fehlersuche mithilfe des \textit{info string} Befehls ausgegeben.
+\newline \textit{isready} muss von der Engine mit \textit{readyok} beantwortet werden, um Bereitschaft zu signalisieren.
 \subsubsection{Phase 1 Initialisierung}
-Diese Phase wird nicht im UCI-Thread sondern im Controller-Thread ausgef\"uhrt.
-Zuerst best\"atigen sich Engine und GUI, dass UCI verwendet wird. \citeuci[59 - 66]
-Dann meldet sich die Engine mit ihrem Namen und Authoren an.
+Zuerst best\"atigen sich Engine und GUI, dass UCI verwendet wird mit \textit{uci} und \textit{uciok}. \citeuci[59 - 66]
+Dann gibt die Engine ihren Namen und ihre Authoren mit \textit{id name} und \textit{id author} an.
 Die Engine gibt der GUI mithilfe des \textit{option} Befehl alle m\"oglichen Optionen an.
+Die GUI stellt Optionen mit dem \textit{setoption} Befehl ein und best\"atigt diese mit dem \textit{isready} Befehl.
+Nur zu diesem Zeitpunkt erlaubt Baguette das \"Andern von Optionen entgegen der UCI Spezifikationen\citeuci[89], da
+das Pflichtenheft verlangt, dass Optionen vor Spielstart eingestellt werden und manche Optionen zu komplex sind, um sie
+w\"ahrend des Spiels zu \"andern (z.B.\ die Logdatei).
+\newline \newline
+Diese Phase wird nicht im UCI-Thread sondern im Controller-Thread ausgef\"uhrt.
+Der Controller startet die \textit{initialize} Methode der UCI-Klasse.
+Die UCI-Klasse liest die \textit{ucioption.properties} Datei aus und gibt ihren Inhalt an die \textit{initialize} Methode
+der UCIBridge weiter.
+Die UCIBridge initialisiert nun die Verbindung zu GUI bis zu den \textit{option} Befehlen.
+Die UCIBridge gibt den Inhalt der \textit{ucioptions.properties} Datei an den UCIOptionHandler weiter.
+Der UCIOptionHandler erstellt aus dem Inhalt der Datei die \textit{option} Befehle, sendet sie via UCIBridge an die GUI,
+wertet die \textit{setoption} Befehle aus und gibt alle Optionen mit ihren Werten an die UCIBridge zur\"uck.
+Die UCIBridge gibt die Optionen \"uber die UCI-Klasse an den Controller zur\"uck.
+Die GUI ist jetzt bereit zu Spielen und der Controller kann abh\"angig von den Optionen den Rest von Baguette starten.
+\subsubsection{Phase 2 Schachspielen}
+Der UCI-Thread wartet auf eine Eingabe von der GUI\@.
+Zuerst filtert die UCIBridge alle phasenunabh\"angigen Befehle aus den Eingaben aus und bearbeitet diese.
+Die restlichen leitet sie weiter an die UCI-Klasse, nachdem sie alle unn\"otigen Leerzeichen entfernt hat.
+Dies vereinfacht das weitere Auslesen der Eingaben.
+Die UCI-Klasse verwirft alle Eingaben, ausser die, die oberfl\"achlich wie die Befehle \textit{ucinewgame}, \textit{position},
+\textit{go} oder \textit{stop} wirken.
 \subsubsection{UCI}
 Die UCI-Klasse verbindet die UCIBridge mit dem Controller.
 Da zu jedem Zeitpunkt nur ein UCI-Thread existieren soll, ist die UCI-Klasse als threadsicherer Singleton implementiert.
