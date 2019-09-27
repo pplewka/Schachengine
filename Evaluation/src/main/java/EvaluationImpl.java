@@ -81,6 +81,28 @@ public class EvaluationImpl implements Evaluation {
             0, 0, 0, 0, 0, 0, 0, 0,
     };
 
+    private int[] pstBishopWhite = {
+            -20,-10,-10,-10,-10,-10,-10,-20,
+            -10,  0,  0,  0,  0,  0,  0,-10,
+            -10,  0,  5, 10, 10,  5,  0,-10,
+            -10,  5,  5, 10, 10,  5,  5,-10,
+            -10,  0, 10, 10, 10, 10,  0,-10,
+            -10, 10, 10, 10, 10, 10, 10,-10,
+            -10,  5,  0,  0,  0,  0,  5,-10,
+            -20,-10,-10,-10,-10,-10,-10,-20,
+    };
+
+    private int[] getPstBishopBlack = {
+            20, 10, 10, 10, 10, 10, 10, 20,
+            10, -5,  0,  0,  0,  0, -5, 10,
+            10,-10,-10,-10,-10,-10,-10, 10,
+            10,  0,-10,-10,-10,-10,  0, 10,
+            10, -5, -5,-10,-10, -5, -5, 10,
+            10,  0, -5,-10,-10, -5,  0, 10,
+            10,  0,  0,  0,  0,  0,  0, 10,
+            20, 10, 10, 10, 10, 10, 10, 20,
+    };
+
     private int[] pstQueensWhite = {
             -20, -10, -10, -5, -5, -10, -10, -20,
             -10, 0, 0, 0, 0, 0, 0, -10,
@@ -133,6 +155,8 @@ public class EvaluationImpl implements Evaluation {
                         case Piece.WKNIGHT:
                             value += pstKnightsWhite[i];
                             break;
+                        case Piece.WBISHOP:
+                            value += pstBishopWhite[i];
 
                     }
                 } else {
@@ -149,6 +173,8 @@ public class EvaluationImpl implements Evaluation {
                         case Piece.BKNIGHT:
                             value += pstKnightsBlack[i];
                             break;
+                        case Piece.BBISHOP:
+                             value += getPstBishopBlack[i];
 
                     }
                 }
@@ -158,15 +184,50 @@ public class EvaluationImpl implements Evaluation {
         return value;
     }
 
-    @Override
-    public int evaluate(Move toEvaluate) {
-        Board board = toEvaluate.getBoard();
-        boolean blacksTurn = toEvaluate.blacksTurn();
+    private int getPSTScoreForPiece(byte[] board, int pos, boolean blacksTurn) {
+        if (pos > 1) {
+
+            if (!blacksTurn) {
+                switch (board[pos]) {
+                    case Piece.WPAWN:
+                        return pstPawnsWhite[pos];
+                    case Piece.WQUEEN:
+                        return pstQueensWhite[pos];
+                    case Piece.WROOK:
+                        return pstRooksWhite[pos];
+                    case Piece.WKNIGHT:
+                        return pstKnightsWhite[pos];
+                    case Piece.WBISHOP:
+                        return pstBishopWhite[pos];
+
+                }
+            } else {
+                switch (board[pos]) {
+                    case Piece.BPAWN:
+                        return pstPawnsBlack[pos];
+                    case Piece.BQUEEN:
+                        return pstQueensBlack[pos];
+                    case Piece.BROOK:
+                        return pstRooksBlack[pos];
+                    case Piece.BKNIGHT:
+                        return pstKnightsBlack[pos];
+                    case Piece.BBISHOP:
+                        return getPstBishopBlack[pos];
+
+                }
+            }
+        }
+        return 0;
+    }
+
+        @Override
+        public int evaluate(Move toEvaluate) {
+            Board board = toEvaluate.getBoard();
+            boolean blacksTurn = toEvaluate.blacksTurn();
 
         int globalValue = material(board, blacksTurn);
 
-        // TODO Seems like it plays better when PST values are halved (subjectively). Needs further checking...
-        globalValue += PieceSquareTablesValues(board.getBoard(), toEvaluate.blacksTurn()) / 2;
+        //globalValue += PieceSquareTablesValues(board.getBoard(), toEvaluate.blacksTurn()) / 2;
 
         globalValue = globalValue + repetitionScore(toEvaluate);
 
@@ -206,7 +267,7 @@ public class EvaluationImpl implements Evaluation {
             int field = boardByte[i] * -1;
 
             if (field > 1) { // if neither empty or "SPACE"
-                materialValue += pieceValues[field] * 100;
+                materialValue += pieceValues[field] * getPSTScoreForPiece(boardByte, i, blacksTurn) * 100;
 
                 if (field == Piece.WKING) {
                     materialValue += evaluateKingProtection(boardByte, i);
