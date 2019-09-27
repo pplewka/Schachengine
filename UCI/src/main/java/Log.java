@@ -49,6 +49,7 @@ public class Log {
             return;
         }
         writer.println(text);
+        writer.flush();
     }
 
     public synchronized void close() {
