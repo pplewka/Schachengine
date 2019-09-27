@@ -88,11 +88,11 @@ public class UCI implements Runnable {
                 for (UCIListener listener : listeners) {
                     listener.receivedGo(input);
                 }
-            } else if (input.startsWith(UCICommands.STOP)) {
+            } else if (input.equals(UCICommands.STOP)) {
                 for (UCIListener listener : listeners) {
                     listener.receivedStop();
                 }
-            } else if (input.startsWith(UCICommands.UCI_NEW_GAME)) {
+            } else if (input.equals(UCICommands.UCI_NEW_GAME)) {
                 for (UCIListener listener : listeners) {
                     listener.receivedNewGame();
                 }
