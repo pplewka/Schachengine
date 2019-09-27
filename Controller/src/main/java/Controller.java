@@ -35,6 +35,11 @@ public class Controller implements UCIListener {
         this.numberCores = Runtime.getRuntime().availableProcessors();
         // init uci
         options = UCI.getInstance().initialize();
+        boolean writeLogs = Boolean.parseBoolean(getOptionsValue("log"));
+        String logFile = getOptionsValue("logfile");
+        Log.setInstance(new Log(logFile, writeLogs));
+        Log.getInstance().writeToLog(options);
+
         // listen to uci
         UCI.getInstance().attachListener(this);
         // determine the number of worker threads
@@ -123,6 +128,7 @@ public class Controller implements UCIListener {
 //                    b_go = System.nanoTime();
                     InfoHandler.sendDebugMessage("ControllerThread: sending go command to worker threads");
                     parseGo(command);
+                    Log.getInstance().setIgnoreNextWrites(true);
                     startSearching();
 //                    e_go = System.nanoTime();
                 } else if (command.getType() == Command.CommandEnum.STOP) {
@@ -133,6 +139,7 @@ public class Controller implements UCIListener {
                     tm.interrupt();
                     Move best_move = SearchImpl.getSearch().getBestMove();
                     UCI.getInstance().sendBestMove(best_move);
+                    Log.getInstance().setIgnoreNextWrites(false);
 //                    e_stop = System.nanoTime();
 //                    long go   = (e_go     - b_go)/1000000;
 //                    long stop = (e_stop - b_stop)/1000000;

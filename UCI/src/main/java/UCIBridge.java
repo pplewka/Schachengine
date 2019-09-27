@@ -50,6 +50,11 @@ public class UCIBridge {
      * @param string The String
      */
     public synchronized void sendString(String string) {
+        try {
+            Log.getInstance().writeToLog(string);
+        }catch (NullPointerException e){
+
+        }
         System.out.println(string);
     }
 
@@ -80,6 +85,11 @@ public class UCIBridge {
     public String receiveString(boolean handleIsReadyCommand) {
 
         String input = reader.nextLine();
+        try {
+            Log.getInstance().writeToLog(input);
+        }catch(NullPointerException e){
+
+        }
         input = removeUnnecessaryWS(input);
         if (input.equals(UCICommands.IS_READY) && handleIsReadyCommand) {
             sendReadyOk();
@@ -87,6 +97,7 @@ public class UCIBridge {
         }
         if (input.equals(UCICommands.QUIT)) {
             InfoHandler.sendDebugMessage("UCIBridge: received quit. Killing program now!");
+            Log.getInstance().close();
             System.exit(0);
         }
         if (input.equals(UCICommands.DEBUG_OFF)) {
