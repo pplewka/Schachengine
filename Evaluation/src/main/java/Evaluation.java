@@ -6,4 +6,5 @@ public interface Evaluation {
     public int mobility(Board board,boolean blacksTurn);
     public int repetitionScore(Move toEvaluate);
 
+    int evaluateNoRep(Move move);
 }

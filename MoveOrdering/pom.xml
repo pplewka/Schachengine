@@ -18,7 +18,7 @@
         </dependency>
         <dependency>
             <groupId>Projektarbeit</groupId>
-            <artifactId>MoveOrdering</artifactId>
+            <artifactId>Evaluation</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
@@ -30,8 +30,8 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>MoveGeneration</artifactId>
+    <artifactId>MoveOrdering</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-    
+
 </project>

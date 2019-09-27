@@ -58,9 +58,9 @@ public class TimeManBlitzChessBased implements TimeManagement {
 
         // timeFrame calculation
         if(movesCnt < threshold) {
-            timeFrame = ((totalTimeLeftInMsec + inc) / 2) / (threshold - movesCnt);
+            timeFrame = ((totalTimeLeftInMsec) / (threshold*2 - movesCnt)) + inc / 2;
         } else {
-            timeFrame = totalTimeLeftInMsec / 50; // + increment / 2
+            timeFrame = totalTimeLeftInMsec / 50 + inc / 2; // + increment / 2
         }
 
         startTime = System.currentTimeMillis();

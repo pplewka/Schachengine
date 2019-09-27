@@ -23,6 +23,7 @@
     <module>UCI</module>
       <module>Utils</module>
       <module>Command</module>
+    <module>MoveOrdering</module>
   </modules>
 
   <properties>
