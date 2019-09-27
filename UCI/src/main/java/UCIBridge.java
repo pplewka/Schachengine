@@ -97,7 +97,11 @@ public class UCIBridge {
         }
         if (input.equals(UCICommands.QUIT)) {
             InfoHandler.sendDebugMessage("UCIBridge: received quit. Killing program now!");
-            Log.getInstance().close();
+            try {
+                Log.getInstance().close();
+            }catch (NullPointerException e){
+
+            }
             System.exit(0);
         }
         if (input.equals(UCICommands.DEBUG_OFF)) {
