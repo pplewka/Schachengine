@@ -138,8 +138,8 @@ public class Controller implements UCIListener {
                     stopSearching();
                     tm.interrupt();
                     Move best_move = SearchImpl.getSearch().getBestMove();
-                    UCI.getInstance().sendBestMove(best_move);
                     Log.getInstance().setIgnoreNextWrites(false);
+                    UCI.getInstance().sendBestMove(best_move);
 //                    e_stop = System.nanoTime();
 //                    long go   = (e_go     - b_go)/1000000;
 //                    long stop = (e_stop - b_stop)/1000000;
