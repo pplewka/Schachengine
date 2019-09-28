@@ -1,8 +1,8 @@
 \def \citeuci[#1]{\cite[l. #1]{uci}}
 \section{UCI}\label{sec:uci}
 \subsection{Allgemein}\label{subsec:allgemein}
-UCI ist eine standardisierte Schnittstelle zwischen grafischer Oberfl\"ache und Schachengine.
-Die Kommunikation findet \"uber die Standardein- und Ausgabe (ab sofort stdin und stdout) der beiden Programme ab.\citeuci[9]
+UCI ist eine standardisierte Schnittstelle zwischen grafischer Oberfl\"ache (GUI) und Schachengine.
+Die Kommunikation findet \"uber die Standardein- und Ausgabe (stdin und stdout) der beiden Programme ab.\citeuci[9]
 \newline
 Die Engine soll zu jedem Zeitpunkt Befehle entgegennehmen und verarbeiten k\"onnen.\citeuci[15]
 Deshalb ist in Baguette ein eigener Thread, genannt UCI-Thread, f\"ur die Kommunikation zust\"andig.
@@ -12,14 +12,14 @@ Den Programmablauf kann man in zwei Phasen einteilen:
     \item Phase: Initialisierung
     \item Phase: Schachspielen
 \end{enumerate}
-\subsubsection{Unabh\"angige Befehle}
+\subsubsection{Phasenunabh\"angige Befehle}
 Unabh\"angig von den Phasen sind nur die Befehle \textit{quit}, \textit{debug on}, \textit{debug off} und \textit{isready}.
 \newline\textit{quit} beendet Baguette ordnungsgem\"ass.
 Das Beenden auf andere Art (zum Beispiel Signale) kann zu korrupten Logs f\"uhren.
 \newline \textit{debug [on off]} schaltet den Debugmodus ein bzw.\  aus.
 Im Debugmodus werden interne Meldungen zur Fehlersuche mithilfe des \textit{info string} Befehls ausgegeben.
 \newline \textit{isready} muss von der Engine mit \textit{readyok} beantwortet werden, um Bereitschaft zu signalisieren.
-\subsubsection{Phase 1 Initialisierung}
+\subsection{Phase 1 Initialisierung}\label{subsec:phase-1-initialisierung}
 Zuerst best\"atigen sich Engine und GUI, dass UCI verwendet wird mit \textit{uci} und \textit{uciok}. \citeuci[59 - 66]
 Dann gibt die Engine ihren Namen und ihre Authoren mit \textit{id name} und \textit{id author} an.
 Die Engine gibt der GUI mithilfe des \textit{option} Befehl alle m\"oglichen Optionen an.
@@ -38,20 +38,168 @@ Der UCIOptionHandler erstellt aus dem Inhalt der Datei die \textit{option} Befeh
 wertet die \textit{setoption} Befehle aus und gibt alle Optionen mit ihren Werten an die UCIBridge zur\"uck.
 Die UCIBridge gibt die Optionen \"uber die UCI-Klasse an den Controller zur\"uck.
 Die GUI ist jetzt bereit zu Spielen und der Controller kann abh\"angig von den Optionen den Rest von Baguette starten.
-\subsubsection{Phase 2 Schachspielen}
+\subsection{Phase 2 Schachspielen}\label{subsec:phase-2-schachspielen}
 Der UCI-Thread wartet auf eine Eingabe von der GUI\@.
 Zuerst filtert die UCIBridge alle phasenunabh\"angigen Befehle aus den Eingaben aus und bearbeitet diese.
 Die restlichen leitet sie weiter an die UCI-Klasse, nachdem sie alle unn\"otigen Leerzeichen entfernt hat.
 Dies vereinfacht das weitere Auslesen der Eingaben.
 Die UCI-Klasse verwirft alle Eingaben, ausser die, die oberfl\"achlich wie die Befehle \textit{ucinewgame}, \textit{position},
 \textit{go} oder \textit{stop} wirken.
-\subsubsection{UCI}
-Die UCI-Klasse verbindet die UCIBridge mit dem Controller.
+\newline
+Die UCI-Klasse bildet zusammen mit dem UCIListener-Interface ein Beobachtermuster.
+UCIListener melden sich bei der UCI-Klasse an und besitzen die Methoden \textit{receivedGo}, \textit{receivedNewGame},
+\textit{receivedPosition} und \textit{receivedStop}.
+\newline
+Die Befehle \textit{stop} und \textit{ucinewgame} werden genau \"uberpr\"uft und im Erfolgsfall mit den Methoden
+\textit{receivedNewGame} und \textit{receivedStop} ohne Parameter an alle UCIListener gesendet.
+Eine Eingabe, die mit \textit{go} startet, wird ohne Ver\"anderung oder sonstiger \"Uberpr\"ufung mit der Methode
+\textit{receivedGo} an alle UCIListener gesendet.
+Eine Eingabe, die mit \textit{position} startet, wird versucht umzuwandeln in ein Board und ein Move
+Objekt.
+Scheitert das, wird eine Info gesendet, dass der Befehl nicht korrekt war.
+Das Board und das Move Objekt werden mithilfe der \textit{receivedPosition} Methode an alle UCIListener
+gesendet.
+\newline
+Scheitert hierbei eine der \"Uberpr\"ufungen oder die Umwandlung in das Board bzw. Move Objekt,
+so wird die Eingabe als falsch angesehen und eine Info wird an die GUI gesendet.
+\newline
+Zwei Klassen in Baguette erf\"ullen das UCIListener-Interface: DebugListener und Controller.
+Der DebugListener sendet eine Info an die GUI \"uber alle empfangenen Befehle mit ihren Parametern, solange sich die
+Engine im Debugmodus befindet.
+\newline
+Der Controller erstellt ein Command Objekt mit allen notwendigen Werten und speichert es in seiner
+\textit{commandQueue}.
+Der Controller-Thread kann sie von dort entgegennehmen und verarbeiten.
+\newline \newline
+\subsection{Klassen}\label{subsec:klassen}
+Hier werden alle f\"ur UCI relevanten Klassen mit Ausnahme vom Controller erl\"autert:
+\subsubsection{UCI}\label{subsubsec:uci}
+Die UCI-Klasse verbindet die UCIBridge mit allen UCIListenern mit einem Beobachtermuster.
 Da zu jedem Zeitpunkt nur ein UCI-Thread existieren soll, ist die UCI-Klasse als threadsicherer Singleton implementiert.
-Der UCI-Thread startet die awaitCommandsForever Methode der UCI-Klasse.
+Der UCI-Thread startet in der zweiten Phase die \textit{awaitCommandsForever} Methode der UCI-Klasse.
+Diese Methode wartet auf Eingaben von UCIBridge und leitet sie an alle UCIListener weiter.
 
-\subsubsection{UCIBridge}
+\subsubsection{UCIBridge}\label{subsubsec:ucibridge}
 UCIBridge bildet die Verbindung zur grafischen Oberfl\"ache.
 Keine andere Klasse hat Zugriff auf stdin und stdout, da Java keine Garantien \"uber Threadsicherheit von stdin und stdout gibt.
 UCIBridge erreicht dies, indem es als threadsicherer Singleton implementiert ist.
+UCIBridge bearbeitet alle phasenunabh\"angigen Befehle und leitet alle anderen an die UCI-Klasse weiter.
+
+\subsubsection{UCIListener}\label{subsubsec:ucilistener}
+UCIListener ist ein Interface, das zusammen mit der UCI-Klasse ein Beobachtermuster bildet.
+UCIListener haben Methoden um \"uber die Befehle \textit{stop}, \textit{go}, \textit{ucinewgame} und \textit{position}
+mit ihren Parametern von der UCI-Klasse informiert zu werden.
+
+\subsubsection{InfoHandler}\label{subsubsec:infohandler}
+UCI erlaubt es der Engine Infos mit dem \textit{info} Befehl an die GUI zu senden \citeuci[248 - 313].
+Baguette sendet als Infos die Tiefe des Suchbaums und die Menge der durchsuchten Knoten.
+\newline
+InfoHandler ist ein threadsicherer Singleton, der Infos von allen Teilen von Baguette gesendet bekommt, diese sammelt und
+geb\"undelt via UCIBridge an die GUI sendet.
+InfoHandler ist deshalb ein Singleton, da manche Infos zu einem \textit{info} Befehl geb\"undelt werden m\"ussen \citeuci[264]
+und die Infos aus allen Teilen von Baguette kommen k\"onnen.
+\newline
+Zudem erlaubt UCI mit dem Befehl \textit{info string} \citeuci[297] beliebige Meldungen an die GUI zu senden.
+InfoHandler bietet hierf\"ur die beiden Methoden \textit{sendMessage} und \textit{sendDebugMessage} an.
+\newline\textit{sendMessage} sendet einen Text als \textit{info string} an die GUI\@.
+Ein mehrzeiliger Text wird in mehrere \textit{info string} Befehle umgewandelt.
+Jedes Leerzeichen im Text wird zudem durch ein Leerzeichen gefolgt von einem Punkt ersetzt
+und der Text wird mit Anf\"uhrungszeichen umgeben.
+Dies ist notwendig, da UCI der GUI vorschreibt m\"ogliche in der Info befindliche Befehle auszuf\"uhren\citeuci[299].
+Beispielsweise der Befehl \textit{info string bestmove still not changed} w\"urde als illegaler \textit{bestmove} Befehl
+ausgef\"uhrt.
+Deshalb w\"urde InfoHandler diesen Befehl durch \textit{info string "bestmove .still .not .changed"} ersetzen.
+Durch die Verwendung von Punkt und Anf\"uhrungszeichen ist hier kein UCI-Befehl mehr enthalten.
+\newline\textit{sendDebugMessage} macht das gleiche wie \textit{sendMessage}, sendet jedoch nur, wenn Baguette sich im
+Debugmodus befindet.
+
+\subsubsection{Log}\label{subsubsec:log}
+Log schreibt alle Meldungen von stdin und stdout in eine Logdatei.
+Ob in eine Datei geschrieben werden soll und in welche wird durch eine Option festgelegt.
+Da die Logdatei erst am Ende der ersten Phase bekannt ist, werden nur Meldungen nach dem Festlegen der Optionen gespeichert.
+Die UCIBridge gibt Log alle ein- und ausgehenden Texte und Log speichert sie in der Logdatei.
+\newline
+Zudem erlaubt Log noch eine Liste von OptionValuePairs in die Logdatei zu schreiben.
+Der Controller sendet Log die Liste nachdem alle Optionen festgelegt wurden.
+
+\subsubsection{UCICommands}\label{subsubsec:ucicommands}
+Eine abstrakte Klasse, welche nur dazu dient alle UCI-Befehle als Konstanten zu speichern.
+
+\subsubsection{Debug}\label{subsubsec:debug}
+Eine abstrakte Klasse, die speichert, ob sich Baguette im Debugmodus befindet.
+
+\subsubsection{UCIOptionHandler}\label{subsubsec:ucioptionhandler}
+Mit dem \textit{option} Befehl kann die Engine Optionen anbieten und mit dem \textit{setoption} Befehl kann die GUI
+diese festlegen.
+Da im Laufe der Entwicklung nicht genau feststeht, wieviele und welche Optionen die Engine anbieten wird, behandelt
+UCIOptionHandler diese dynamisch.
+\newline
+In der \textit{ucioptions.properties} Datei k\"onnen Optionen hinterlegt werden.\newline
+Ein Beispieleintrag:\newline
+\begin{lstlisting}
+    option.name.hash = Hash
+    option.type.hash = spin
+    option.default.hash = 4096
+    option.min.hash = 4
+    option.max.hash = 4096
+\end{lstlisting}
+Alle Zeilen beginnen mit \textit{option.} gefolgt von einem sogenannten Subtag.
+M\"ogliche Subtags sind
+\begin{itemize}
+    \item \textit{name}
+        Der Anzeigename der Option
+    \item \textit{type}
+        Der Typ der Option
+    \item \textit{default}
+        Der Standardwert der Option
+    \item \textit{min}
+        Der Minimalwert der Option
+    \item \textit{max}
+        Der Maximalwert der Option
+\end{itemize}
+Die Zeilen mit den Subtags \textit{name} und \textit{type} sind f\"ur jeden Eintrag verpflichtend.
+Die anderen sind abh\"angig vom Typ der Option.
+UCI kennt die Typen
+\begin{itemize}
+    \item \textit{spin}
+        Eine ganze Zahl zwischen einem Maximal- und einem Minimalwert.
+    \item \textit{string}
+        Ein Text.
+    \item \textit{button}
+        Ein Knopf, den die GUI anzeigen kann.
+        Ein \textit{setoption} Befehl mit diesem Typ signalisiert, dass der Knopf vom Benutzer gedr\"uckt wurde.
+    \item \textit{combo}
+        Eine feste Auswahl an Texten.
+    \item \textit{check}
+        Ein Wahrheitswert.
+\end{itemize}
+Alle Typen ausser \textit{button} verlangen zudem eine Zeile mit dem Subtag \textit{default}.
+Die Subtags \textit{min} und \textit{max} sind nur erlaubt beim Typ \textit{spin}.
+\newline
+Nach dem Subtag kommt eine ID\@.
+Diese dient dazu die Option innerhalb des Programms eindeutig zu identifizieren.
+Ein Abruf des Werts dieser Option soll nur die ID verlangen.
+\newline
+Schliesslich kommt noch der Wert der Zeile.
+\newline
+Aus diesen Informationen erstellt UCIOptionHandler aus dem Beispielseintrag den Befehl
+\textit{option name Hash type spin default 4096 min 4 max 4096}.
+\newline\newline
+Beim Empfangen von \textit{setoption} Befehlen, \"uberpr\"uft UCIOptionHandler, ob die Option existiert,
+der Typ korrekt und der Wert erlaubt ist.
+Ist das der Fall, speichert UCIOptionHandler den Wert mit der Option in einer Liste von OptionValuePairs.
+Das \"Uberschreiben einer schon festgelegten Option wird dabei unterst\"utzt.
+Hat die GUI alle Optionen gesendet, werden nicht festgelegte Optionen mit ihren Standardwerten in die Liste
+der OptionValuePairs eingef\"ugt und die Liste an den Controller geschickt.
+\newline
+Das Abfragen des Beispieleintrags k\"onnte dann durch
+\begin{lstlisting}
+    controller.getOptionsValue("hash");
+\end{lstlisting}
+erfolgen.
+Um keine Probleme mit Javas Typsystem zu bekommen, werden die Werte der Optionen als String gespeichert.
+An den notwendigen Stellen muss der Wert dann noch umgewandelt werden.
+UCIOptionHandler garantiert aber, dass der String umgewandelt werden kann.
+\subsubsection{OptionValuePair}\label{subsubsec:optionvaluepair}
+Eine Klasse, die eine Option mit einem Wert speichert.
 \pagebreak
