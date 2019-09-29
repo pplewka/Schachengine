@@ -10,13 +10,13 @@ Deshalb ist in Baguette ein eigener Thread, genannt UCI-Thread, f\"ur die Kommun
 Den Programmablauf kann man in zwei Phasen einteilen:
 \begin{enumerate}
     \item Phase: Initialisierung
-    \item Phase: Schachspielen
+    \item Phase: Spielvorgang
 \end{enumerate}
 \subsubsection{Phasenunabh\"angige Befehle}
 Unabh\"angig von den Phasen sind nur die Befehle \textit{quit}, \textit{debug on}, \textit{debug off} und \textit{isready}.
 \newline\textit{quit} beendet Baguette ordnungsgem\"ass.
 Das Beenden auf andere Art (zum Beispiel Signale) kann zu korrupten Logs f\"uhren.
-\newline \textit{debug [on off]} schaltet den Debugmodus ein bzw.\  aus.
+\newline \textit{debug [on $|$ off]} schaltet den Debugmodus ein bzw.\  aus.
 Im Debugmodus werden interne Meldungen zur Fehlersuche mithilfe des \textit{info string} Befehls ausgegeben.
 \newline \textit{isready} muss von der Engine mit \textit{readyok} beantwortet werden, um Bereitschaft zu signalisieren.
 \subsection{Phase 1 Initialisierung}\label{subsec:phase-1-initialisierung}
@@ -38,7 +38,7 @@ Der UCIOptionHandler erstellt aus dem Inhalt der Datei die \textit{option} Befeh
 wertet die \textit{setoption} Befehle aus und gibt alle Optionen mit ihren Werten an die UCIBridge zur\"uck.
 Die UCIBridge gibt die Optionen \"uber die UCI-Klasse an den Controller zur\"uck.
 Die GUI ist jetzt bereit zu Spielen und der Controller kann abh\"angig von den Optionen den Rest von Baguette starten.
-\subsection{Phase 2 Schachspielen}\label{subsec:phase-2-schachspielen}
+\subsection{Phase 2 Spielvorgang}\label{subsec:phase-2-spielvorgang}
 Der UCI-Thread wartet auf eine Eingabe von der GUI\@.
 Zuerst filtert die UCIBridge alle phasenunabh\"angigen Befehle aus den Eingaben aus und bearbeitet diese.
 Die restlichen leitet sie weiter an die UCI-Klasse, nachdem sie alle unn\"otigen Leerzeichen entfernt hat.
