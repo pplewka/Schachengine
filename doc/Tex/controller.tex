@@ -20,3 +20,8 @@ Der UCI-Thread legt potentiell die Befehle \textit{ucinewgame}, \textit{stop}, \
 \textit{commandQueue}.
 Der TimeManagement-Thread legt potentiell den Befehl \textit{stop} in \textit{commandQueue}.
 \newline
+Bei einem \textit{go} Befehl wird das Timemanagement und die Suche gestartet.
+\newline Bei einem \textit{stop} Befehl werden das Timemanagement und die Suche gestoppt und via UCIBridge wird der GUI
+der gefundene beste Zug \"ubergeben.
+\newline Bei einem \textit{ucinewgame} Befehl wird die Suche zur\"uckgesetzt.
+\newline Bei einem \textit{position} Befehl wird der Suche das momentane Brett und Zug \"ubergeben.
