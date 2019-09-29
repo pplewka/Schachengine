@@ -1,0 +1,22 @@
+\section{Controller}\label{sec:controller}
+\subsection{Allgemein}\label{subsec:allgemeincontroller}
+Der Controller dient als Verbindungsst\"uck zwischen UCI, Timemanagement und der Suche.
+Er wird vom Benutzer oder der GUI gestartet, startet die anderen Teile der Engine und vermittelt zwischen ihnen.
+Der Controller l\"auft als eigenst\"andiger Thread, dem Controller-Thread.
+Der Controller ist in der Klasse Controller, die das UCIListener-Interface erf\"ullt, implementiert.
+\subsection{Start}\label{subsec:start}
+Der Controller startet zuerst die UCI-Klasse;
+diese startet selbst\"andig die restlichen Klassen zust\"andig f\"ur UCI\@.
+Der Controller erh\"alt von der UCI-Klasse die eingestellten Optionen.
+Abh\"angig von den Optionen erstellt der Controller den Logger.
+Der Controller meldet sich als Beobachter bei der UCI-Klasse an.
+Abh\"angig von der Prozessorkernanzahl startet der Controller eine Menge von Search-Threads.
+Diese warten vorerst.
+Dann startet der Controller den UCI-Thread.
+\subsection{Spielvorgang}\label{subsec:controllerspielvorgang}
+Der Controller wartet auf Befehle in seiner Befehlswarteschlange \textit{commandQueue}.
+Die Befehle stammen von dem UCI- oder dem TimeManagement-Thread.
+Der UCI-Thread legt potentiell die Befehle \textit{ucinewgame}, \textit{stop}, \textit{position} und \textit{go} in
+\textit{commandQueue}.
+Der TimeManagement-Thread legt potentiell den Befehl \textit{stop} in \textit{commandQueue}.
+\newline
