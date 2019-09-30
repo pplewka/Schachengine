@@ -18,10 +18,16 @@ Der Controller wartet auf Befehle in seiner Befehlswarteschlange \textit{command
 Die Befehle stammen von dem UCI- oder dem TimeManagement-Thread.
 Der UCI-Thread legt potentiell die Befehle \textit{ucinewgame}, \textit{stop}, \textit{position} und \textit{go} in
 \textit{commandQueue}.
+Dies geschieht durch die Methoden des UCIListener-Interface, die Controller bereitstellt.
 Der TimeManagement-Thread legt potentiell den Befehl \textit{stop} in \textit{commandQueue}.
+Das Timemanagement hat daf\"ur direkten Zugriff auf \textit{commandQueue}.
 \newline
 Bei einem \textit{go} Befehl wird das Timemanagement und die Suche gestartet.
 \newline Bei einem \textit{stop} Befehl werden das Timemanagement und die Suche gestoppt und via UCIBridge wird der GUI
-der gefundene beste Zug \"ubergeben.
+der gefundene beste Zug mit dem \textit{bestmove} Befehl \"ubergeben.
 \newline Bei einem \textit{ucinewgame} Befehl wird die Suche zur\"uckgesetzt.
 \newline Bei einem \textit{position} Befehl wird der Suche das momentane Brett und Zug \"ubergeben.
+\newline
+Der Controller merkt sich den letzten Befehl und ignoriert darauffolgende Befehle, die keinen Sinn machen\citeuci[41].
+Beispielsweise macht ein \textit{go} Befehl keinen Sinn nach \textit{stop}.
+Vor dem \textit{go} m\"usste noch mindestens ein \textit{position} Befehl kommen.
