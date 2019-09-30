@@ -1,0 +1,29 @@
+\def \citeuci[#1]{\cite[l. #1]{uci}}
+\section{Time Management}\label{sec:timeMan}
+Das Time Management kümmert sich um das Zeitverhalten der Schachengine. Dies beinhaltet
+das Einhalten einer mitgegebenen oder eines berechneten Zeitlimits und die Berechnung der optimalen Zeit für einen Schachzug als Zeitlimit.
+
+\subsection{Einhalten einer mitgegebenen oder berechneten Zeitlimits}
+Es ist in Blitzschach wichtig, die gegebene Gesamtzeit nicht zu überschreiten, denn Zeitüberschreitung bedeutet ein automatischer Sieg für die Gegnerseite. 
+\newline Um das zu verhindern, muss dafür gesorgt werden, dass das Time Management die Engine möglichst bei Ablauf stoppt. Dafür läuft das eigentliche Time Management in einen eigenen Thread, der nach Zeitablauf das Stop-Signal sendet. 
+
+\subsection{Berechnung der optimalen Zeit für ein Schachzug}
+Besonders für Blitzschach ist es wichtig, seine gegebene Zeit so weit wie möglich so aufzuteilen, dass einerseits genug Zeit für die Berechnung eines Schachzuges besteht und dass nicht zuviel von der Gesamtzeit für nur ein Zug aufgebraucht wird. Zudem darf keine allgemeine Zeitüberschreitung passieren, weil sonst der Gegner automatisch gewinnt. 
+\newline Um das zu gewährleisten, geht die Engine von insgesamt 80 Zügen aus. Die ersten 40 erhalten 50 Prozent der Zeit, der Rest bekommt immer weniger Zeit. Falls ein Inkrement dazugegeben wird, wird es halbiert aufsummiert. 
+
+\subsection{Klassen}
+Das Time Management besteht aus einen Interface und zwei Klassen:
+\subsubsection {TimeManagement}
+Ein Interface bestehend aus drei Methoden:
+\begin{enumerate}
+    \item{ init(): Berechnen des Zeitlimits.}
+    \item{ isEnoughTime(): Überprüfung, ob noch genug Zeit ist.}
+    \item{ reset(): Zurücksetzen des Zeitlimits.}
+\end{enumerate}
+Über dieses Interface kann man für verschiedene Schacharten ein Time Management festlegen.
+
+\subsubsection{TimeManBlitzChessBased}
+Eine Implementierung des TimeManagement Interface gezielt auf Blitzschach bzw Schacharten mit einen gesamten Zeitlimits bis zu 10 Minuten. 
+
+\subsubsection{TimeManThread}
+Diese Klasse erweitert die Klasse TimeManBlitzChessBased um eine Thread Implementierung. 
