@@ -15,6 +15,28 @@ public class EvaluationImpl implements Evaluation {
      */
     private int[] pieceValues = {0, 0, 0, 0, 1, 3, 5, 3, 9, 100};
 
+    private int[] pstKingWhiteMidGame = {
+        -30,-40,-40,-50,-50,-40,-40,-30,
+        -30,-40,-40,-50,-50,-40,-40,-30,
+        -30,-40,-40,-50,-50,-40,-40,-30,
+        -30,-40,-40,-50,-50,-40,-40,-30,
+        -20,-30,-30,-40,-40,-30,-30,-20,
+        -10,-20,-20,-20,-20,-20,-20,-10,
+         20, 20,  0,  0,  0,  0, 20, 20,
+         20, 30, 10,  0,  0, 10, 30, 20
+    };
+
+    private int[] pstKingBlackMidGame = {
+        -20,-30,-10,  0,  0,-10,-30,-20,
+        -20,-20,  0,  0,  0,  0,-20,-20,
+         10, 20, 20, 20, 20, 20, 20, 10,
+         20, 30, 30, 40, 40, 30, 30, 20,
+         30, 40, 40, 50, 50, 40, 40, 30,
+         30, 40, 40, 50, 50, 40, 40, 30,
+         30, 40, 40, 50, 50, 40, 40, 30,
+         30, 40, 40, 50, 50, 40, 40, 30,
+    };
+
     private int[] pstPawnsWhite = {
             0, 0, 0, 0, 0, 0, 0, 0,
             50, 50, 50, 50, 50, 50, 50, 50,
@@ -157,6 +179,8 @@ public class EvaluationImpl implements Evaluation {
                             break;
                         case Piece.WBISHOP:
                             value += pstBishopWhite[i];
+                        case Piece.WKING:
+                            value += pstKingWhiteMidGame[i];
 
                     }
                 } else {
@@ -175,6 +199,8 @@ public class EvaluationImpl implements Evaluation {
                             break;
                         case Piece.BBISHOP:
                              value += getPstBishopBlack[i];
+                        case Piece.BKING:
+                             value += pstKingBlackMidGame[i];
 
                     }
                 }
@@ -199,6 +225,8 @@ public class EvaluationImpl implements Evaluation {
                         return pstKnightsWhite[pos];
                     case Piece.WBISHOP:
                         return pstBishopWhite[pos];
+                    case Piece.WKING:
+                        return pstKingWhiteMidGame[pos];
 
                 }
             } else {
@@ -213,6 +241,8 @@ public class EvaluationImpl implements Evaluation {
                         return pstKnightsBlack[pos];
                     case Piece.BBISHOP:
                         return getPstBishopBlack[pos];
+                    case Piece.BKING:
+                        return pstKingBlackMidGame[pos];
 
                 }
             }
