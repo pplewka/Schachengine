@@ -1,5 +1,11 @@
 \begin{thebibliography}{MK06}
 
+\bibitem[Mic]{evalWiki}
+Thomasz Michniewski.
+\newblock Simplified evaluation function.
+\newblock https://www.chessprogramming.org/Simplified_Evaluation_Function
+  (aufgerufen am 27.9.19.
+
 \bibitem[MK06]{uci}
 Stefan Meyer-Kahlen.
 \newblock Description of the universal chess interface (uci).
