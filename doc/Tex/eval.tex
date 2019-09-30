@@ -1,0 +1,68 @@
+\section{Evaluation}\label{eval}
+\subsection{Allgemein}
+Die Evaluation stellt eine Funktion dar, die zu einer Schachposition eine Bewertung berechnet, mathematisch gesehen: 
+$$
+f(Schachposition) = Bewertung
+$$
+
+Für die Bewertung werden verschiedene Aspekte der gesamten Spielposition analysiert, unter anderem: 
+\begin{enumerate}
+    \item{Materialwert}
+    \item{Piece Square Tables (PST)}
+    \item{Repetitionscore}
+    \item{Ist ein Bauer geblockt}
+    \item{K\"onigsschutz}
+\end{enumerate}
+
+im Endeffekt besteht unsere Evaluationsfunktion aus:
+$$
+f(Schachposition) = Materialwert + PST + Repetitionscore + Ist ein Bauer geblockt + K\ddot{o}nigsschutz
+$$
+
+
+\subsection{Materialwert}
+Jeder Art von Schachfigur wird ein Materialwert zugewiesen, in Baguette (entnommen vom Chessprogramming Wiki) sind es:
+\begin{itemize}
+    \item{König: Unendlich} 
+    \item{Dame: 9}
+    \item{Turm: 5}
+    \item{Springer, Läufer: 3}
+    \item{Bauer: 1}
+\end{itemize}
+
+Es wird von jedem Spieler der die Materialwerte zusammenaddiert:
+$$
+matWhite = sum(pieces\ of\ site\ white) \\
+$$
+$$
+matBlack = sum(pieces\ of\ site\ black)
+$$
+
+das Ergebnis ist dann die Substraktion der Materialwerte Schwarz von den Materialwerten Weiß: 
+$$
+material = matWhite - matBlack
+$$
+
+\subsection{Piece Square Tables}
+Piece Square Tables (PST) sind  8x8 Matrizen, die für eine bestimmte Seite und eine bestimmte Art von Schachfigur für jedes Feld auf den Schachbrett einen zusätzlichen Wert hinzuf\"ugt.
+\newline Als Beispiel ist hier die eingebaute PST für Bauer Weiß: 
+$$
+\begin{matrix}
+         0 &  0 &  0 &  0 &  0 &  0 &  0 &  0 \\
+        50 & 50 & 50 & 50 & 50 & 50 & 50 & 50 \\
+        10 & 10 & 20 & 30 & 30 & 20 & 10 & 10 \\
+         5 &  5 & 10 & 25 & 25 & 10 &  5 &  5 \\
+         0 &  0 &  0 & 20 & 20 &  0 &  0 &  0 \\
+         5 & -5 &-10 &  0 &  0 &-10 & -5 &  5 \\
+         5 & 10 & 10 &-20 &-20 & 10 & 10 &  5 \\
+         0 &  0 &  0 &  0 &  0 &  0 &  0 &  0 \\
+\end{matrix}
+$$
+
+\subsection{Repetition Score}
+Der Repetition Score wirkt, wenn erkannt wird, dass ein Schachzug merhmals hintereinanter ausgef\"uhrt wird und vergibt für diesen wiederholten Schachzug dann Straftpunkte.
+\subsection{Ist ein Bauer blockiert}
+Wenn ein Bauer im nächsten Zug im Feld sich nicht mehr nach Vorne bewegen kann und er nicht eine gegnerische Figur wegnehmen kann, gilt er als Blockiert und es wird dafür von der Bewertung ein halber Bauer weggenohmen.
+
+\subsection{Königsschutz}
+Der Königsschutz überprüft, ob ein König um sich herum genug Schutz von anderen Schachfiguren hat.
