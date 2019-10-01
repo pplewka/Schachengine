@@ -10,20 +10,48 @@ Es ist in Blitzschach wichtig, die gegebene Gesamtzeit nicht zu überschreiten, 
 \subsection{Berechnung der optimalen Zeit für ein Schachzug}
 Besonders für Blitzschach ist es wichtig, seine gegebene Zeit so weit wie möglich so aufzuteilen, dass einerseits genug Zeit für die Berechnung eines Schachzuges besteht und dass nicht zuviel von der Gesamtzeit für nur ein Zug aufgebraucht wird. Zudem darf keine allgemeine Zeitüberschreitung passieren, weil sonst der Gegner automatisch gewinnt. 
 \newline Um das zu gewährleisten, geht die Engine von insgesamt 80 Zügen aus. Die ersten 40 erhalten 50 Prozent der Zeit, der Rest bekommt immer weniger Zeit. Falls ein Inkrement dazugegeben wird, wird es halbiert aufsummiert. 
+\newline es wird außerdem 5 Millisekunden abezogen f\"ur die Tatsache, dass der gesamte Prozess vom Begin des GO-Befehls bis zu den eigentlichen Ablaufen des Zeitlimits durchschnittlich 4-5 Millisekunden braucht.
 
 \subsection{Klassen}
 Das Time Management besteht aus einen Interface und zwei Klassen:
 \subsubsection {TimeManagement}
 Ein Interface bestehend aus drei Methoden:
 \begin{enumerate}
-    \item{ init(): Berechnen des Zeitlimits.}
-    \item{ isEnoughTime(): Überprüfung, ob noch genug Zeit ist.}
-    \item{ reset(): Zurücksetzen des Zeitlimits.}
+    \item{ init(totalTimeLeftInMsec, inc, movesCnt):\newline Initialisierung \"uber, bei der das Zeitlimit berechnet werden soll. \newline Die Parameter:
+            \begin{itemize}
+                \item{totalTimeLeftInMsec: wieviel Gesamtzeit übrig ist.}
+                \item{inc: Das zu Verfügung gestellte Inkrement.}
+                \item{movesCnt: die bisherige Anzahl an Schachzügen.}
+            \end{itemize}
+         Das TimeManagement sollte vor der Initialisierung bereits in einem nicht Initialisierten Zustand sein (entweder noch nie gestartet oder reset() wurde davor aufgerufen.}
+    \item{ init(moveTime):\newline Initialisierung des Time Management mittels einer genauen Zeit}
+    \item{ isEnoughTime():\newline Überprüfung, ob noch genug Zeit ist.}
+    \item{ reset():\newline Zurücksetzen des Zeitlimits.}
 \end{enumerate}
 Über dieses Interface kann man für verschiedene Schacharten ein Time Management festlegen.
 
 \subsubsection{TimeManBlitzChessBased}
-Eine Implementierung des TimeManagement Interface gezielt auf Blitzschach bzw Schacharten mit einen gesamten Zeitlimits bis zu 10 Minuten. 
+Eine Implementierung des TimeManagement Interface gezielt auf Blitzschach bzw Schacharten mit einen gesamten Zeitlimits bis zu 10 Minuten. \newline
+Urspr\"unglich war es geplant, dass im Suchbaum bei jeder neuen Suchtiefe einmal abgefragt wird, ob noch genug Zeit da ist für eine weitere Suchtiefe (isEnoughTime()), jedoch kam das Problem auf, das man ab einer bestimmten Suchtiefe zu lange auf einer Suchtiefe stecken bleibt und so das Zeitlimit überschritten hat. 
 
 \subsubsection{TimeManThread}
-Diese Klasse erweitert die Klasse TimeManBlitzChessBased um eine Thread Implementierung. 
+Diese Klasse ist eine Thread Implementierung, die dafür gedacht ist, mit einem TimeManBlitzChessBased Objekt ein Zeitlimit zu berechnen und das innerhalb eines Threads ablaufen lassen. Dessen Implementierung in run() sieht so aus: 
+\lstset{
+  numbers=left,
+  stepnumber=1,    
+  firstnumber=1,
+  numberfirstline=true
+}
+\begin{lstlisting}
+    long start = System.nanoTime();
+    try {
+        Thread.sleep(timeFrame); // - overhead by go/stop cmd
+    } catch (InterruptedException e) {
+    }
+    if (!isInterrupted()) {
+        queue.add(new Command(Command.CommandEnum.STOP));
+    }
+    long estimated = (System.nanoTime() - start) / 1000000;
+    InfoHandler.sendDebugMessage("TimeMan: " + estimated);
+\end{lstlisting}
+Die Zeilen 6-8 Dienen f\"ur den Fall, dass vor dem Ablaufen des Zeitfensters bereits ein STOP-Befehl eingegangen ist. Beim senden des STOP-Befehl wird jeder laufende TimeManThread unterbrochen (interrupted), und die Threads werden kein STOP-Befehl aussenden wenn sie Unterbrochen wurden.

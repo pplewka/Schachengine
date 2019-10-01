@@ -1,5 +1,12 @@
 \section{Einleitung}
 Baguette ist eine Schachengine von Alessio Ragusa, Patrick Plewka und Matthias Sennikow in Rahmen einer Projektarbeit.
-Sie wurde in der Programmiersprache Java 11 entwickelt worden und ist für Systeme mit mindestens Windows 10 oder Linux optimiert. \newline
-Die Engine arbeitet mit Threads und basiert auf den Minimax-Algorithmus. 
-\pagebreak
+Sie wurde in der Programmiersprache Java 11 entwickelt worden, verwendet Maven als Build-Management Tool und ist für Systeme mit mindestens Windows 10 oder Linux optimiert. \newline
+Die Engine wurde gezielt darauf programmiert Blitzschach bzw. im Modus Sudden Death\citeGameMode[Time Controls, Sudden Death] spielen zu k\"onnen.\newline
+Das Projekt besteht aus insgesamt 9 Teilprojekten, die man in 3 Kategorien einteilen kann:
+\begin{itemize}
+    \item{Kommunikation:\newline Kommunikation mit der Schachoberfl\"ache (durch die standartisierte Schnittstelle UCI) und die Koordination/Kommunikation innerhalb des Gesamtprojektes.
+        \newline Teilprojekte: UCI, Controller, Command}
+    \item{Suchbaum:\newline Generierung eines Suchbaums um einen bestmöglichen Schachzug ermitteln zu können. \newline Teilprojekte:  Search, Time Management, Move Generation, Evaluation}
+    \item{Schachbrett-Darstellung:\newline Die interne Darstellung des Schachbrettes, einer Schachposition und eines Schachzuges.\newline Teilprojekte: Board, Move}
+\end{itemize}
+
