@@ -30,6 +30,7 @@ Jeder Art von Schachfigur wird ein \textit{Materialwert} zugewiesen, in Baguette
     \item{Springer, Läufer: 3}
     \item{Bauer: 1}
 \end{itemize}
+Die weißen Schachfiguren werden die positiven Werte zugewießen, den schwarzen Schachfiguren werden die negativen Werte zugewießen.
 
 Es wird von jedem Spieler der die Materialwerte zusammenaddiert:
 $$
@@ -70,4 +71,4 @@ Wenn ein Bauer im nächsten Zug im Feld sich nicht mehr nach Vorne bewegen kann 
 
 \subsubsection{Königsschutz}
 Der Königsschutz überprüft, ob ein König um sich herum genug Schutz von anderen Schachfiguren hat.\newline
-F\"ur jede Schachfigur des gleichen Spielers, die auf den 8 Feldern rund um den K\"onig sind gibt es einen halben Bauern (50 Centipawns) Bonus.
+F\"ur jede Schachfigur des gleichen Spielers, die auf den 8 Feldern rund um den K\"onig sind gibt es einen halben Bauern (50 Centipawns) Bonus. Wenn der K\"onig an den R\"andern ist, werden die fehlenden Felder nicht als Schutz mitgerechnet.

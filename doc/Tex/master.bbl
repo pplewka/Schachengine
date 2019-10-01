@@ -1,5 +1,10 @@
 \begin{thebibliography}{MK06}
 
+\bibitem[Gem]{tctolerance}
+Matthias Gemuh.
+\newblock About tc tolerance in chessgui.
+\newblock http://talkchess.com/forum3/viewtopic.php?f=2\&t=26336.
+
 \bibitem[Mic]{evalWiki}
 Thomasz Michniewski.
 \newblock Simplified evaluation function.
