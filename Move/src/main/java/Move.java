@@ -39,7 +39,7 @@ public interface Move {
 
     boolean hasChildren();
 
-    void addIfAlright(PriorityBlockingQueue<Move> tableToAdd, ArrayList<Move> listToAdd);
+    void addIfAlright(PriorityBlockingQueue<Move> tableToAdd);
 
     /**
      * method to make moves given by the uci "position moves" command

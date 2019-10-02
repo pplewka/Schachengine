@@ -30,7 +30,7 @@ public class SearchThread extends Thread {
                 //get new Parent. Wait and try again if empty
                 Move currentParent = null;
                 do {
-                    currentParent = search.getOutputLookUpTable().poll(WAIT_NS, TimeUnit.NANOSECONDS);
+                    currentParent = search.getOutputLookUpTable().take();
                 } while (currentParent == null);
 
                 //generate and evaluate children
@@ -40,18 +40,18 @@ public class SearchThread extends Thread {
                 }
                 currentParent.setChildren(currentChildren.toArray(new Move[0]));
                 //if children were set clear entry in checklist
-                search.getOutputChecklist().remove(currentParent);
-
+                search.getOutputLookUpTable().addAll(currentChildren);
 
                 //new full generated depth is reached, when outputChecklist is empty
                 //if reached new full generated depth change value in search, search for new bestMove and send infos
                 int fullGeneratedDepth = currentParent.getDepth() +1;
-                if (search.getOutputChecklist().isEmpty() && search.setIfDeeper(fullGeneratedDepth)) {
+                if (search.setIfDeeper(fullGeneratedDepth)) {
                     Thread.currentThread().setPriority(MAX_PRIORITY);
+                    fullGeneratedDepth = search.getFullGeneratedDepth();
                     //search and add new nodes in inputQueue
                     alphaBetaSearch(search.getRoot(), fullGeneratedDepth, Integer.MIN_VALUE, Integer.MAX_VALUE);
 
-                    swapTablesAndLists(search);
+                    //swapTablesAndLists(search);
                     Thread.currentThread().setPriority(NORM_PRIORITY);
 
                     InfoHandler.getInstance().storeInfo(InfoHandler.DEPTH, search.getDepth());
@@ -119,20 +119,13 @@ public class SearchThread extends Thread {
                     }
                 }
 
-                parent.setMaxMin(bestValue);
+                //todo
+                //parent.setMaxMin(bestValue);
                 parent.setChildren(exploredChildren.toArray(new Move[0]));
 
                 //set bestMove
                 if (parent == search.getRoot() && bestMove != null) {
                     search.setBestMove(bestMove);
-                }
-
-                if (parent.getDepth() == maxDepth - 1) {
-                    for (Move child : exploredChildren) {
-                        if (child.getDepth() == maxDepth) {
-                            child.addIfAlright(search.getInputLookUpTable(), search.getInputChecklist());
-                        }
-                    }
                 }
             }catch(NullPointerException e){
                 e.printStackTrace();

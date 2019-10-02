@@ -13,7 +13,7 @@ public class EvaluationImpl implements Evaluation {
         [8]    = Queen             = 9
         [9]    = King              = a much higher value than the others...
      */
-    private int[] pieceValues = {0, 0, 0, 0, 1, 3, 5, 3, 9, 100};
+    private int[] pieceValues = {0, 0, 0, 0, 1, 3, 5, 3, 9, 10000};
 
     private int[] pstPawnsWhite = {
             0, 0, 0, 0, 0, 0, 0, 0,
@@ -228,9 +228,7 @@ public class EvaluationImpl implements Evaluation {
         int globalValue = material(board, blacksTurn);
 
         //globalValue += PieceSquareTablesValues(board.getBoard(), toEvaluate.blacksTurn()) / 2;
-
-        globalValue = globalValue + repetitionScore(toEvaluate);
-
+            globalValue = evaluateNoRep(toEvaluate) + repetitionScore(toEvaluate);
         return globalValue;
     }
 
@@ -378,7 +376,7 @@ public class EvaluationImpl implements Evaluation {
 
     @Override
     public int repetitionScore(Move toEvaluate) {
-        int deduction = 100;
+        int deduction = 10000;
         int score = 0;
         Move now = toEvaluate;
         Move before = toEvaluate.getParent().getParent();

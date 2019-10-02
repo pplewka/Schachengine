@@ -52,10 +52,9 @@ public class MoveImpl implements Move {
     }
 
     @Override
-    public synchronized void addIfAlright(PriorityBlockingQueue<Move> tableToAdd, ArrayList<Move> listToAdd){
+    public synchronized void addIfAlright(PriorityBlockingQueue<Move> tableToAdd){
         if(!added && !killed){
             tableToAdd.add(this);
-            listToAdd.add(this);
 
             added = true;
         }
