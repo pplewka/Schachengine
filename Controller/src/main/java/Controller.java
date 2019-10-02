@@ -65,7 +65,7 @@ public class Controller implements UCIListener {
      * @return the number of worker threads to spawn
      */
     private int calcWorkerThreadCount() {
-        return numberCores*2;
+        return numberCores > 1 ? numberCores - 1 : 1;
     }
 
     /**
