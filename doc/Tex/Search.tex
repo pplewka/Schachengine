@@ -51,8 +51,9 @@ Alpha und Beta sind die Namen der Variablen , die verwendet werden um zu \"uberp
 Alpha wird nur vom maximierenden Spieler ver\"andert und Beta nur vom minimierenden Spieler.
 Wenn Alpha gr\"osser als Beta ist, kann die Suche auf dem aktuellen Knoten abgebrochen werden.
 \\\\
-Hierzu vereinfachter code der Alpha/Beta Funktion wie sie in Baguette verwendet wird.
+Hierzu vereinfachter Code der Alpha/Beta Funktion wie sie in Baguette verwendet wird.
 Da die Funktion selbst nur einen Wert zur\"uck gibt, wird in der letzten if Bedingung zus\"atzlich die globale BestMove Variable mit dem gefundenen besten Zug gesetzt, wenn der aktuell untersuchte Knoten die Wurzel des Suchbaum ist.
+\newline
 \begin{lstlisting}[frame=single]
 int alphaBetaSearch(parent, maxDepth, alpha, beta) {
         bestValue = parent.blacksTurn() ?
