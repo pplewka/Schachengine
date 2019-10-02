@@ -4,13 +4,13 @@
 Das Time Management kümmert sich um das Zeitverhalten der Schachengine. Dies beinhaltet
 das Einhalten einer mitgegebenen oder eines berechneten Zeitlimits und die Berechnung der optimalen Zeit für einen Schachzug als Zeitlimit.
 
-\subsubsection{Einhalten einer mitgegebenen oder berechneten Zeitlimits}
-Es ist in Blitzschach wichtig, die gegebene Gesamtzeit nicht zu überschreiten, denn Zeitüberschreitung bedeutet ein automatischer Sieg für den Gegner.\newline
-Außerdem ist die Toleranz in einigen Schachoberfl\"achen so gering, dass es automatisch zu einen Sieg f\"ur den Gegner kommen kann, wenn die Schachengine die Toleranzgrenze einer Schachoberfl\"ache \"uberschreitet. \cite[0]{tctolerance}
-\newline Um das zu verhindern, muss dafür gesorgt werden, dass das Time Management die Engine möglichst bei Ablauf stoppt. Dafür läuft das eigentliche Time Management in einen eigenen Thread, der nach Zeitablauf das \textit{STOP}-Befehl sendet. Zudem muss das eigentliche Zeitablaufen und die Berechnung der Zeit streng voneinander abgetrennt sein und es d\"urfen nicht viele U\"berpr\"ufungen gemacht werden. 
+\subsubsection{Einhalten eines mitgegebenen oder berechneten Zeitlimits}
+Bei Blitzschach ist zu beachten, die gegebene Gesamtzeit nicht zu überschreiten, eine Zeitüberschreitung bedeutet ein automatischer Sieg für den Gegner.\newline
+Außerdem ist die Toleranz in einigen Schachoberfl\"achen so gering, dass es automatisch zu einen Sieg f\"ur den Gegner kommen kann, wenn die Schachengine die Toleranzgrenze einer Schachoberfl\"ache zwischen dem \textit{stop} Befehl und dem \textit{bestmove} Befehl \"uberschreitet. \cite[0]{tctolerance}
+\newline Um das zu verhindern, muss dafür gesorgt werden, dass das Time Management die Engine möglichst bei Ablauf stoppt. Dafür läuft das eigentliche Time Management in einen eigenen Thread, der nach Zeitablauf das \textit{stop}-Befehl sendet. Zudem muss das eigentliche Zeitablaufen und die Berechnung der Zeit streng voneinander abgetrennt sein und es d\"urfen nicht viele U\"berpr\"ufungen  w\"ahrend des eigentlichen Ablaufen der Zeit passieren.
 
-\subsubsection{Berechnung der optimalen Zeit für ein Schachzug}
-Besonders für Blitzschach ist es wichtig, seine gegebene Zeit so weit wie möglich so aufzuteilen, dass einerseits genug Zeit für die Berechnung eines Schachzuges besteht und dass nicht zuviel von der Gesamtzeit für nur ein Zug aufgebraucht wird. Zudem darf keine allgemeine Zeitüberschreitung passieren, weil sonst der Gegner automatisch gewinnt. 
+\subsubsection{Berechnung der optimalen Zeit für einen Schachzug}
+Man sollte bei Blitzschach darauf achten, seine gegebene Zeit so weit wie möglich so aufzuteilen, dass einerseits genug Zeit für die Berechnung eines Schachzuges besteht und dass nicht zuviel von der Gesamtzeit für nur ein Zug aufgebraucht wird. Zudem darf keine allgemeine Zeitüberschreitung passieren, weil sonst der Gegner automatisch gewinnt. 
 \newline Um das zu gewährleisten, geht die Engine von insgesamt 80 Zügen aus. Die ersten 40 erhalten 50 Prozent der Zeit, der Rest bekommt immer weniger Zeit. Falls ein Inkrement dazugegeben wird, wird es halbiert aufsummiert. 
 \newline es wird außerdem 5 Millisekunden abezogen f\"ur die Tatsache, dass der gesamte Prozess vom Begin des GO-Befehls bis zu den eigentlichen Ablaufen des Zeitlimits durchschnittlich 4-5 Millisekunden braucht.
 
@@ -23,9 +23,12 @@ Das Time Management kann man in zwei Phasen aufteilen:
 
 \subsubsection{Zur\"uckgesetzt}
 Das Time Management ist im Zustand \textit{Zur\"uckgesetzt} entweder falls das Time Management nicht initialiert wurde oder falls \textit{reset()} aufgerufen wurde. In diesen Zustand l\"auft die Zeit nicht mehr ab und es wird nicht \"uberpr\"uft, ob genug Zeit vorhanden ist, was f\"ur Beispielsweiße f\"ur \textit{Pondering} gedacht ist.
+\newline wenn das Time Management durch \textit{reset()} zur\"uckgesetzt wurde, werden alle gespeicherten Daten zur\"uckgesetzt, das bedeutet die Anzahl an bisherigen Schachz\"ugen, die Gesamtzeit und das berechnete Zeitlimit. 
+\newline Das Time Management kann nicht zweimal hintereinaner zur\"uckgesetzt werdem.
 
 \subsubsection{Initialisiert}
-Das Time Management ist im Zustand \textit{Initialisiert} nach dem Aufruf von \textit{init()}
+Das Time Management ist im Zustand \textit{Initialisiert} nach dem Aufruf von \textit{init(totalTimeLeftInMsec, inc, movesCnt)}. oder \textit{init(moveTime)}.\newline
+In diesem Modus wird entweder ein Zeitlimit berechnet oder ein mitgegebenes Zeitlimit benutzt. Man kann in diesen Modus \textit{isEnoughTime()} verwenden um zu \"uberpr\"ufen, ob noch genug Zeit zur Verfügung steht.
 
 \subsection{Klassen}
 Das Time Management besteht aus einen Interface und zwei Klassen:
@@ -69,4 +72,4 @@ Diese Klasse ist eine Thread Implementierung, die dafür gedacht ist, mit einem 
     long estimated = (System.nanoTime() - start) / 1000000;
     InfoHandler.sendDebugMessage("TimeMan: " + estimated);
 \end{lstlisting}
-Die Zeilen 6-8 Dienen f\"ur den Fall, dass vor dem Ablaufen des Zeitfensters bereits ein STOP-Befehl eingegangen ist. Beim senden des STOP-Befehl wird jeder laufende TimeManThread unterbrochen (interrupted), und die Threads werden kein STOP-Befehl aussenden wenn sie Unterbrochen wurden.
+Die Zeilen 6-8 Dienen f\"ur den Fall, dass vor dem Ablaufen des Zeitfensters bereits ein \textit{stop} Befehl eingegangen ist. Beim senden des STOP-Befehl wird jeder laufende TimeManThread unterbrochen (interrupted), und die Threads werden kein \textit{stop} Befehl aussenden wenn sie Unterbrochen wurden.

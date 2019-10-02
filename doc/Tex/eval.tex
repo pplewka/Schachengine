@@ -63,9 +63,11 @@ $$
          0 &  0 &  0 &  0 &  0 &  0 &  0 &  0 \\
 \end{matrix}
 $$
+Die \textit{PSTs} wurden vom \textit{Chess Programming Wiki} \citeeval[] \"ubernommen.
 
 \subsubsection{Repetition Score}
-Der \textit{Repetition Score} geht von dem Schachzug, der zu evaluieren ist den Suchbaum bis zur Wurzel hoch und \"uberor\"uft wie oft der gleiche Schachzu bereits gemacht wurde. F\"ur jede Wiederholung wird ein Bauer (100 Centipawns) abgezogen.
+Der \textit{Repetition Score} versucht zu verhindern, dass Baguette einen Schachzug wiederholent ausf\"uhrt.\newline
+Hierbei geht man von dem Schachzug, der zu evaluieren ist im Suchbaum bis zur Wurzel hoch und \"uberor\"uft wie oft der gleiche Schachzug bereits gemacht wurde.\newline F\"ur jede Wiederholung wird ein Bauer (100 Centipawns) abgezogen.
 \subsubsection{Ist ein Bauer blockiert}
 Wenn ein Bauer im nächsten Zug im Feld sich nicht mehr nach Vorne bewegen kann (weil vor dem Bauer dann eine weitere Schachfigur steht) und er nicht eine gegnerische Figur seitlich wegnehmen kann, gilt er als Blockiert und es wird dafür von der Bewertung ein halber Bauer (50 Centipawns) abgezogen.
 
