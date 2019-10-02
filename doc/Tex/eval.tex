@@ -22,7 +22,7 @@ $$
 \subsection{Evaluationsfunktion}
 
 \subsubsection{Materialwert}
-Jeder Art von Schachfigur wird ein \textit{Materialwert} zugewiesen, in Baguette (entnommen vom Chessprogramming Wiki) sind es:
+Jeder Art von Schachfigur wird ein \textit{Materialwert} zugewiesen, in Baguette (entnommen aus dem Chessprogramming Wiki \cite[]{materialvalues}) sind es:
 \begin{itemize}
     \item{König: Unendlich} 
     \item{Dame: 9}
@@ -48,7 +48,7 @@ $$
 Die Einheit, die f\"ur die Materialwerte benutzt wird ist \textit{Centipawns} (1 Bauer = 100 Centipawn).
 
 \subsubsection{Piece Square Tables}
-\textit{Piece Square Tables (PST)} sind  8x8 Matrizen, die für eine bestimmte Seite und eine bestimmte Art von Schachfigur für jedes Feld auf den Schachbrett eine spezifische Bewertung hinzuf\"ugt.
+\textit{Piece Square Tables (PST)} sind  8x8 Matrizen, die für eine bestimmte Seite und eine bestimmte Art von Schachfigur für jedes Feld auf den Schachbrett eine spezifische Bewertung hinzuf\"ugen.
 Die \textit{PSTs} sollen so Positionen, die allgemein f\"ur eine bestimmte Schachfigur von Vorteil sind so im Suchbaum hervorheben. Genauso andersherum sollen so Positionen die ein Nachteil f\"ur eine Figur darstellen eine niedrigere Priorit\"at bekommen bzw abgeschnitten werden.
 \newline Als Beispiel ist hier die eingebaute PST für Bauer Weiß \citeeval[Piece Square Tables, Pawn]: 
 $$
@@ -67,9 +67,9 @@ Die \textit{PSTs} wurden vom \textit{Chess Programming Wiki} \citeeval[] \"ubern
 
 \subsubsection{Repetition Score}
 Der \textit{Repetition Score} versucht zu verhindern, dass Baguette einen Schachzug wiederholent ausf\"uhrt.\newline
-Hierbei geht man von dem Schachzug, der zu evaluieren ist im Suchbaum bis zur Wurzel hoch und \"uberor\"uft wie oft der gleiche Schachzug bereits gemacht wurde.\newline F\"ur jede Wiederholung wird ein Bauer (100 Centipawns) abgezogen.
+Hierbei geht man von dem Schachzug, der zu evaluieren ist im Suchbaum bis zur Wurzel hoch und \"uberpr\"uft wie oft der gleiche Schachzug bereits gemacht wurde.\newline F\"ur jede Wiederholung wird ein Bauer (100 Centipawns) abgezogen.
 \subsubsection{Ist ein Bauer blockiert}
-Wenn ein Bauer im nächsten Zug im Feld sich nicht mehr nach Vorne bewegen kann (weil vor dem Bauer dann eine weitere Schachfigur steht) und er nicht eine gegnerische Figur seitlich wegnehmen kann, gilt er als Blockiert und es wird dafür von der Bewertung ein halber Bauer (50 Centipawns) abgezogen.
+Wenn ein Bauer im nächsten Zug im Feld sich nicht mehr nach Vorne bewegen kann (weil vor dem Bauer dann eine weitere Schachfigur steht) und er nicht eine gegnerische Figur seitlich wegnehmen kann, gilt er als blockiert und es wird dafür von der Bewertung ein halber Bauer (50 Centipawns) abgezogen.
 
 \subsubsection{Königsschutz}
 Der Königsschutz überprüft, ob ein König um sich herum genug Schutz von anderen Schachfiguren hat.\newline
